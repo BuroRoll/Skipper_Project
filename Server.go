@@ -1,4 +1,4 @@
-package backend
+package Skipper
 
 import "net/http"
 
