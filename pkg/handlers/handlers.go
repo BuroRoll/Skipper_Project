@@ -2,7 +2,6 @@ package handlers
 
 import (
 	service "Skipper/pkg/servises"
-	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
 
@@ -17,7 +16,15 @@ func NewHandler(services *service.Service) *Handler {
 func (h *Handler) InitRoutes() *gin.Engine {
 	router := gin.New()
 
-	router.Use(sessions.Sessions("session", sessions.NewCookieStore([]byte("secret"))))
+	//router.Use(cors.Middleware(cors.Config{
+	//	Origins:        "*",
+	//	Methods:        "GET, PUT, POST, DELETE",
+	//	RequestHeaders: "Origin, Authorization, Content-Type",
+	//	ExposedHeaders: "",
+	//	MaxAge: 50 * time.Second,
+	//	Credentials: true,
+	//	ValidateHeaders: false,
+	//}))
 
 	auth := router.Group("/auth")
 	{
@@ -26,12 +33,9 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		auth.GET("/logout", h.logout)
 	}
 
-	api := router.Group("/api")
+	api := router.Group("/api", h.userIdentity)
 	{
-		status := api.Group("/status")
-		{
-			status.GET("/", h.GetStatus)
-		}
+		api.GET("/status", h.GetStatus)
 	}
 	return router
 }

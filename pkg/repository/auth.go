@@ -10,6 +10,10 @@ type AuthPostgres struct {
 	db *gorm.DB
 }
 
+func NewAuthPostgres(db *gorm.DB) *AuthPostgres {
+	return &AuthPostgres{db: db}
+}
+
 func (r *AuthPostgres) GetUser(email, password string) (uint, error) {
 	var user models.User
 	result := r.db.Where("email=? AND password=?", email, password).First(&user)
@@ -17,10 +21,6 @@ func (r *AuthPostgres) GetUser(email, password string) (uint, error) {
 		return user.ID, gorm.ErrRecordNotFound
 	}
 	return user.ID, nil
-}
-
-func NewAuthPostgres(db *gorm.DB) *AuthPostgres {
-	return &AuthPostgres{db: db}
 }
 
 func (r *AuthPostgres) CreateUser(user models.User) (uint, error) {
