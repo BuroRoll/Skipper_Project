@@ -9,8 +9,8 @@ import (
 var db *gorm.DB //database
 
 func init() {
-	dbUri := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=disable password=%s", "localhost", "danilkonkov", "skipper", "") //Build connection string
-
+//	dbUri := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=disable password=%s", "localhost", "danilkonkov", "skipper", "") //Build connection string
+	dbUri := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=disable password=%s", "localhost", "skipper_user", "skipper", "22012011")
 	conn, err := gorm.Open(postgres.Open(dbUri), &gorm.Config{})
 	if err != nil {
 		fmt.Printf("error %s", err)

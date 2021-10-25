@@ -130,6 +130,6 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	r.GET("/secured/ping", h.userIdentity, func(g *gin.Context) {
 		g.JSON(200, gin.H{"text": "Hello from private"})
 	})
-
+	r.GET("/secured/status", h.userIdentity, h.GetStatus)
 	return r
 }
