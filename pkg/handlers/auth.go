@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"Skipper/pkg/models"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -41,7 +40,7 @@ func (h *Handler) signIn(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error generate token": err.Error()})
 		return
 	}
-
+	c.SetCookie("refreshToken", refreshToken, 10, "/", "localhost", false, true)
 	c.JSON(http.StatusOK, map[string]interface{}{
 		"token":        token,
 		"refreshToken": refreshToken,
@@ -49,13 +48,9 @@ func (h *Handler) signIn(c *gin.Context) {
 }
 
 func (h *Handler) refreshToken(c *gin.Context) {
-	type tokenReqBody struct {
-		RefreshToken string `json:"refreshToken"`
-	}
-	tokenReq := tokenReqBody{}
-	err := c.Bind(&tokenReq)
-	fmt.Println("get this token: ", tokenReq.RefreshToken)
-	userId, err := h.services.ParseRefreshToken(tokenReq.RefreshToken)
+	refreshToken, _ := c.Cookie("refreshToken")
+
+	userId, err := h.services.ParseRefreshToken(refreshToken)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error generate token": err.Error()})
 		return
@@ -67,8 +62,7 @@ func (h *Handler) refreshToken(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, map[string]interface{}{
-		"token":        token,
-		"refreshToken": refreshToken,
+		"token": token,
 	})
 }
 
