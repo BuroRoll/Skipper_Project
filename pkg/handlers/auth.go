@@ -40,7 +40,6 @@ func (h *Handler) signIn(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error generate token": err.Error()})
 		return
 	}
-	c.SetCookie("refreshToken", refreshToken, 10, "/", "localhost", false, true)
 	c.JSON(http.StatusOK, map[string]interface{}{
 		"token":        token,
 		"refreshToken": refreshToken,
@@ -48,14 +47,17 @@ func (h *Handler) signIn(c *gin.Context) {
 }
 
 func (h *Handler) refreshToken(c *gin.Context) {
-	refreshToken, _ := c.Cookie("refreshToken")
-
-	userId, err := h.services.ParseRefreshToken(refreshToken)
+	type tokenReqBody struct {
+		RefreshToken string `json:"refreshToken"`
+	}
+	tokenReq := tokenReqBody{}
+	err := c.Bind(&tokenReq)
+	userId, err := h.services.ParseRefreshToken(tokenReq.RefreshToken)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error generate token": err.Error()})
 		return
 	}
-	token, refreshToken, err := h.services.Authorization.GenerateTokenByID(userId)
+	token, _, err := h.services.Authorization.GenerateTokenByID(userId)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error generate token": err.Error()})
 		return
