@@ -7,6 +7,11 @@ import (
 	"errors"
 	"fmt"
 	"github.com/golang-jwt/jwt"
+	"io"
+	"log"
+	"mime/multipart"
+	//"net/http"
+	"os"
 	"time"
 )
 
@@ -41,9 +46,9 @@ func (s *AuthService) CreateUser(user models.SignUpUserForm) (uint, error) {
 	return s.repo.CreateUser(user)
 }
 
-func (s *AuthService) CreateMentorUser(user models.SignUpMentorForm) (uint, error) {
+func (s *AuthService) CreateMentorUser(user models.SignUpMentorForm, profilePicturePath string) (uint, error) {
 	user.Password = generatePasswordHash(user.Password)
-	return s.repo.CreateMentor(user)
+	return s.repo.CreateMentor(user, profilePicturePath)
 }
 
 func (s *AuthService) GetUser(login, password string) (uint, error) {
@@ -130,4 +135,23 @@ func (s *AuthService) ParseToken(accessToken string) (uint, error) {
 
 func (s *AuthService) UpgradeUserToMentor(userId uint, formData models.SignUpUserToMentorForm) error {
 	return s.repo.UpgradeUserToMentor(userId, formData)
+}
+
+func (s *AuthService) SaveProfilePicture(file multipart.File, filename string) (string, error) {
+	filePath := "media/user/profile_picture/" + filename
+	out, err := os.Create(filePath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer func(out *os.File) {
+		err := out.Close()
+		if err != nil {
+			return
+		}
+	}(out)
+	_, err = io.Copy(out, file)
+	if err != nil {
+		return "", err
+	}
+	return filePath, nil
 }

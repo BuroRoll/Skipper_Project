@@ -14,3 +14,24 @@ func (h *Handler) GetStatus(c *gin.Context) {
 	})
 	return
 }
+
+func (h *Handler) GetUserData(c *gin.Context) {
+	user_id, _ := c.Get(userCtx)
+	if userId, ok := user_id.(uint); ok {
+		user, err := h.services.GetUserData(userId)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		}
+		c.JSON(http.StatusOK, map[string]interface{}{
+			"first_name":      user.FirstName,
+			"second_name":     user.SecondName,
+			"profile_picture": user.ProfilePicture,
+		})
+	}
+}
+
+func (h *Handler) getUserProfilePicture(c *gin.Context) {
+	path := "media/user/profile_picture/" + c.Param("filename")
+	fmt.Println(path)
+	c.FileAttachment(path, "profile_picture")
+}

@@ -12,5 +12,6 @@ type User struct {
 	Specialization string
 	Description    string
 	Time           string
-	IsMentor       bool `gorm:"default:false"`
+	ProfilePicture string `gorm:"default:'default_profile_picture.jpeg'"`
+	IsMentor       bool   `gorm:"default:false"`
 }

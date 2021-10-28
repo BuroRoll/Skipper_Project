@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"Skipper/pkg/models"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"net/http"
@@ -45,12 +46,23 @@ func (h *Handler) signIn(c *gin.Context) {
 }
 
 func (h *Handler) mentorSignUp(c *gin.Context) {
+	file, header, err := c.Request.FormFile("profile_picture")
+	if err != nil {
+		c.String(http.StatusBadRequest, fmt.Sprintf("file err : %s", err.Error()))
+		return
+	}
+	filename := header.Filename
 	var input models.SignUpMentorForm
 	if err := c.MustBindWith(&input, binding.FormMultipart); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	_, err := h.services.Authorization.CreateMentorUser(input)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	_, err = h.services.Authorization.SaveProfilePicture(file, filename)
+	_, err = h.services.Authorization.CreateMentorUser(input, filename)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -96,5 +108,4 @@ func (h *Handler) userToMentorSignUp(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": ok})
 	}
-
 }
