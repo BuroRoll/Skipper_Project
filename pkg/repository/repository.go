@@ -6,8 +6,11 @@ import (
 )
 
 type Authorization interface {
-	CreateUser(user models.User) (uint, error)
+	CreateUser(user models.SignUpUserForm) (uint, error)
+	CreateMentor(user models.SignUpMentorForm) (uint, error)
+	UpgradeUserToMentor(userId uint, form models.SignUpUserToMentorForm) error
 	GetUser(email, password string) (uint, error)
+	GetUserById(userId uint) (models.User, error)
 }
 
 type Repository struct {

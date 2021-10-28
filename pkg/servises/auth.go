@@ -36,13 +36,18 @@ type refreshTokenClaims struct {
 	UserId uint `json:"user_id"`
 }
 
-func (s *AuthService) CreateUser(user models.User) (uint, error) {
+func (s *AuthService) CreateUser(user models.SignUpUserForm) (uint, error) {
 	user.Password = generatePasswordHash(user.Password)
 	return s.repo.CreateUser(user)
 }
 
-func (s *AuthService) GetUser(email, password string) (uint, error) {
-	return s.repo.GetUser(email, generatePasswordHash(password))
+func (s *AuthService) CreateMentorUser(user models.SignUpMentorForm) (uint, error) {
+	user.Password = generatePasswordHash(user.Password)
+	return s.repo.CreateMentor(user)
+}
+
+func (s *AuthService) GetUser(login, password string) (uint, error) {
+	return s.repo.GetUser(login, generatePasswordHash(password))
 }
 
 func generatePasswordHash(password string) string {
@@ -52,8 +57,8 @@ func generatePasswordHash(password string) string {
 	return fmt.Sprintf("%x", hash.Sum([]byte(salt)))
 }
 
-func (s *AuthService) GenerateToken(email, password string) (string, string, error) {
-	userId, err := s.GetUser(email, password)
+func (s *AuthService) GenerateToken(login, password string) (string, string, error) {
+	userId, err := s.GetUser(login, password)
 	if err != nil {
 		return "", "", err
 	}
@@ -86,7 +91,6 @@ func (s *AuthService) GenerateTokenByID(userId uint) (string, string, error) {
 }
 
 func (s *AuthService) ParseRefreshToken(accessToken string) (uint, error) {
-	fmt.Println("I get it", accessToken)
 	token, err := jwt.ParseWithClaims(accessToken, &refreshTokenClaims{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("invalid signing method")
@@ -122,4 +126,8 @@ func (s *AuthService) ParseToken(accessToken string) (uint, error) {
 	}
 
 	return claims.UserId, nil
+}
+
+func (s *AuthService) UpgradeUserToMentor(userId uint, formData models.SignUpUserToMentorForm) error {
+	return s.repo.UpgradeUserToMentor(userId, formData)
 }
