@@ -2,6 +2,7 @@ package repository
 
 import (
 	"Skipper/pkg/models"
+	"Skipper/pkg/models/forms"
 	"errors"
 	"gorm.io/gorm"
 )
@@ -23,7 +24,7 @@ func (r *AuthPostgres) GetUser(login, password string) (uint, error) {
 	return user.ID, nil
 }
 
-func (r *AuthPostgres) CreateUser(user_register models.SignUpUserForm) (uint, error) {
+func (r *AuthPostgres) CreateUser(user_register forms.SignUpUserForm) (uint, error) {
 	var user models.User
 	user = models.User{
 		Phone:      user_register.Phone,
@@ -38,7 +39,7 @@ func (r *AuthPostgres) CreateUser(user_register models.SignUpUserForm) (uint, er
 	return user.ID, nil
 }
 
-func (r *AuthPostgres) CreateMentor(mentor_register models.SignUpMentorForm, profilePicturePath string) (uint, error) {
+func (r *AuthPostgres) CreateMentor(mentor_register forms.SignUpMentorForm, profilePicturePath string) (uint, error) {
 	var user models.User
 	user = models.User{
 		Phone:          mentor_register.Phone,
@@ -58,7 +59,7 @@ func (r *AuthPostgres) CreateMentor(mentor_register models.SignUpMentorForm, pro
 	return user.ID, nil
 }
 
-func (r *AuthPostgres) UpgradeUserToMentor(userId uint, registerData models.SignUpUserToMentorForm) error {
+func (r *AuthPostgres) UpgradeUserToMentor(userId uint, registerData forms.SignUpUserToMentorForm) error {
 	var user models.User
 	result := r.db.Where("id=?", userId).First(&user)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {

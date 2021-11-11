@@ -33,6 +33,11 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			api.POST("/user-mentor-sign-up", h.userToMentorSignUp)
 			api.GET("/profile-picture/:filename", h.getUserProfilePicture)
 		}
+		api.Group("/catalog")
+		{
+			api.POST("/create-catalog", h.createCatalog)
+			api.GET("/catalog", h.getAllCatalog)
+		}
 	}
 	return router
 }

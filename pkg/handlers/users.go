@@ -25,6 +25,7 @@ func (h *Handler) GetUserData(c *gin.Context) {
 		c.JSON(http.StatusOK, map[string]interface{}{
 			"first_name":      user.FirstName,
 			"second_name":     user.SecondName,
+			"is_mentor":       user.IsMentor,
 			"profile_picture": user.ProfilePicture,
 		})
 	}

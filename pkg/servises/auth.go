@@ -1,7 +1,7 @@
 package service
 
 import (
-	"Skipper/pkg/models"
+	"Skipper/pkg/models/forms"
 	"Skipper/pkg/repository"
 	"crypto/sha256"
 	"errors"
@@ -41,12 +41,12 @@ type refreshTokenClaims struct {
 	UserId uint `json:"user_id"`
 }
 
-func (s *AuthService) CreateUser(user models.SignUpUserForm) (uint, error) {
+func (s *AuthService) CreateUser(user forms.SignUpUserForm) (uint, error) {
 	user.Password = generatePasswordHash(user.Password)
 	return s.repo.CreateUser(user)
 }
 
-func (s *AuthService) CreateMentorUser(user models.SignUpMentorForm, profilePicturePath string) (uint, error) {
+func (s *AuthService) CreateMentorUser(user forms.SignUpMentorForm, profilePicturePath string) (uint, error) {
 	user.Password = generatePasswordHash(user.Password)
 	return s.repo.CreateMentor(user, profilePicturePath)
 }
@@ -133,7 +133,7 @@ func (s *AuthService) ParseToken(accessToken string) (uint, error) {
 	return claims.UserId, nil
 }
 
-func (s *AuthService) UpgradeUserToMentor(userId uint, formData models.SignUpUserToMentorForm) error {
+func (s *AuthService) UpgradeUserToMentor(userId uint, formData forms.SignUpUserToMentorForm) error {
 	return s.repo.UpgradeUserToMentor(userId, formData)
 }
 

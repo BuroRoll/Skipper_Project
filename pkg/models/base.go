@@ -23,7 +23,11 @@ func init() {
 		fmt.Printf("error %s", err)
 	}
 	db = conn
-	err = db.Debug().AutoMigrate(&User{}) //Database migration
+	//err = db.Debug().AutoMigrate(&User{}, &Catalog0{}, &Catalog1{}, &Catalog2{}, &Catalog3{}) //Database migration
+	err = db.Debug().AutoMigrate(&Catalog0{}) //Database migration
+	err = db.Debug().AutoMigrate(&Catalog1{}) //Database migration
+	err = db.Debug().AutoMigrate(&Catalog2{}) //Database migration
+	err = db.Debug().AutoMigrate(&Catalog3{}) //Database migration
 	if err != nil {
 		fmt.Println(err)
 	}

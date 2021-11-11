@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"Skipper/pkg/models"
+	"Skipper/pkg/models/forms"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
@@ -9,7 +9,7 @@ import (
 )
 
 func (h *Handler) signUp(c *gin.Context) {
-	var input models.SignUpUserForm
+	var input forms.SignUpUserForm
 	if err := c.BindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, "invalid input body")
 		return
@@ -27,7 +27,7 @@ func (h *Handler) signUp(c *gin.Context) {
 }
 
 func (h *Handler) signIn(c *gin.Context) {
-	var input models.SignInInput
+	var input forms.SignInInput
 
 	if err := c.BindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -36,7 +36,7 @@ func (h *Handler) signIn(c *gin.Context) {
 
 	token, refreshToken, err := h.services.Authorization.GenerateToken(input.Login, input.Password)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error generate token": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Ошибка генерации токена"})
 		return
 	}
 	c.JSON(http.StatusOK, map[string]interface{}{
@@ -52,7 +52,7 @@ func (h *Handler) mentorSignUp(c *gin.Context) {
 		return
 	}
 	filename := header.Filename
-	var input models.SignUpMentorForm
+	var input forms.SignUpMentorForm
 	if err := c.MustBindWith(&input, binding.FormMultipart); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -75,7 +75,7 @@ func (h *Handler) mentorSignUp(c *gin.Context) {
 }
 
 func (h *Handler) refreshToken(c *gin.Context) {
-	var input models.TokenReqBody
+	var input forms.TokenReqBody
 	err := c.Bind(&input)
 	userId, err := h.services.ParseRefreshToken(input.RefreshToken)
 	if err != nil {
@@ -94,7 +94,7 @@ func (h *Handler) refreshToken(c *gin.Context) {
 }
 
 func (h *Handler) userToMentorSignUp(c *gin.Context) {
-	var input models.SignUpUserToMentorForm
+	var input forms.SignUpUserToMentorForm
 	if err := c.MustBindWith(&input, binding.FormMultipart); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
