@@ -10,6 +10,9 @@ import (
 	"io"
 	"log"
 	"mime/multipart"
+	"path/filepath"
+	"runtime"
+
 	//"net/http"
 	"os"
 	"time"
@@ -138,7 +141,9 @@ func (s *AuthService) UpgradeUserToMentor(userId uint, formData forms.SignUpUser
 }
 
 func (s *AuthService) SaveProfilePicture(file multipart.File, filename string) (string, error) {
-	filePath := "media/user/profile_picture/" + filename
+	_, b, _, _ := runtime.Caller(0)
+	Root := filepath.Join(filepath.Dir(b), "../..")
+	filePath := Root + "/media/user/profile_picture/" + filename
 	out, err := os.Create(filePath)
 	if err != nil {
 		log.Fatal(err)

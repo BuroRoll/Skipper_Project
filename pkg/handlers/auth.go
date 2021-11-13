@@ -63,7 +63,7 @@ func (h *Handler) mentorSignUp(c *gin.Context) {
 	_, err = h.services.Authorization.SaveProfilePicture(file, filename)
 	_, err = h.services.Authorization.CreateMentorUser(input, filename)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ошибка создания профиля"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	token, refreshToken, err := h.services.Authorization.GenerateToken(input.Phone, input.Password)
