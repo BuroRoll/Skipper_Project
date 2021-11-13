@@ -16,30 +16,10 @@ func NewCatalogPostgres(db *gorm.DB) *CatalogPostgres {
 }
 
 func (c CatalogPostgres) CreateMainCatalog(catalogName string) (uint, error) {
-	//var catalog models.Catalog
-	//catalog = models.Catalog{
-	//	Name:     catalogName,
-	//	ParentId: nil,
-	//}
-	//result := c.db.Create(&catalog)
-	//if result.Error != nil {
-	//	return catalog.ID, result.Error
-	//}
-	//return catalog.ID, nil
 	return 0, nil
 }
 
 func (c CatalogPostgres) CreateChildCatalog(catalogName string, parentid *uint) (uint, error) {
-	//var catalog models.Catalog
-	//catalog = models.Catalog{
-	//	Name:     catalogName,
-	//	ParentId: parentid,
-	//}
-	//result := c.db.Create(&catalog)
-	//if result.Error != nil {
-	//	return catalog.ID, result.Error
-	//}
-	//return catalog.ID, nil
 	return 0, nil
 }
 
