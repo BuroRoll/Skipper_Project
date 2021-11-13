@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"path/filepath"
+	"runtime"
 )
 
 func (h *Handler) GetStatus(c *gin.Context) {
@@ -33,6 +35,8 @@ func (h *Handler) GetUserData(c *gin.Context) {
 }
 
 func (h *Handler) getUserProfilePicture(c *gin.Context) {
-	path := "media/user/profile_picture/" + c.Param("filename")
+	_, b, _, _ := runtime.Caller(0)
+	Root := filepath.Join(filepath.Dir(b), "../..")
+	path := Root + "/media/user/profile_picture/" + c.Param("filename")
 	c.FileAttachment(path, "profile_picture")
 }
