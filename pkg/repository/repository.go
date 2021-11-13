@@ -20,7 +20,7 @@ type UserData interface {
 type Catalog interface {
 	CreateMainCatalog(name string) (uint, error)
 	CreateChildCatalog(name string, parentId *uint) (uint, error)
-	GetAllCatalog(nodeId uint) string
+	GetCatalog() string
 }
 
 type Repository struct {

@@ -6,7 +6,7 @@ type SignInInput struct {
 }
 
 type TokenReqBody struct {
-	RefreshToken string `json:"refreshToken"`
+	RefreshToken string `json:"refreshToken" binding:"required"`
 }
 
 type SignUpUserForm struct {

@@ -27,17 +27,17 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 	api := router.Group("/api", h.userIdentity)
 	{
-		api.Group("/user")
+		user := api.Group("/user")
 		{
-			api.GET("/user-data", h.GetUserData)
-			api.POST("/user-mentor-sign-up", h.userToMentorSignUp)
-			api.GET("/profile-picture/:filename", h.getUserProfilePicture)
+			user.GET("/user-data", h.GetUserData)
+			user.POST("/user-mentor-sign-up", h.userToMentorSignUp)
+			user.GET("/profile-picture/:filename", h.getUserProfilePicture)
 		}
-		api.Group("/catalog")
+		catalog := api.Group("/catalog")
 		{
-			api.POST("/create-catalog", h.createCatalog)
-			api.GET("/catalog", h.getAllCatalog)
+			catalog.POST("/create-catalog", h.createCatalog)
 		}
 	}
+	router.GET("/catalog", h.getCatalog)
 	return router
 }

@@ -25,7 +25,7 @@ type UserData interface {
 
 type Catalog interface {
 	CreateCatalog(catalog forms.CatalogInput) (uint, error)
-	GetAllCatalog(nodeId uint) string
+	GetCatalog() string
 }
 
 type Service struct {

@@ -29,7 +29,7 @@ func (c CatalogService) CreateCatalog(catalog forms.CatalogInput) (uint, error) 
 	}
 }
 
-func (c CatalogService) GetAllCatalog(nodeId uint) string {
-	data := c.repo.GetAllCatalog(nodeId)
+func (c CatalogService) GetCatalog() string {
+	data := c.repo.GetCatalog()
 	return data
 }

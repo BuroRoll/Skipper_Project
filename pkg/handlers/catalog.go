@@ -21,9 +21,9 @@ func (h *Handler) createCatalog(c *gin.Context) {
 	})
 }
 
-func (h *Handler) getAllCatalog(c *gin.Context) {
-	data := h.services.GetAllCatalog(1)
+func (h *Handler) getCatalog(c *gin.Context) {
+	catalog := h.services.GetCatalog()
 	c.JSON(http.StatusOK, gin.H{
-		"catalog": data,
+		"catalog": catalog,
 	})
 }
