@@ -16,7 +16,7 @@ func (h *Handler) GetStatus(c *gin.Context) {
 }
 
 func (h *Handler) GetUserData(c *gin.Context) {
-	const pathToProfilePicture = "/api/user/profile-picture/"
+	const pathToProfilePicture = "/user/profile-picture/"
 	userId, _ := c.Get(userCtx)
 	if userId, ok := userId.(uint); ok {
 		user, err := h.services.GetUserData(userId)

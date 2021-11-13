@@ -31,13 +31,14 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		{
 			user.GET("/user-data", h.GetUserData)
 			user.POST("/user-mentor-sign-up", h.userToMentorSignUp)
-			user.GET("/profile-picture/:filename", h.getUserProfilePicture)
 		}
 		catalog := api.Group("/catalog")
 		{
 			catalog.POST("/create-catalog", h.createCatalog)
 		}
 	}
+	router.GET("/user/profile-picture/:filename", h.getUserProfilePicture)
+
 	router.GET("/catalog", h.getCatalog)
 	return router
 }
