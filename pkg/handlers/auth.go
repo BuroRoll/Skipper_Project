@@ -39,7 +39,7 @@ func (h *Handler) signIn(c *gin.Context) {
 
 	token, refreshToken, err := h.services.Authorization.GenerateToken(input.Login, input.Password)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ошибка генерации токена"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Неверный логин или пароль"})
 		return
 	}
 	c.JSON(http.StatusOK, map[string]interface{}{

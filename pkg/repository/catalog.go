@@ -38,3 +38,14 @@ func (c CatalogPostgres) GetCatalog() string {
 	jsonCatalog, _ := json.Marshal(catalog)
 	return string(jsonCatalog)
 }
+
+func (c CatalogPostgres) GetMainCatalog() string {
+	type MainCatalog struct {
+		Id   uint   `json:"id"`
+		Name string `json:"name"`
+	}
+	var mainCatalogs []MainCatalog
+	c.db.Raw("SELECT id, name FROM catalog0").Find(&mainCatalogs)
+	jsonCatalog, _ := json.Marshal(mainCatalogs)
+	return string(jsonCatalog)
+}

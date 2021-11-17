@@ -27,3 +27,10 @@ func (h *Handler) getCatalog(c *gin.Context) {
 		"catalog": catalog,
 	})
 }
+
+func (h *Handler) mainSection(c *gin.Context) {
+	mainCatalog := h.services.GetMainCatalog()
+	c.JSON(http.StatusOK, gin.H{
+		"Main_catalog": mainCatalog,
+	})
+}

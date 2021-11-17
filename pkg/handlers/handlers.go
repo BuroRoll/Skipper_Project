@@ -39,6 +39,10 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	}
 	router.GET("/user/profile-picture/:filename", h.getUserProfilePicture)
 
-	router.GET("/catalog", h.getCatalog)
+	catalog := router.Group("/catalog")
+	{
+		catalog.GET("/", h.getCatalog)
+		catalog.GET("/main-section", h.mainSection)
+	}
 	return router
 }

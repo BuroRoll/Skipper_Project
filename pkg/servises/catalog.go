@@ -33,3 +33,8 @@ func (c CatalogService) GetCatalog() string {
 	data := c.repo.GetCatalog()
 	return data
 }
+
+func (c CatalogService) GetMainCatalog() string {
+	data := c.repo.GetMainCatalog()
+	return data
+}

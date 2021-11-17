@@ -21,6 +21,7 @@ type Catalog interface {
 	CreateMainCatalog(name string) (uint, error)
 	CreateChildCatalog(name string, parentId *uint) (uint, error)
 	GetCatalog() string
+	GetMainCatalog() string
 }
 
 type Repository struct {
