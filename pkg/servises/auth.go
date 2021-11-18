@@ -181,10 +181,12 @@ func SendEmailToVerify(email string, token string) error {
 		Token: token,
 		Link:  "https://152.70.189.77:8000/verify-email?",
 	}
+	_, b, _, _ := runtime.Caller(0)
+	Root := filepath.Join(filepath.Dir(b), "../..")
 	t := template.New("template.html")
 
 	var err error
-	t, err = t.ParseFiles("template.html")
+	t, err = t.ParseFiles(Root + "/template.html")
 	if err != nil {
 		log.Println(err)
 	}
