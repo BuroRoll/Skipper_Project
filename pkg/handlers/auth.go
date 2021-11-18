@@ -107,3 +107,31 @@ func (h *Handler) userToMentorSignUp(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Пользователь не авторизован как менти"})
 	}
 }
+
+func (h *Handler) UserVerifyEmail(c *gin.Context) {
+	userId, _ := c.Get(userCtx)
+	err := h.services.SendVerifyEmail(userId.(uint))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Не удалось подтвердить почту, попробуйте позже"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"status": "Подтверждение успешно отправлено"})
+}
+
+func (h *Handler) verifyEmail(c *gin.Context) {
+	token := c.Query("token")
+	userId, err := h.services.ParseToken(token)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Неправильная ссылка на подтверждение почты"})
+		return
+	}
+	err = h.services.VerifyEmail(userId)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Не удалось подтвердить почту"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"status":  "Почта успешно подтверждена",
+		"user_id": userId,
+	})
+}

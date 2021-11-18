@@ -30,14 +30,23 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		user := api.Group("/user")
 		{
 			user.GET("/user-data", h.GetUserData)
+			user.GET("/user-communications", h.GetUserCommunications)
 			user.POST("/user-mentor-sign-up", h.userToMentorSignUp)
+			user.GET("/user-verify-email", h.UserVerifyEmail)
+			user.POST("/update-base-profile-data", h.UpdateBaseProfileData)
+		}
+		communication := api.Group("/communication")
+		{
+			communication.GET("/messenger-list", h.GetMessengers)
+			communication.POST("/create-user-communication", h.CreateUserCommunication)
 		}
 		catalog := api.Group("/catalog")
 		{
 			catalog.POST("/create-catalog", h.createCatalog)
 		}
 	}
-	router.GET("/user/profile-picture/:filename", h.getUserProfilePicture)
+	router.GET("/user/profile-picture/:filename", h.GetUserProfilePicture)
+	router.GET("/verify-email", h.verifyEmail)
 
 	catalog := router.Group("/catalog")
 	{

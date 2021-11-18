@@ -45,7 +45,7 @@ func (c CatalogPostgres) GetMainCatalog() string {
 		Name string `json:"name"`
 	}
 	var mainCatalogs []MainCatalog
-	c.db.Raw("SELECT id, name FROM catalog0").Find(&mainCatalogs)
+	c.db.Raw("SELECT id, name FROM catalog1").Find(&mainCatalogs)
 	jsonCatalog, _ := json.Marshal(mainCatalogs)
 	return string(jsonCatalog)
 }
