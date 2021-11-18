@@ -3,18 +3,19 @@ package service
 import (
 	"Skipper/pkg/models/forms"
 	"Skipper/pkg/repository"
+	"bytes"
 	"crypto/sha256"
 	"errors"
 	"fmt"
 	"github.com/golang-jwt/jwt"
+	"gopkg.in/gomail.v2"
+	"html/template"
 	"io"
 	"log"
 	"mime/multipart"
+	"os"
 	"path/filepath"
 	"runtime"
-
-	//"net/http"
-	"os"
 	"time"
 )
 
@@ -159,4 +160,57 @@ func (s *AuthService) SaveProfilePicture(file multipart.File, filename string) (
 		return "", err
 	}
 	return filePath, nil
+}
+
+func (s *AuthService) SendVerifyEmail(userId uint) error {
+	user, err := s.repo.GetUserById(userId)
+	token, _, err := s.GenerateTokenByID(userId)
+	if err != nil {
+		fmt.Println("error!!!!!!!!!!")
+	}
+	err = SendEmailToVerify(user.Email, token)
+	return err
+}
+
+func SendEmailToVerify(email string, token string) error {
+	type data struct {
+		Token string
+		Link  string
+	}
+	userData := data{
+		Token: token,
+		Link:  "https://152.70.189.77:8000/verify-email?",
+	}
+	t := template.New("template.html")
+
+	var err error
+	t, err = t.ParseFiles("template.html")
+	if err != nil {
+		log.Println(err)
+	}
+
+	var tpl bytes.Buffer
+	if err := t.Execute(&tpl, userData); err != nil {
+		log.Println(err)
+	}
+	result := tpl.String()
+	m := gomail.NewMessage()
+	m.SetHeader("From", "testskipperproject@gmail.com")
+	m.SetHeader("To", email)
+	m.SetHeader("Subject", "Подтверждение регистрации Skipper")
+	m.SetBody("text/html", result)
+	d := gomail.NewDialer("smtp.gmail.com", 587, "testskipperproject@gmail.com", "Danil300301")
+
+	if err := d.DialAndSend(m); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *AuthService) VerifyEmail(userId uint) error {
+	err := s.repo.VerifyEmail(userId)
+	if err != nil {
+		return err
+	}
+	return nil
 }

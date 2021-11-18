@@ -24,6 +24,15 @@ func (r *AuthPostgres) GetUser(login, password string) (uint, error) {
 	return user.ID, nil
 }
 
+func (r *AuthPostgres) GetUserById(userId uint) (models.User, error) {
+	var user models.User
+	result := r.db.Where("id=?", userId).First(&user)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return user, gorm.ErrRecordNotFound
+	}
+	return user, nil
+}
+
 func (r *AuthPostgres) CreateUser(user_register forms.SignUpUserForm) (uint, error) {
 	var user models.User
 	user = models.User{
@@ -69,6 +78,17 @@ func (r *AuthPostgres) UpgradeUserToMentor(userId uint, registerData forms.SignU
 	user.Description = registerData.Description
 	user.Time = registerData.Time
 	user.IsMentor = true
+	r.db.Save(user)
+	return nil
+}
+
+func (r *AuthPostgres) VerifyEmail(userId uint) error {
+	var user models.User
+	result := r.db.Where("id=?", userId).First(&user)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return gorm.ErrRecordNotFound
+	}
+	user.IsVerifyEmail = true
 	r.db.Save(user)
 	return nil
 }

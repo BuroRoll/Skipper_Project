@@ -11,10 +11,16 @@ type Authorization interface {
 	CreateMentor(user forms.SignUpMentorForm, profilePicturePath string) (uint, error)
 	UpgradeUserToMentor(userId uint, form forms.SignUpUserToMentorForm) error
 	GetUser(email, password string) (uint, error)
+	GetUserById(userId uint) (models.User, error)
+	VerifyEmail(userId uint) error
 }
 
 type UserData interface {
 	GetUserById(userId uint) (models.User, error)
+	GetUserCommunications(userId uint) ([]models.Communication, error)
+	GetMessengers() ([]models.Messenger, error)
+	CreateUserCommunication(input forms.UserCommunicationInput, userId uint) error
+	UpdateBaseProfileData(input forms.UpdateBaseProfileData, userId uint) error
 }
 
 type Catalog interface {
