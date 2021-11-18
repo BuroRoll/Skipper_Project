@@ -6,4 +6,5 @@ type UpdateBaseProfileData struct {
 	Patronymic     string `json:"patronymic"`
 	DateOfBirthday string `json:"date_of_birthday" binding:"required"`
 	Time           string `json:"time" binding:"required"`
+	Description    string `json:"description" binding:"required"`
 }
