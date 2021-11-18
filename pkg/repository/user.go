@@ -67,6 +67,7 @@ func (u UserDataPostgres) UpdateBaseProfileData(input forms.UpdateBaseProfileDat
 	user.Patronymic = input.Patronymic
 	user.DateOfBirthday = input.DateOfBirthday
 	user.Time = input.Time
+	user.Description = input.Description
 	u.db.Save(user)
 	return nil
 }

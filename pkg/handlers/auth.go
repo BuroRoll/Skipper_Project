@@ -130,8 +130,9 @@ func (h *Handler) verifyEmail(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Не удалось подтвердить почту"})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"status":  "Почта успешно подтверждена",
-		"user_id": userId,
-	})
+	//c.JSON(http.StatusOK, gin.H{
+	//	"status":  "Почта успешно подтверждена",
+	//	"user_id": userId,
+	//})
+	c.Redirect(http.StatusMovedPermanently, "https://www.google.com/")
 }
