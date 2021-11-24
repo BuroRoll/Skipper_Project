@@ -38,6 +38,7 @@ type Catalog interface {
 	CreateCatalog(catalog forms.CatalogInput) (uint, error)
 	GetCatalog() string
 	GetMainCatalog() string
+	GetCatalogChild() (string, error)
 }
 
 type Service struct {

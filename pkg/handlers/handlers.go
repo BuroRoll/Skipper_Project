@@ -25,9 +25,9 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		auth.POST("/refresh-token", h.refreshToken)
 	}
 
-	api := router.Group("/api")
+	api := router.Group("/api", h.userIdentity)
 	{
-		user := api.Group("/user", h.userIdentity)
+		user := api.Group("/user")
 		{
 			user.GET("/user-data", h.GetUserData)
 
@@ -58,14 +58,19 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			publicUser.GET("/mentor/:id", h.GetMentorData)
 			publicUser.GET("/menti/:id", h.GetMentiData)
 		}
-		catalog := api.Group("/catalog")
-		{
-			catalog.GET("/", h.getCatalog)
-			catalog.GET("/main-section", h.mainSection)
-		}
-		api.GET("/user/profile-picture/:filename", h.GetUserProfilePicture)
-		api.GET("/verify-email", h.verifyEmail)
 	}
+	publicApi := router.Group("/public-api")
+	{
+		catalog := publicApi.Group("/catalog")
+		{
+			catalog.GET("/", h.GetCatalog)
+			catalog.GET("/main-section", h.GetMainSection)
+			catalog.GET("/child", h.GetCatalogChild)
+		}
+		publicApi.GET("/user/profile-picture/:filename", h.GetUserProfilePicture)
+	}
+
+	router.GET("/verify-email", h.verifyEmail)
 
 	return router
 }

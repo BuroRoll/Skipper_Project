@@ -49,3 +49,9 @@ func (c CatalogPostgres) GetMainCatalog() string {
 	jsonCatalog, _ := json.Marshal(mainCatalogs)
 	return string(jsonCatalog)
 }
+
+func (c CatalogPostgres) GetCatalogChild() []models.Catalog3 {
+	var catalogChild []models.Catalog3
+	c.db.Raw("SELECT name3, count FROM catalog3").Find(&catalogChild)
+	return catalogChild
+}

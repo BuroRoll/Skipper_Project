@@ -2,13 +2,14 @@ package handlers
 
 import (
 	"Skipper/pkg/models/forms"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"path/filepath"
 	"runtime"
 )
 
-const pathToProfilePicture = "/api/user/profile-picture/"
+const pathToProfilePicture = "/public-api/user/profile-picture/"
 
 func (h *Handler) GetStatus(c *gin.Context) {
 	userId, _ := c.Get(userCtx)
@@ -70,7 +71,6 @@ func (h *Handler) GetUserCommunications(c *gin.Context) {
 
 func (h *Handler) GetMessengers(c *gin.Context) {
 	messengers, err := h.services.GetMessengers()
-
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Не удалось получить список мессенджеров"})
 		return
@@ -134,8 +134,10 @@ func (h *Handler) UpdateProfilePicture(c *gin.Context) {
 func (h *Handler) GetUserEducations(c *gin.Context) {
 	userId, _ := c.Get(userCtx)
 	isMentor, _ := c.Get(isMentorCtx)
+	fmt.Println(c.Keys)
 	if !isMentor.(bool) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Пользователь не является ментором"})
+		return
 	}
 	userEducation, err := h.services.GetUserEducation(userId.(uint))
 	if err != nil {
@@ -190,6 +192,7 @@ func (h *Handler) GetUserWorkExperience(c *gin.Context) {
 	isMentor, _ := c.Get(isMentorCtx)
 	if !isMentor.(bool) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Пользователь не является ментором"})
+		return
 	}
 	userWorkExperience, err := h.services.GetUserWorkExperience(userId.(uint))
 	if err != nil {

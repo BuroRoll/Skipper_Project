@@ -3,6 +3,7 @@ package service
 import (
 	"Skipper/pkg/models/forms"
 	"Skipper/pkg/repository"
+	"encoding/json"
 )
 
 type CatalogService struct {
@@ -37,4 +38,13 @@ func (c CatalogService) GetCatalog() string {
 func (c CatalogService) GetMainCatalog() string {
 	data := c.repo.GetMainCatalog()
 	return data
+}
+
+func (c CatalogService) GetCatalogChild() (string, error) {
+	catalogChild := c.repo.GetCatalogChild()
+	jsonData, err := json.Marshal(catalogChild)
+	if err != nil {
+		return "", err
+	}
+	return string(jsonData), nil
 }
