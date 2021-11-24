@@ -9,6 +9,10 @@ import (
 func (h *Handler) GetMentorData(c *gin.Context) {
 	mentorId := parseId(c.Param("id"))
 	user, err := h.services.GetUserData(mentorId)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Ошибка получения данных о пользователе"})
+		return
+	}
 	if !user.IsMentor {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "пользователь не является ментором"})
 		return

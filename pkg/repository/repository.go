@@ -33,6 +33,7 @@ type Catalog interface {
 	CreateChildCatalog(name string, parentId *uint) (uint, error)
 	GetCatalog() string
 	GetMainCatalog() string
+	GetCatalogChild() []models.Catalog3
 }
 
 type Repository struct {

@@ -17,7 +17,7 @@ func NewUserDataPostgres(db *gorm.DB) *UserDataPostgres {
 
 func (u UserDataPostgres) GetUserById(userId uint) (models.User, error) {
 	var user models.User
-	result := u.db.Find(&user, userId)
+	result := u.db.First(&user, userId)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return user, gorm.ErrRecordNotFound
 	}
@@ -58,7 +58,7 @@ func (u UserDataPostgres) CreateUserCommunication(input forms.UserCommunicationI
 
 func (u UserDataPostgres) UpdateBaseProfileData(input forms.UpdateBaseProfileData, userId uint) error {
 	var user models.User
-	result := u.db.Find(&user, userId)
+	result := u.db.First(&user, userId)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return gorm.ErrRecordNotFound
 	}
@@ -74,7 +74,7 @@ func (u UserDataPostgres) UpdateBaseProfileData(input forms.UpdateBaseProfileDat
 
 func (u UserDataPostgres) UpdateProfilePicture(filename string, userId uint) error {
 	var user models.User
-	result := u.db.Find(&user, userId)
+	result := u.db.First(&user, userId)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return gorm.ErrRecordNotFound
 	}
@@ -123,7 +123,7 @@ func (u UserDataPostgres) CreateUserWorkExperience(workExperience forms.UserWork
 
 func (u UserDataPostgres) GetUserWorkExperience(userId uint) ([]models.WorkExperience, error) {
 	var userWorkExperience []models.WorkExperience
-	result := u.db.Where("parent_id=?", userId).Find(&userWorkExperience)
+	result := u.db.Where("parent_id=?", userId).First(&userWorkExperience)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return nil, gorm.ErrRecordNotFound
 	}
