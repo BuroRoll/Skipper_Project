@@ -68,7 +68,7 @@ func (u UserDataPostgres) UpdateBaseProfileData(input forms.UpdateBaseProfileDat
 	user.DateOfBirthday = input.DateOfBirthday
 	user.Time = input.Time
 	user.Description = input.Description
-	u.db.Save(user)
+	u.db.Save(&user)
 	return nil
 }
 
@@ -79,7 +79,7 @@ func (u UserDataPostgres) UpdateProfilePicture(filename string, userId uint) err
 		return gorm.ErrRecordNotFound
 	}
 	user.ProfilePicture = filename
-	u.db.Save(user)
+	u.db.Save(&user)
 	return nil
 }
 
