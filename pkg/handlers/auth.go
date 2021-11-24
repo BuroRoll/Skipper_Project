@@ -77,11 +77,12 @@ func (h *Handler) refreshToken(c *gin.Context) {
 	var input forms.TokenReqBody
 	err := c.Bind(&input)
 	userId, err := h.services.ParseRefreshToken(input.RefreshToken)
+	user, _ := h.services.GetUserData(userId)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Ошибка чтения токена"})
 		return
 	}
-	token, _, err := h.services.Authorization.GenerateTokenByID(userId)
+	token, _, err := h.services.Authorization.GenerateTokenByID(userId, user.IsMentor)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ошибка регенерации токена"})
 		return
@@ -120,7 +121,7 @@ func (h *Handler) UserVerifyEmail(c *gin.Context) {
 
 func (h *Handler) verifyEmail(c *gin.Context) {
 	token := c.Query("token")
-	userId, err := h.services.ParseToken(token)
+	userId, _, err := h.services.ParseToken(token)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Неправильная ссылка на подтверждение почты"})
 		return

@@ -30,16 +30,31 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		user := api.Group("/user")
 		{
 			user.GET("/user-data", h.GetUserData)
-			user.GET("/user-communications", h.GetUserCommunications)
+
 			user.POST("/user-mentor-sign-up", h.userToMentorSignUp)
 			user.GET("/user-verify-email", h.UserVerifyEmail)
 			user.POST("/update-base-profile-data", h.UpdateBaseProfileData)
+			user.POST("/update-profile-picture", h.UpdateProfilePicture)
+
+			communication := api.Group("/communication")
+			{
+				communication.GET("/user-communications", h.GetUserCommunications)
+				communication.GET("/messenger-list", h.GetMessengers)
+				communication.POST("/create-user-communication", h.CreateUserCommunication)
+			}
+			education := api.Group("/education")
+			{
+				education.GET("/user-education", h.GetUserEducations)
+				education.POST("/add-user-education", h.AddUserEducation)
+			}
+			workExperience := api.Group("/work-experience")
+			{
+				workExperience.POST("/add-user-work-experience", h.AddUserWorkExperience)
+				workExperience.GET("/user-work-experience", h.GetUserWorkExperience)
+			}
+
 		}
-		communication := api.Group("/communication")
-		{
-			communication.GET("/messenger-list", h.GetMessengers)
-			communication.POST("/create-user-communication", h.CreateUserCommunication)
-		}
+
 		catalog := api.Group("/catalog")
 		{
 			catalog.POST("/create-catalog", h.createCatalog)

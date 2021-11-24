@@ -11,11 +11,11 @@ type Authorization interface {
 	CreateUser(user forms.SignUpUserForm) (uint, error)
 	CreateMentorUser(user forms.SignUpMentorForm, profilePicturePath string) (uint, error)
 	UpgradeUserToMentor(userId uint, formData forms.SignUpUserToMentorForm) error
-	GetUser(login, password string) (uint, error)
+	GetUser(login, password string) (uint, bool, error)
 	GenerateToken(login, password string) (string, string, error)
-	GenerateTokenByID(userId uint) (string, string, error)
+	GenerateTokenByID(userId uint, isMentor bool) (string, string, error)
 	SaveProfilePicture(file multipart.File, filename string) (string, error)
-	ParseToken(token string) (uint, error)
+	ParseToken(token string) (uint, bool, error)
 	ParseRefreshToken(token string) (uint, error)
 	SendVerifyEmail(userId uint) error
 	VerifyEmail(userId uint) error
@@ -27,6 +27,11 @@ type UserData interface {
 	GetMessengers() ([]models.Messenger, error)
 	CreateUserCommunication(input forms.UserCommunicationInput, userId uint) error
 	UpdateBaseProfileData(input forms.UpdateBaseProfileData, userId uint) error
+	UpdateProfilePicture(filename string, userId uint) error
+	GetUserEducation(userId uint) (string, error)
+	CreateUserEducation(education forms.UserEducationInput, userId uint) error
+	CreateUserWorkExperience(workExperience forms.UserWorkExperience, userId uint) error
+	GetUserWorkExperience(userId uint) (string, error)
 }
 
 type Catalog interface {

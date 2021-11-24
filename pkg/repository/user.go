@@ -17,7 +17,7 @@ func NewUserDataPostgres(db *gorm.DB) *UserDataPostgres {
 
 func (u UserDataPostgres) GetUserById(userId uint) (models.User, error) {
 	var user models.User
-	result := u.db.Where("id=?", userId).First(&user)
+	result := u.db.Find(&user, userId)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return user, gorm.ErrRecordNotFound
 	}
@@ -58,7 +58,7 @@ func (u UserDataPostgres) CreateUserCommunication(input forms.UserCommunicationI
 
 func (u UserDataPostgres) UpdateBaseProfileData(input forms.UpdateBaseProfileData, userId uint) error {
 	var user models.User
-	result := u.db.Where("id=?", userId).First(&user)
+	result := u.db.Find(&user, userId)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return gorm.ErrRecordNotFound
 	}
@@ -70,4 +70,62 @@ func (u UserDataPostgres) UpdateBaseProfileData(input forms.UpdateBaseProfileDat
 	user.Description = input.Description
 	u.db.Save(user)
 	return nil
+}
+
+func (u UserDataPostgres) UpdateProfilePicture(filename string, userId uint) error {
+	var user models.User
+	result := u.db.Find(&user, userId)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return gorm.ErrRecordNotFound
+	}
+	user.ProfilePicture = filename
+	u.db.Save(user)
+	return nil
+}
+
+func (u UserDataPostgres) GetUserEducation(userId uint) ([]models.Education, error) {
+	var education []models.Education
+	result := u.db.Where("parent_id=?", userId).Find(&education)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return nil, gorm.ErrRecordNotFound
+	}
+	return education, nil
+}
+
+func (u UserDataPostgres) CreateUserEducation(education forms.UserEducationInput, userId uint) error {
+	userEducation := models.Education{
+		ParentId:    userId,
+		Institution: education.Institution,
+		StartYear:   education.StartYear,
+		EndYear:     education.EndYear,
+		Degree:      education.Degree,
+	}
+	result := u.db.Create(&userEducation)
+	if errors.Is(result.Error, gorm.ErrRegistered) {
+		return gorm.ErrRegistered
+	}
+	return nil
+}
+
+func (u UserDataPostgres) CreateUserWorkExperience(workExperience forms.UserWorkExperience, userId uint) error {
+	userWorkExperience := models.WorkExperience{
+		ParentId:     userId,
+		Organization: workExperience.Organization,
+		StartYear:    workExperience.StartYear,
+		EndYear:      workExperience.EndYear,
+	}
+	result := u.db.Create(&userWorkExperience)
+	if errors.Is(result.Error, gorm.ErrRegistered) {
+		return gorm.ErrRegistered
+	}
+	return nil
+}
+
+func (u UserDataPostgres) GetUserWorkExperience(userId uint) ([]models.WorkExperience, error) {
+	var userWorkExperience []models.WorkExperience
+	result := u.db.Where("parent_id=?", userId).Find(&userWorkExperience)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return nil, gorm.ErrRecordNotFound
+	}
+	return userWorkExperience, nil
 }

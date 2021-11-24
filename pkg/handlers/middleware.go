@@ -9,6 +9,7 @@ import (
 const (
 	authorizationHeader = "Authorization"
 	userCtx             = "userId"
+	isMentorCtx         = "isMentor"
 )
 
 func corsMiddleware() gin.HandlerFunc {
@@ -43,10 +44,11 @@ func (h *Handler) userIdentity(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Ошибка чтения токена"})
 		return
 	}
-	userId, err := h.services.Authorization.ParseToken(headerParts[1])
+	userId, isMentor, err := h.services.Authorization.ParseToken(headerParts[1])
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Ошибка чтения токена"})
 		return
 	}
 	c.Set(userCtx, userId)
+	c.Set(isMentorCtx, isMentor)
 }

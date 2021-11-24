@@ -26,7 +26,17 @@ func init() {
 		log.Fatalf("error %s", err)
 	}
 	db = conn
-	err = db.Debug().AutoMigrate(&User{}, &Catalog0{}, &Catalog1{}, &Catalog2{}, &Catalog3{}, &Messenger{}, &Communication{})
+	err = db.Debug().AutoMigrate(
+		&User{},
+		&Catalog0{},
+		&Catalog1{},
+		&Catalog2{},
+		&Catalog3{},
+		&Messenger{},
+		&Communication{},
+		&Education{},
+		&WorkExperience{},
+	)
 	if err != nil {
 		log.Fatalf(err.Error())
 	}

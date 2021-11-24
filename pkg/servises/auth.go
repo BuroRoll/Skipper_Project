@@ -37,7 +37,8 @@ func NewAuthService(repo repository.Authorization) *AuthService {
 
 type tokenClaims struct {
 	jwt.StandardClaims
-	UserId uint `json:"user_id"`
+	UserId   uint `json:"user_id"`
+	IsMentor bool `json:"is_mentor"`
 }
 
 type refreshTokenClaims struct {
@@ -55,7 +56,7 @@ func (s *AuthService) CreateMentorUser(user forms.SignUpMentorForm, profilePictu
 	return s.repo.CreateMentor(user, profilePicturePath)
 }
 
-func (s *AuthService) GetUser(login, password string) (uint, error) {
+func (s *AuthService) GetUser(login, password string) (uint, bool, error) {
 	return s.repo.GetUser(login, generatePasswordHash(password))
 }
 
@@ -67,20 +68,21 @@ func generatePasswordHash(password string) string {
 }
 
 func (s *AuthService) GenerateToken(login, password string) (string, string, error) {
-	userId, err := s.GetUser(login, password)
+	userId, isMentor, err := s.GetUser(login, password)
 	if err != nil {
 		return "", "", err
 	}
-	return s.GenerateTokenByID(userId)
+	return s.GenerateTokenByID(userId, isMentor)
 }
 
-func (s *AuthService) GenerateTokenByID(userId uint) (string, string, error) {
+func (s *AuthService) GenerateTokenByID(userId uint, isMentor bool) (string, string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &tokenClaims{
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(tokenTTL).Unix(),
 			IssuedAt:  time.Now().Unix(),
 		},
 		userId,
+		isMentor,
 	})
 	t, err := token.SignedString([]byte(signingKey))
 	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, &refreshTokenClaims{
@@ -118,7 +120,7 @@ func (s *AuthService) ParseRefreshToken(accessToken string) (uint, error) {
 	return claims.UserId, nil
 }
 
-func (s *AuthService) ParseToken(accessToken string) (uint, error) {
+func (s *AuthService) ParseToken(accessToken string) (uint, bool, error) {
 	token, err := jwt.ParseWithClaims(accessToken, &tokenClaims{}, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("invalid signing method")
@@ -126,15 +128,15 @@ func (s *AuthService) ParseToken(accessToken string) (uint, error) {
 		return []byte(signingKey), nil
 	})
 	if err != nil {
-		return 0, err
+		return 0, false, err
 	}
 
 	claims, ok := token.Claims.(*tokenClaims)
 	if !ok {
-		return 0, errors.New("token claims are not of type *tokenClaims")
+		return 0, false, errors.New("token claims are not of type *tokenClaims")
 	}
 
-	return claims.UserId, nil
+	return claims.UserId, claims.IsMentor, nil
 }
 
 func (s *AuthService) UpgradeUserToMentor(userId uint, formData forms.SignUpUserToMentorForm) error {
@@ -164,7 +166,7 @@ func (s *AuthService) SaveProfilePicture(file multipart.File, filename string) (
 
 func (s *AuthService) SendVerifyEmail(userId uint) error {
 	user, err := s.repo.GetUserById(userId)
-	token, _, err := s.GenerateTokenByID(userId)
+	token, _, err := s.GenerateTokenByID(userId, user.IsMentor)
 	if err != nil {
 		fmt.Println("error!!!!!!!!!!")
 	}
