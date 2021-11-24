@@ -40,6 +40,7 @@ func (h *Handler) GetUserData(c *gin.Context) {
 				"is_verify_phone":  user.IsVerifyPhone,
 				"profile_picture":  pathToProfilePicture + user.ProfilePicture,
 				"time":             user.Time,
+				"education":        user.Educations,
 			})
 	}
 }
@@ -109,4 +110,89 @@ func (h *Handler) UpdateBaseProfileData(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"ok": true})
+}
+
+func (h *Handler) UpdateProfilePicture(c *gin.Context) {
+	file, header, err := c.Request.FormFile("file")
+	userId, _ := c.Get(userCtx)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Ошибка получения файла"})
+		return
+	}
+	filename := header.Filename
+	_, err = h.services.Authorization.SaveProfilePicture(file, filename)
+	err = h.services.UserData.UpdateProfilePicture(filename, userId.(uint))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ошибка обновления данных пользователя"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"ok": true})
+}
+
+func (h *Handler) GetUserEducations(c *gin.Context) {
+	userId, _ := c.Get(userCtx)
+	isMentor, _ := c.Get(isMentorCtx)
+	if isMentor != true {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Пользователь не является ментором"})
+	}
+	userEducation, err := h.services.GetUserEducation(userId.(uint))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Не удалось получить данные об образовании пользователя"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"education": userEducation})
+}
+
+func (h *Handler) AddUserEducation(c *gin.Context) {
+	userId, _ := c.Get(userCtx)
+	isMentor, _ := c.Get(isMentorCtx)
+	if isMentor.(bool) != true {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Пользователь не является ментором"})
+		return
+	}
+	var input forms.UserEducationInput
+	if err := c.BindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Неверная форма пользовательских данных"})
+		return
+	}
+	err := h.services.CreateUserEducation(input, userId.(uint))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Не удалось сохранить образование пользователя"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"status": "ok"})
+}
+
+func (h *Handler) AddUserWorkExperience(c *gin.Context) {
+	userId, _ := c.Get(userCtx)
+	isMentor, _ := c.Get(isMentorCtx)
+	if isMentor.(bool) != true {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Пользователь не является ментором"})
+		return
+	}
+	var input forms.UserWorkExperience
+	if err := c.BindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Неверная форма пользовательских данных"})
+		return
+	}
+	err := h.services.CreateUserWorkExperience(input, userId.(uint))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Не удалось сохранить опыт работы пользователя"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"status": "ok"})
+}
+
+func (h *Handler) GetUserWorkExperience(c *gin.Context) {
+	userId, _ := c.Get(userCtx)
+	isMentor, _ := c.Get(isMentorCtx)
+	if isMentor != true {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Пользователь не является ментором"})
+	}
+	userWorkExperience, err := h.services.GetUserWorkExperience(userId.(uint))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Не удалось получить данные об опыте работы пользователя"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"work_experience": userWorkExperience})
 }

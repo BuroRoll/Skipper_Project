@@ -20,7 +20,9 @@ type User struct {
 	IsVerifyPhone  bool            `gorm:"default:false"`
 	Communications []Communication `gorm:"ForeignKey:ParentId"`
 	//Mentor information
-	Specialization string
+	Specialization  string
+	Educations      []Education      `gorm:"ForeignKey:ParentId"`
+	WorkExperiences []WorkExperience `gorm:"ForeignKey:ParentId"`
 }
 
 type Communication struct {
@@ -34,4 +36,21 @@ type Messenger struct {
 	gorm.Model
 	Name           string
 	Communications []*Communication `gorm:"many2many:messenger_communication;"`
+}
+
+type Education struct {
+	gorm.Model
+	ParentId    uint
+	Institution string
+	StartYear   int
+	EndYear     int
+	Degree      string
+}
+
+type WorkExperience struct {
+	gorm.Model
+	ParentId     uint
+	Organization string
+	StartYear    int
+	EndYear      int
 }

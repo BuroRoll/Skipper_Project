@@ -15,13 +15,13 @@ func NewAuthPostgres(db *gorm.DB) *AuthPostgres {
 	return &AuthPostgres{db: db}
 }
 
-func (r *AuthPostgres) GetUser(login, password string) (uint, error) {
+func (r *AuthPostgres) GetUser(login, password string) (uint, bool, error) {
 	var user models.User
 	result := r.db.Where("email=? AND password=? OR phone=? AND password=?", login, password, login, password).First(&user)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		return user.ID, gorm.ErrRecordNotFound
+		return user.ID, false, gorm.ErrRecordNotFound
 	}
-	return user.ID, nil
+	return user.ID, user.IsMentor, nil
 }
 
 func (r *AuthPostgres) GetUserById(userId uint) (models.User, error) {
