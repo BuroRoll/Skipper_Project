@@ -8,6 +8,8 @@ import (
 	"runtime"
 )
 
+const pathToProfilePicture = "/user/profile-picture/"
+
 func (h *Handler) GetStatus(c *gin.Context) {
 	userId, _ := c.Get(userCtx)
 	c.JSON(http.StatusOK, map[string]interface{}{
@@ -17,7 +19,6 @@ func (h *Handler) GetStatus(c *gin.Context) {
 }
 
 func (h *Handler) GetUserData(c *gin.Context) {
-	const pathToProfilePicture = "/user/profile-picture/"
 	userId, _ := c.Get(userCtx)
 	if userId, ok := userId.(uint); ok {
 		user, err := h.services.GetUserData(userId)
@@ -126,7 +127,8 @@ func (h *Handler) UpdateProfilePicture(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ошибка обновления данных пользователя"})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"ok": true})
+	profilePicture := pathToProfilePicture + filename
+	c.JSON(http.StatusOK, gin.H{"ok": true, "profile_picture": profilePicture})
 }
 
 func (h *Handler) GetUserEducations(c *gin.Context) {
