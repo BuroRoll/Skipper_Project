@@ -8,7 +8,7 @@ import (
 	"runtime"
 )
 
-const pathToProfilePicture = "/user/profile-picture/"
+const pathToProfilePicture = "/api/user/profile-picture/"
 
 func (h *Handler) GetStatus(c *gin.Context) {
 	userId, _ := c.Get(userCtx)
@@ -134,7 +134,7 @@ func (h *Handler) UpdateProfilePicture(c *gin.Context) {
 func (h *Handler) GetUserEducations(c *gin.Context) {
 	userId, _ := c.Get(userCtx)
 	isMentor, _ := c.Get(isMentorCtx)
-	if isMentor != true {
+	if !isMentor.(bool) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Пользователь не является ментором"})
 	}
 	userEducation, err := h.services.GetUserEducation(userId.(uint))
@@ -148,7 +148,7 @@ func (h *Handler) GetUserEducations(c *gin.Context) {
 func (h *Handler) AddUserEducation(c *gin.Context) {
 	userId, _ := c.Get(userCtx)
 	isMentor, _ := c.Get(isMentorCtx)
-	if isMentor.(bool) != true {
+	if !isMentor.(bool) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Пользователь не является ментором"})
 		return
 	}
@@ -168,7 +168,7 @@ func (h *Handler) AddUserEducation(c *gin.Context) {
 func (h *Handler) AddUserWorkExperience(c *gin.Context) {
 	userId, _ := c.Get(userCtx)
 	isMentor, _ := c.Get(isMentorCtx)
-	if isMentor.(bool) != true {
+	if !isMentor.(bool) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Пользователь не является ментором"})
 		return
 	}
@@ -188,7 +188,7 @@ func (h *Handler) AddUserWorkExperience(c *gin.Context) {
 func (h *Handler) GetUserWorkExperience(c *gin.Context) {
 	userId, _ := c.Get(userCtx)
 	isMentor, _ := c.Get(isMentorCtx)
-	if isMentor != true {
+	if !isMentor.(bool) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Пользователь не является ментором"})
 	}
 	userWorkExperience, err := h.services.GetUserWorkExperience(userId.(uint))
