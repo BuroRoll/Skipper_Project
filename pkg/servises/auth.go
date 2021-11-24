@@ -181,7 +181,7 @@ func SendEmailToVerify(email string, token string) error {
 	}
 	userData := data{
 		Token: token,
-		Link:  "https://152.70.189.77:8000/verify-email?",
+		Link:  "https://152.70.189.77:8000/api/verify-email?",
 	}
 	_, b, _, _ := runtime.Caller(0)
 	Root := filepath.Join(filepath.Dir(b), "../..")
