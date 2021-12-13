@@ -26,6 +26,10 @@ type UserData interface {
 	CreateUserEducation(education forms.UserEducationInput, userId uint) error
 	CreateUserWorkExperience(workExperience forms.UserWorkExperience, userId uint) error
 	GetUserWorkExperience(userId uint) ([]models.WorkExperience, error)
+	SetUserEmail(email string, userId uint) error
+	UpdateMentorSpecialization(specialization string, userId uint) error
+	AddUserOtherInfo(data string, userId uint) error
+	GetUserOtherInfo(userId uint) ([]models.OtherInformation, error)
 }
 
 type Catalog interface {
@@ -36,10 +40,20 @@ type Catalog interface {
 	GetCatalogChild() []models.Catalog3
 }
 
+type Classes interface {
+	CreateUserClasses(input models.Class) (uint, error)
+	CreateTheoreticClass(input models.TheoreticClass) error
+	CreatePracticClass(input models.PracticClass) error
+	CreateKeyClass(input models.KeyClass) error
+	GetCatalogTags(catalogId uint) (models.Catalog3, error)
+	GetUserClasses(userId uint) ([]models.Class, error)
+}
+
 type Repository struct {
 	Authorization
 	UserData
 	Catalog
+	Classes
 }
 
 func NewRepository(db *gorm.DB) *Repository {
@@ -47,5 +61,6 @@ func NewRepository(db *gorm.DB) *Repository {
 		Authorization: NewAuthPostgres(db),
 		UserData:      NewUserDataPostgres(db),
 		Catalog:       NewCatalogPostgres(db),
+		Classes:       NewClassesPostgres(db),
 	}
 }

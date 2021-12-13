@@ -32,6 +32,10 @@ type UserData interface {
 	CreateUserEducation(education forms.UserEducationInput, userId uint) error
 	CreateUserWorkExperience(workExperience forms.UserWorkExperience, userId uint) error
 	GetUserWorkExperience(userId uint) (string, error)
+	SetUserEmail(email string, userId uint) error
+	UpdateMentorSpecialization(specialization string, userId uint) error
+	AddUserOtherInfo(data string, userId uint) error
+	GetUserOtherInfo(userId uint) (string, error)
 }
 
 type Catalog interface {
@@ -41,10 +45,19 @@ type Catalog interface {
 	GetCatalogChild() (string, error)
 }
 
+type Class interface {
+	CreateUserClass(class forms.ClassesInput, userId uint) (uint, error)
+	CreateTheoreticClass(class forms.TheoreticClassInput, userId uint) error
+	CreatePracticClass(class forms.PracticClassInput, userId uint) error
+	CreateKeyClass(class forms.KeyClass, userId uint) error
+	GetUserClasses(userId uint) (string, error)
+}
+
 type Service struct {
 	Authorization
 	UserData
 	Catalog
+	Class
 }
 
 func NewService(repos *repository.Repository) *Service {
@@ -52,5 +65,6 @@ func NewService(repos *repository.Repository) *Service {
 		Authorization: NewAuthService(repos.Authorization),
 		UserData:      NewUserDataService(repos.UserData),
 		Catalog:       NewCatalogService(repos.Catalog),
+		Class:         NewClassesService(repos.Classes),
 	}
 }

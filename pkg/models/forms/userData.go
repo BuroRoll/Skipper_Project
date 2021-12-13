@@ -26,3 +26,15 @@ type UserWorkExperience struct {
 	StartYear    int    `json:"start_year" binding:"required"`
 	EndYear      int    `json:"end_year" binding:"required"`
 }
+
+type MentorOtherInfo struct {
+	Data string `json:"data" binding:"required"`
+}
+
+type UserEmailInput struct {
+	Email string `json:"email" binding:"required"`
+}
+
+type MentorSpecializationInput struct {
+	Specialization string `json:"specialization" binding:"required"`
+}

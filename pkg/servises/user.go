@@ -70,3 +70,27 @@ func (u UserDataService) GetUserWorkExperience(userId uint) (string, error) {
 	}
 	return string(jsonData), nil
 }
+
+func (u UserDataService) SetUserEmail(email string, userId uint) error {
+	return u.repo.SetUserEmail(email, userId)
+}
+
+func (u UserDataService) UpdateMentorSpecialization(specialization string, userId uint) error {
+	return u.repo.UpdateMentorSpecialization(specialization, userId)
+}
+
+func (u UserDataService) AddUserOtherInfo(data string, userId uint) error {
+	return u.repo.AddUserOtherInfo(data, userId)
+}
+
+func (u UserDataService) GetUserOtherInfo(userId uint) (string, error) {
+	userOtherInfo, err := u.repo.GetUserOtherInfo(userId)
+	if err != nil {
+		return "", err
+	}
+	jsonData, err := json.Marshal(userOtherInfo)
+	if err != nil {
+		return "", err
+	}
+	return string(jsonData), nil
+}
