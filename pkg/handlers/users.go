@@ -29,6 +29,7 @@ func (h *Handler) GetUserData(c *gin.Context) {
 		c.JSON(
 			http.StatusOK,
 			gin.H{
+				"id":               user.ID,
 				"first_name":       user.FirstName,
 				"second_name":      user.SecondName,
 				"patronymic":       user.Patronymic,
