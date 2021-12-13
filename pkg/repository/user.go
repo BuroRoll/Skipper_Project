@@ -48,7 +48,7 @@ func (u UserDataPostgres) GetMessengers() ([]models.Messenger, error) {
 func (u UserDataPostgres) CreateUserCommunication(input forms.UserCommunicationInput, userId uint) error {
 	var communication models.Communication
 	var messenger models.Messenger
-	u.db.Find(&messenger, input.MessengerId)
+	u.db.First(&messenger, input.MessengerId)
 	communication.Login = input.Login
 	communication.ParentId = userId
 	communication.Messenger = append(communication.Messenger, &messenger)
@@ -123,9 +123,52 @@ func (u UserDataPostgres) CreateUserWorkExperience(workExperience forms.UserWork
 
 func (u UserDataPostgres) GetUserWorkExperience(userId uint) ([]models.WorkExperience, error) {
 	var userWorkExperience []models.WorkExperience
-	result := u.db.Where("parent_id=?", userId).First(&userWorkExperience)
+	result := u.db.Where("parent_id=?", userId).Find(&userWorkExperience)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return nil, gorm.ErrRecordNotFound
 	}
 	return userWorkExperience, nil
+}
+
+func (u UserDataPostgres) SetUserEmail(email string, userId uint) error {
+	var user models.User
+	result := u.db.First(&user, userId)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return gorm.ErrRecordNotFound
+	}
+	user.Email = email
+	u.db.Save(&user)
+	return nil
+}
+
+func (u UserDataPostgres) UpdateMentorSpecialization(specialization string, userId uint) error {
+	var user models.User
+	result := u.db.First(&user, userId)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return gorm.ErrRecordNotFound
+	}
+	user.Specialization = specialization
+	u.db.Save(&user)
+	return nil
+}
+
+func (u UserDataPostgres) AddUserOtherInfo(data string, userId uint) error {
+	otherInfo := models.OtherInformation{
+		ParentId: userId,
+		Data:     data,
+	}
+	result := u.db.Create(&otherInfo)
+	if errors.Is(result.Error, gorm.ErrRegistered) {
+		return gorm.ErrRegistered
+	}
+	return nil
+}
+
+func (u UserDataPostgres) GetUserOtherInfo(userId uint) ([]models.OtherInformation, error) {
+	var userOtherInfo []models.OtherInformation
+	result := u.db.Where("parent_id=?", userId).Find(&userOtherInfo)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return nil, gorm.ErrRecordNotFound
+	}
+	return userOtherInfo, nil
 }

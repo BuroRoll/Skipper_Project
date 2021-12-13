@@ -36,6 +36,11 @@ func init() {
 		&Communication{},
 		&Education{},
 		&WorkExperience{},
+		&Class{},
+		&TheoreticClass{},
+		&PracticClass{},
+		&KeyClass{},
+		&OtherInformation{},
 	)
 	if err != nil {
 		log.Fatalf(err.Error())

@@ -19,10 +19,13 @@ type User struct {
 	IsVerifyEmail  bool            `gorm:"default:false"`
 	IsVerifyPhone  bool            `gorm:"default:false"`
 	Communications []Communication `gorm:"ForeignKey:ParentId"`
+	ClassBooking   []*Class        `gorm:"many2many:user_classbooking;"`
 	//Mentor information
-	Specialization  string
-	Educations      []Education      `gorm:"ForeignKey:ParentId"`
-	WorkExperiences []WorkExperience `gorm:"ForeignKey:ParentId"`
+	Specialization   string
+	Educations       []Education        `gorm:"ForeignKey:ParentId"`
+	WorkExperiences  []WorkExperience   `gorm:"ForeignKey:ParentId"`
+	Classes          []Class            `gorm:"ForeignKey:ParentId"`
+	OtherInformation []OtherInformation `gorm:"ForeignKey:ParentId"`
 }
 
 type Communication struct {
@@ -53,4 +56,10 @@ type WorkExperience struct {
 	Organization string
 	StartYear    int
 	EndYear      int
+}
+
+type OtherInformation struct {
+	gorm.Model
+	ParentId uint
+	Data     string
 }

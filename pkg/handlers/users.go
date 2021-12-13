@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"Skipper/pkg/models/forms"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"path/filepath"
@@ -42,7 +41,6 @@ func (h *Handler) GetUserData(c *gin.Context) {
 				"is_verify_phone":  user.IsVerifyPhone,
 				"profile_picture":  pathToProfilePicture + user.ProfilePicture,
 				"time":             user.Time,
-				"education":        user.Educations,
 			})
 	}
 }
@@ -134,7 +132,6 @@ func (h *Handler) UpdateProfilePicture(c *gin.Context) {
 func (h *Handler) GetUserEducations(c *gin.Context) {
 	userId, _ := c.Get(userCtx)
 	isMentor, _ := c.Get(isMentorCtx)
-	fmt.Println(c.Keys)
 	if !isMentor.(bool) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Пользователь не является ментором"})
 		return
@@ -200,4 +197,80 @@ func (h *Handler) GetUserWorkExperience(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"work_experience": userWorkExperience})
+}
+
+func (h *Handler) UpdateSpecialization(c *gin.Context) {
+	userId, _ := c.Get(userCtx)
+	isMentor, _ := c.Get(isMentorCtx)
+	if !isMentor.(bool) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Пользователь не является ментором"})
+		return
+	}
+	var input forms.MentorSpecializationInput
+	if err := c.BindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Неверная форма данных"})
+		return
+	}
+	err := h.services.UpdateMentorSpecialization(input.Specialization, userId.(uint))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Не удалось обновить данные"})
+		return
+	}
+}
+
+func (h *Handler) UserVerifyEmail(c *gin.Context) {
+	userId, _ := c.Get(userCtx)
+	var input forms.UserEmailInput
+	if err := c.BindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Неверная форма данных"})
+		return
+	}
+	err := h.services.SetUserEmail(input.Email, userId.(uint))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Не удалось сохранить почту, попробуйте позже"})
+		return
+	}
+	err = h.services.SendVerifyEmail(userId.(uint))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Не удалось отправить письмо для подтверждения, попробуйте позже"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"status": "Подтверждение успешно отправлено"})
+}
+
+func (h *Handler) AddUserOtherInfo(c *gin.Context) {
+	userId, _ := c.Get(userCtx)
+	isMentor, _ := c.Get(isMentorCtx)
+	if !isMentor.(bool) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Пользователь не является ментором"})
+		return
+	}
+	var input forms.MentorOtherInfo
+	if err := c.BindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Неверная форма пользовательских данных"})
+		return
+	}
+	err := h.services.AddUserOtherInfo(input.Data, userId.(uint))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Не удалось добавить данные"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"status": "ok"})
+}
+
+func (h *Handler) GetUserOtherInfo(c *gin.Context) {
+	userId, _ := c.Get(userCtx)
+	isMentor, _ := c.Get(isMentorCtx)
+	if !isMentor.(bool) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Пользователь не является ментором"})
+		return
+	}
+	otherInfo, err := h.services.GetUserOtherInfo(userId.(uint))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Не удалось получить данные пользователя"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"otherInfo": otherInfo,
+	})
 }

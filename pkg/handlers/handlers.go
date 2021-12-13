@@ -32,9 +32,10 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			user.GET("/user-data", h.GetUserData)
 
 			user.POST("/user-mentor-sign-up", h.userToMentorSignUp)
-			user.GET("/user-verify-email", h.UserVerifyEmail)
+			user.POST("/user-verify-email", h.UserVerifyEmail)
 			user.POST("/update-base-profile-data", h.UpdateBaseProfileData)
 			user.POST("/update-profile-picture", h.UpdateProfilePicture)
+			user.POST("/update-specialization", h.UpdateSpecialization)
 
 			communication := api.Group("/communication")
 			{
@@ -51,6 +52,20 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			{
 				workExperience.POST("/add-user-work-experience", h.AddUserWorkExperience)
 				workExperience.GET("/user-work-experience", h.GetUserWorkExperience)
+			}
+			otherInfo := api.Group("/other-info")
+			{
+				otherInfo.POST("/add-user-other-info", h.AddUserOtherInfo)
+				otherInfo.GET("/user-other-info", h.GetUserOtherInfo)
+			}
+			class := api.Group("/class")
+			{
+				class.POST("/create-class", h.CreateUserClasses)
+				class.POST("/create-theoretic-class", h.CreateTheoreticClass)
+				class.POST("/create-practic-class", h.CreatePracticClass)
+				class.POST("/create-key-class", h.CreateKeyClass)
+
+				class.GET("/user-classes", h.GetUserClasses)
 			}
 		}
 		publicUser := api.Group("/public-user")
