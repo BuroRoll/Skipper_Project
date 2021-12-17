@@ -60,10 +60,20 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			}
 			class := api.Group("/class")
 			{
-				class.POST("/create-class", h.CreateUserClasses)
-				class.POST("/create-theoretic-class", h.CreateTheoreticClass)
-				class.POST("/create-practic-class", h.CreatePracticClass)
-				class.POST("/create-key-class", h.CreateKeyClass)
+				class.POST("/class", h.CreateUserClass)
+				class.POST("/theoretic-class", h.CreateTheoreticClass)
+				class.POST("/practic-class", h.CreatePracticClass)
+				class.POST("/key-class", h.CreateKeyClass)
+
+				class.DELETE("/class/:id", h.DeleteClass)
+				class.DELETE("/theoretic-class/:id", h.DeleteTheoreticClass)
+				class.DELETE("/practic-class/:id", h.DeletePracticClass)
+				class.DELETE("/key-class/:id", h.DeleteKeyClass)
+
+				class.PUT("/class", h.UpdateClass)
+				class.PUT("/theoretic-class", h.UpdateTheoreticClass)
+				class.PUT("/practic-class", h.UpdatePracticClass)
+				class.PUT("/key-class", h.UpdateKeyClass)
 
 				class.GET("/user-classes", h.GetUserClasses)
 			}

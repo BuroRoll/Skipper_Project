@@ -96,3 +96,78 @@ func (c ClassesService) GetUserClasses(userId uint) (string, error) {
 	}
 	return string(jsonData), nil
 }
+
+func (c ClassesService) DeleteClass(classId string) error {
+	return c.repo.DeleteClass(classId)
+}
+
+func (c ClassesService) DeleteTheoreticClass(classId string) error {
+	return c.repo.DeleteTheoreticClass(classId)
+}
+
+func (c ClassesService) DeletePracticClass(classId string) error {
+	return c.repo.DeletePracticClass(classId)
+}
+
+func (c ClassesService) DeleteKeyClass(classId string) error {
+	return c.repo.DeleteKeyClass(classId)
+}
+
+func (c ClassesService) UpdateClass(classData forms.UpdateClassesInput) error {
+	var classDB models.Class
+	classDB = models.Class{
+		ClassName:   classData.ClassName,
+		Description: classData.Description,
+	}
+	for _, id := range classData.Tags {
+		tag, err := c.repo.GetCatalogTags(id)
+		if err != nil {
+			return err
+		}
+		classDB.Tags = append(classDB.Tags, &tag)
+	}
+	return c.repo.UpdateClass(classDB, classData.ClassId)
+}
+
+func (c ClassesService) UpdateTheoreticClass(theoreticClassData forms.UpdateSubclassInput) error {
+	theoreticClassDB := models.TheoreticClass{
+		Duration15: theoreticClassData.Duration15,
+		Price15:    theoreticClassData.Price15,
+		Duration30: theoreticClassData.Duration30,
+		Price30:    theoreticClassData.Price30,
+		Duration60: theoreticClassData.Duration60,
+		Price60:    theoreticClassData.Price60,
+		Duration90: theoreticClassData.Duration90,
+		Price90:    theoreticClassData.Price90,
+
+		Time: theoreticClassData.Time,
+	}
+	return c.repo.UpdateTheoreticClass(theoreticClassDB, theoreticClassData.ClassId)
+}
+
+func (c ClassesService) UpdatePracticClass(practicClassData forms.UpdateSubclassInput) error {
+	practicClassDB := models.PracticClass{
+		Duration15: practicClassData.Duration15,
+		Price15:    practicClassData.Price15,
+		Duration30: practicClassData.Duration30,
+		Price30:    practicClassData.Price30,
+		Duration60: practicClassData.Duration60,
+		Price60:    practicClassData.Price60,
+		Duration90: practicClassData.Duration90,
+		Price90:    practicClassData.Price90,
+
+		Time: practicClassData.Time,
+	}
+	return c.repo.UpdatePracticClass(practicClassDB, practicClassData.ClassId)
+}
+
+func (c ClassesService) UpdateKeyClass(keyClassData forms.UpdateKeyClassInput) error {
+	keyClassDB := models.KeyClass{
+		Duration15:    keyClassData.Duration15,
+		Price15:       keyClassData.Price15,
+		FullTime:      keyClassData.FullTime,
+		PriceFullTime: keyClassData.PriceFullTime,
+		Time:          keyClassData.Time,
+	}
+	return c.repo.UpdateKeyClass(keyClassDB, keyClassData.ClassId)
+}
