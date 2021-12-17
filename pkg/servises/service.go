@@ -51,6 +51,14 @@ type Class interface {
 	CreatePracticClass(class forms.PracticClassInput, userId uint) error
 	CreateKeyClass(class forms.KeyClass, userId uint) error
 	GetUserClasses(userId uint) (string, error)
+	DeleteClass(classId string) error
+	DeleteTheoreticClass(classId string) error
+	DeletePracticClass(classId string) error
+	DeleteKeyClass(classId string) error
+	UpdateClass(input forms.UpdateClassesInput) error
+	UpdateTheoreticClass(input forms.UpdateSubclassInput) error
+	UpdatePracticClass(input forms.UpdateSubclassInput) error
+	UpdateKeyClass(input forms.UpdateKeyClassInput) error
 }
 
 type Service struct {

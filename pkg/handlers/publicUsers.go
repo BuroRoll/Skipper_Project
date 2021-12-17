@@ -30,6 +30,7 @@ func (h *Handler) GetMentorData(c *gin.Context) {
 			"second_name":     user.SecondName,
 			"patronymic":      user.Patronymic,
 			"description":     user.Description,
+			"specialization":  user.Specialization,
 			"profile_picture": pathToProfilePicture + user.ProfilePicture,
 			"time":            user.Time,
 			"register_date":   user.CreatedAt,

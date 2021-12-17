@@ -47,6 +47,14 @@ type Classes interface {
 	CreateKeyClass(input models.KeyClass) error
 	GetCatalogTags(catalogId uint) (models.Catalog3, error)
 	GetUserClasses(userId uint) ([]models.Class, error)
+	DeleteClass(classId string) error
+	DeleteTheoreticClass(classId string) error
+	DeletePracticClass(classId string) error
+	DeleteKeyClass(classId string) error
+	UpdateClass(classData models.Class, classId uint) error
+	UpdateTheoreticClass(classData models.TheoreticClass, classId uint) error
+	UpdatePracticClass(classData models.PracticClass, classId uint) error
+	UpdateKeyClass(classData models.KeyClass, classId uint) error
 }
 
 type Repository struct {
