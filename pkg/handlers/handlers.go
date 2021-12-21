@@ -91,6 +91,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			catalog.GET("/", h.GetCatalog)
 			catalog.GET("/main-section", h.GetMainSection)
 			catalog.GET("/child", h.GetCatalogChild)
+			catalog.GET("/classes", h.GetClasses)
 		}
 		publicApi.GET("/user/profile-picture/:filename", h.GetUserProfilePicture)
 	}

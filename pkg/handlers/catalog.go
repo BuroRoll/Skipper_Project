@@ -47,3 +47,10 @@ func (h *Handler) GetCatalogChild(c *gin.Context) {
 		"catalog_child": catalogChild,
 	})
 }
+
+func (h *Handler) GetClasses(c *gin.Context) {
+	data, _ := h.services.GetClasses()
+	c.JSON(http.StatusOK, gin.H{
+		"catalog_of_mentors": data,
+	})
+}

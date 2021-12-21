@@ -55,3 +55,10 @@ func (c CatalogPostgres) GetCatalogChild() []models.Catalog3 {
 	c.db.Raw("SELECT id, name3, count FROM catalog3").Find(&catalogChild)
 	return catalogChild
 }
+
+func (c CatalogPostgres) GetClasses() ([]models.User, error) {
+	var users []models.User
+	c.db.Preload("Classes").Preload("Classes.Tags").Where("is_mentor = true").Find(&users)
+
+	return users, nil
+}

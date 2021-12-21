@@ -38,13 +38,14 @@ type Catalog interface {
 	GetCatalog() string
 	GetMainCatalog() string
 	GetCatalogChild() []models.Catalog3
+	GetClasses() ([]models.User, error)
 }
 
 type Classes interface {
 	CreateUserClasses(input models.Class) (uint, error)
-	CreateTheoreticClass(input models.TheoreticClass) error
-	CreatePracticClass(input models.PracticClass) error
-	CreateKeyClass(input models.KeyClass) error
+	CreateTheoreticClass(input models.TheoreticClass) (uint, error)
+	CreatePracticClass(input models.PracticClass) (uint, error)
+	CreateKeyClass(input models.KeyClass) (uint, error)
 	GetCatalogTags(catalogId uint) (models.Catalog3, error)
 	GetUserClasses(userId uint) ([]models.Class, error)
 	DeleteClass(classId string) error

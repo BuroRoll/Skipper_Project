@@ -43,13 +43,14 @@ type Catalog interface {
 	GetCatalog() string
 	GetMainCatalog() string
 	GetCatalogChild() (string, error)
+	GetClasses() (string, error)
 }
 
 type Class interface {
 	CreateUserClass(class forms.ClassesInput, userId uint) (uint, error)
-	CreateTheoreticClass(class forms.TheoreticClassInput, userId uint) error
-	CreatePracticClass(class forms.PracticClassInput, userId uint) error
-	CreateKeyClass(class forms.KeyClass, userId uint) error
+	CreateTheoreticClass(class forms.TheoreticClassInput, userId uint) (uint, error)
+	CreatePracticClass(class forms.PracticClassInput, userId uint) (uint, error)
+	CreateKeyClass(class forms.KeyClass, userId uint) (uint, error)
 	GetUserClasses(userId uint) (string, error)
 	DeleteClass(classId string) error
 	DeleteTheoreticClass(classId string) error

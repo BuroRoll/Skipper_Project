@@ -48,3 +48,42 @@ func (c CatalogService) GetCatalogChild() (string, error) {
 	}
 	return string(jsonData), nil
 }
+
+type ClassesData struct {
+	Id             uint   `json:"ID"`
+	FirstName      string `json:"FirstName"`
+	SecondName     string `json:"SecondName"`
+	ProfilePicture string `json:"ProfilePicture"`
+	//Classes        []models.Class `json:"classes"`
+	Classes []C `json:"classes"`
+}
+
+type C struct {
+	ID          uint   `json:"ID"`
+	ClassName   string `json:"ClassName"`
+	Description string `json:"Description"`
+	Tags        []T    `json:"Tags"`
+}
+
+type T struct {
+	ID   uint   `json:"ID"`
+	Name string `json:"name3"`
+}
+
+func (c CatalogService) GetClasses() (string, error) {
+	//func (c CatalogService) GetClasses() ([]byte, error) {
+	data, err := c.repo.GetClasses()
+	if err != nil {
+		return "", nil
+	}
+	j, _ := json.Marshal(data)
+	var d []ClassesData
+	err = json.Unmarshal(j, &d)
+	if err != nil {
+		return "", err
+	}
+	p, _ := json.Marshal(d)
+
+	return string(p), nil
+
+}
