@@ -38,12 +38,12 @@ func (h *Handler) CreateTheoreticClass(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Неверная форма пользовательских данных"})
 		return
 	}
-	err := h.services.CreateTheoreticClass(theoreticClass, userId.(uint))
+	classId, err := h.services.CreateTheoreticClass(theoreticClass, userId.(uint))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ошибка создания занятия"})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"status": "ok"})
+	c.JSON(http.StatusOK, gin.H{"status": "ok", "class_id": classId})
 }
 
 func (h *Handler) CreatePracticClass(c *gin.Context) {
@@ -58,12 +58,12 @@ func (h *Handler) CreatePracticClass(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Неверная форма пользовательских данных"})
 		return
 	}
-	err := h.services.CreatePracticClass(practicClass, userId.(uint))
+	classId, err := h.services.CreatePracticClass(practicClass, userId.(uint))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ошибка создания занятия"})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"status": "ok"})
+	c.JSON(http.StatusOK, gin.H{"status": "ok", "class_id": classId})
 }
 
 func (h *Handler) CreateKeyClass(c *gin.Context) {
@@ -78,12 +78,12 @@ func (h *Handler) CreateKeyClass(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Неверная форма пользовательских данных"})
 		return
 	}
-	err := h.services.CreateKeyClass(keyClass, userId.(uint))
+	classId, err := h.services.CreateKeyClass(keyClass, userId.(uint))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ошибка создания занятия"})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"status": "ok"})
+	c.JSON(http.StatusOK, gin.H{"status": "ok", "class_id": classId})
 }
 
 func (h *Handler) GetUserClasses(c *gin.Context) {

@@ -23,28 +23,28 @@ func (c ClassesPostgres) CreateUserClasses(class models.Class) (uint, error) {
 	return class.ID, nil
 }
 
-func (c ClassesPostgres) CreateTheoreticClass(theoreticClass models.TheoreticClass) error {
+func (c ClassesPostgres) CreateTheoreticClass(theoreticClass models.TheoreticClass) (uint, error) {
 	result := c.db.Create(&theoreticClass)
 	if errors.Is(result.Error, gorm.ErrRegistered) {
-		return result.Error
+		return 0, result.Error
 	}
-	return nil
+	return theoreticClass.ID, nil
 }
 
-func (c ClassesPostgres) CreatePracticClass(practicClass models.PracticClass) error {
+func (c ClassesPostgres) CreatePracticClass(practicClass models.PracticClass) (uint, error) {
 	result := c.db.Create(&practicClass)
 	if errors.Is(result.Error, gorm.ErrRegistered) {
-		return result.Error
+		return 0, result.Error
 	}
-	return nil
+	return practicClass.ID, nil
 }
 
-func (c ClassesPostgres) CreateKeyClass(keyClass models.KeyClass) error {
+func (c ClassesPostgres) CreateKeyClass(keyClass models.KeyClass) (uint, error) {
 	result := c.db.Create(&keyClass)
 	if errors.Is(result.Error, gorm.ErrRegistered) {
-		return result.Error
+		return 0, result.Error
 	}
-	return nil
+	return keyClass.ID, nil
 }
 
 func (c ClassesPostgres) GetCatalogTags(catalogId uint) (models.Catalog3, error) {
@@ -156,6 +156,7 @@ func (c ClassesPostgres) UpdateKeyClass(classData models.KeyClass, classId uint)
 	keyClass.Price15 = classData.Price15
 	keyClass.FullTime = classData.FullTime
 	keyClass.PriceFullTime = classData.PriceFullTime
+	keyClass.Time = classData.Time
 	result := c.db.Save(&keyClass)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return result.Error

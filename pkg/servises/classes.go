@@ -32,7 +32,7 @@ func (c ClassesService) CreateUserClass(class forms.ClassesInput, userId uint) (
 	return c.repo.CreateUserClasses(classBd)
 }
 
-func (c ClassesService) CreateTheoreticClass(class forms.TheoreticClassInput, userId uint) error {
+func (c ClassesService) CreateTheoreticClass(class forms.TheoreticClassInput, userId uint) (uint, error) {
 	var classBd models.TheoreticClass
 	classBd = models.TheoreticClass{
 		ClassParentId: class.ParentId,
@@ -51,7 +51,7 @@ func (c ClassesService) CreateTheoreticClass(class forms.TheoreticClassInput, us
 	return c.repo.CreateTheoreticClass(classBd)
 }
 
-func (c ClassesService) CreatePracticClass(class forms.PracticClassInput, userId uint) error {
+func (c ClassesService) CreatePracticClass(class forms.PracticClassInput, userId uint) (uint, error) {
 	var classBd models.PracticClass
 	classBd = models.PracticClass{
 		ClassParentId: class.ParentId,
@@ -70,7 +70,7 @@ func (c ClassesService) CreatePracticClass(class forms.PracticClassInput, userId
 	return c.repo.CreatePracticClass(classBd)
 }
 
-func (c ClassesService) CreateKeyClass(class forms.KeyClass, userId uint) error {
+func (c ClassesService) CreateKeyClass(class forms.KeyClass, userId uint) (uint, error) {
 	var classBd models.KeyClass
 	classBd = models.KeyClass{
 		ClassParentId: class.ParentId,
@@ -162,6 +162,7 @@ func (c ClassesService) UpdatePracticClass(practicClassData forms.UpdateSubclass
 }
 
 func (c ClassesService) UpdateKeyClass(keyClassData forms.UpdateKeyClassInput) error {
+
 	keyClassDB := models.KeyClass{
 		Duration15:    keyClassData.Duration15,
 		Price15:       keyClassData.Price15,
