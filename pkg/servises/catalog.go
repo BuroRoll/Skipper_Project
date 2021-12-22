@@ -1,6 +1,7 @@
 package service
 
 import (
+	"Skipper/pkg/models"
 	"Skipper/pkg/models/forms"
 	"Skipper/pkg/repository"
 	"encoding/json"
@@ -70,9 +71,9 @@ type T struct {
 	Name string `json:"name3"`
 }
 
-func (c CatalogService) GetClasses() (string, error) {
-	//func (c CatalogService) GetClasses() ([]byte, error) {
-	data, err := c.repo.GetClasses()
+func (c CatalogService) GetClasses(pagination *models.Pagination) (string, error) {
+
+	data, err := c.repo.GetClasses(&pagination)
 	if err != nil {
 		return "", nil
 	}

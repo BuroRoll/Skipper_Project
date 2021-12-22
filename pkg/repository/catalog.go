@@ -56,9 +56,15 @@ func (c CatalogPostgres) GetCatalogChild() []models.Catalog3 {
 	return catalogChild
 }
 
-func (c CatalogPostgres) GetClasses() ([]models.User, error) {
+func (c CatalogPostgres) GetClasses(pagination **models.Pagination) ([]models.User, error) {
 	var users []models.User
-	c.db.Preload("Classes").Preload("Classes.Tags").Where("is_mentor = true").Find(&users)
-
+	offset := ((*pagination).Page - 1) * (*pagination).Limit
+	queryBuider := c.db.Limit((*pagination).Limit).Offset(offset).Order((*pagination).Sort)
+	result := queryBuider.Debug().Preload("Classes").Preload("Classes.Tags").Preload("Classes.Tags", "id IN (?)", (*pagination).Search).Where("is_mentor = true").Find(&users)
+	if result.Error != nil {
+		msg := result.Error
+		return nil, msg
+	}
 	return users, nil
+
 }
