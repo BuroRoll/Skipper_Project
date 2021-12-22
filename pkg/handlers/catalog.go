@@ -49,8 +49,20 @@ func (h *Handler) GetCatalogChild(c *gin.Context) {
 }
 
 func (h *Handler) GetClasses(c *gin.Context) {
-	data, _ := h.services.GetClasses()
+	pagination := GeneratePaginationFromRequest(c)
+	userLists, err := h.services.GetClasses(&pagination)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err,
+		})
+		return
+	}
 	c.JSON(http.StatusOK, gin.H{
-		"catalog_of_mentors": data,
+		"catalog_of_mentors": userLists,
 	})
 }
+
+//func (h *Handler) GetClasses2(c *gin.Context) {
+//	fmt.Println(c.Param("id"))
+//}

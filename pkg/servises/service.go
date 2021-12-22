@@ -43,7 +43,7 @@ type Catalog interface {
 	GetCatalog() string
 	GetMainCatalog() string
 	GetCatalogChild() (string, error)
-	GetClasses() (string, error)
+	GetClasses(*models.Pagination) (string, error)
 }
 
 type Class interface {
