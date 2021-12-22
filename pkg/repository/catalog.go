@@ -60,7 +60,12 @@ func (c CatalogPostgres) GetClasses(pagination **models.Pagination) ([]models.Us
 	var users []models.User
 	offset := ((*pagination).Page - 1) * (*pagination).Limit
 	queryBuider := c.db.Limit((*pagination).Limit).Offset(offset).Order((*pagination).Sort)
-	result := queryBuider.Debug().Preload("Classes").Preload("Classes.Tags").Preload("Classes.Tags", "id IN (?)", (*pagination).Search).Where("is_mentor = true").Find(&users)
+	var result *gorm.DB
+	if len((*pagination).Search) > 0 {
+		result = queryBuider.Debug().Preload("Classes").Preload("Classes.Tags").Preload("Classes.Tags", "id IN (?)", (*pagination).Search).Where("is_mentor = true").Find(&users)
+	} else {
+		result = queryBuider.Debug().Preload("Classes").Preload("Classes.Tags").Preload("Classes.Tags").Where("is_mentor = true").Find(&users)
+	}
 	if result.Error != nil {
 		msg := result.Error
 		return nil, msg
