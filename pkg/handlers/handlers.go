@@ -82,7 +82,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	}
 	publicApi := router.Group("/public-api")
 	{
-		publicUser := api.Group("/public-user")
+		publicUser := publicApi.Group("/public-user")
 		{
 			publicUser.GET("/mentor/:id", h.GetMentorData)
 			publicUser.GET("/menti/:id", h.GetMentiData)
@@ -93,7 +93,6 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			catalog.GET("/main-section", h.GetMainSection)
 			catalog.GET("/child", h.GetCatalogChild)
 			catalog.GET("/classes", h.GetClasses)
-			//catalog.GET("/classes/:id", h.GetClasses2)
 		}
 		publicApi.GET("/user/profile-picture/:filename", h.GetUserProfilePicture)
 	}
