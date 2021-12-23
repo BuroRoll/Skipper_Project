@@ -55,6 +55,8 @@ type ClassesData struct {
 	FirstName      string `json:"FirstName"`
 	SecondName     string `json:"SecondName"`
 	ProfilePicture string `json:"ProfilePicture"`
+	Description    string `json:"Description"`
+	Specialization string `json:"Specialization"`
 	//Classes        []models.Class `json:"classes"`
 	Classes []C `json:"classes"`
 }
