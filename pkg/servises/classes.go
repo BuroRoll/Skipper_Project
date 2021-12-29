@@ -172,3 +172,55 @@ func (c ClassesService) UpdateKeyClass(keyClassData forms.UpdateKeyClassInput) e
 	}
 	return c.repo.UpdateKeyClass(keyClassDB, keyClassData.ClassId)
 }
+
+type TPClass struct {
+	Id            uint `json:"ID"`
+	ClassParentId uint `json:"ClassParentId"`
+	Duration15    bool `json:"Duration15"`
+	Price15       uint `json:"Price15"`
+
+	Duration30 bool `json:"Duration30"`
+	Price30    uint `json:"Price30"`
+
+	Duration60 bool `json:"Duration60"`
+	Price60    uint `json:"Price60"`
+
+	Duration90 bool `json:"Duration90"`
+	Price90    uint `json:"Price90"`
+
+	Time string `json:"Time"`
+}
+
+type KClass struct {
+	Id            uint `json:"ID"`
+	ClassParentId uint `json:"ClassParentId"`
+
+	Duration15 bool `json:"Duration15"`
+	Price15    uint `json:"Price15"`
+
+	FullTime      bool `json:"FullTime"`
+	PriceFullTime uint `json:"PriceFullTime"`
+
+	Time string `json:"Time"`
+}
+
+func (c ClassesService) GetClassById(classId string) (string, string, string, error) {
+	class, err := c.repo.GetClassById(classId)
+	if err != nil {
+		return "", "", "", err
+	}
+	var TheoreticClassData TPClass
+	var PracticClassData TPClass
+	var KeyClassData KClass
+	tc, _ := json.Marshal(class.TheoreticClass)
+	err = json.Unmarshal(tc, &TheoreticClassData)
+	pc, _ := json.Marshal(class.PracticClass)
+	err = json.Unmarshal(pc, &PracticClassData)
+	kc, _ := json.Marshal(class.KeyClass)
+	err = json.Unmarshal(kc, &KeyClassData)
+
+	tc, _ = json.Marshal(TheoreticClassData)
+	pc, _ = json.Marshal(PracticClassData)
+	kc, _ = json.Marshal(KeyClassData)
+	return string(tc), string(pc), string(kc), nil
+}

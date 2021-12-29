@@ -60,6 +60,11 @@ type Class interface {
 	UpdateTheoreticClass(input forms.UpdateSubclassInput) error
 	UpdatePracticClass(input forms.UpdateSubclassInput) error
 	UpdateKeyClass(input forms.UpdateKeyClassInput) error
+	GetClassById(classId string) (string, string, string, error)
+}
+
+type Booking interface {
+	BookingClass(bookingClassData forms.BookingClassInput, mentiId uint) error
 }
 
 type Service struct {
@@ -67,6 +72,7 @@ type Service struct {
 	UserData
 	Catalog
 	Class
+	Booking
 }
 
 func NewService(repos *repository.Repository) *Service {
@@ -75,5 +81,6 @@ func NewService(repos *repository.Repository) *Service {
 		UserData:      NewUserDataService(repos.UserData),
 		Catalog:       NewCatalogService(repos.Catalog),
 		Class:         NewClassesService(repos.Classes),
+		Booking:       NewBookingService(repos.Booking),
 	}
 }

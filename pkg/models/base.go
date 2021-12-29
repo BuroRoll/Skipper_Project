@@ -26,7 +26,7 @@ func init() {
 		log.Fatalf("error %s", err)
 	}
 	db = conn
-	err = db.Debug().AutoMigrate(
+	err = db.AutoMigrate(
 		&User{},
 		&Catalog0{},
 		&Catalog1{},
@@ -41,7 +41,9 @@ func init() {
 		&PracticClass{},
 		&KeyClass{},
 		&OtherInformation{},
+		&UserClass{},
 	)
+	err = db.SetupJoinTable(&User{}, "ClassBooking", &UserClass{})
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
