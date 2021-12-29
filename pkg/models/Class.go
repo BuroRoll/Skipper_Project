@@ -7,11 +7,11 @@ type Class struct {
 	ParentId    uint
 	ClassName   string
 	Description string
-	Tags        []*Catalog3 `gorm:"many2many:catalog3_class;"`
+	Tags        []*Catalog3 `gorm:"many2many:catalog3_class; OnDelete:CASCADE"`
 
-	TheoreticClass TheoreticClass `gorm:"foreignkey:ClassParentId; default:null'; OnDelete:CASCADE;"`
-	PracticClass   PracticClass   `gorm:"foreignkey:ClassParentId; default:null'; OnDelete:CASCADE;"`
-	KeyClass       KeyClass       `gorm:"foreignkey:ClassParentId; default:null'; OnDelete:CASCADE;"`
+	TheoreticClass TheoreticClass `gorm:"foreignkey:ClassParentId; default:null'; OnDelete:CASCADE"`
+	PracticClass   PracticClass   `gorm:"foreignkey:ClassParentId; default:null'; OnDelete:CASCADE"`
+	KeyClass       KeyClass       `gorm:"foreignkey:ClassParentId; default:null'; OnDelete:CASCADE"`
 }
 
 type TheoreticClass struct {

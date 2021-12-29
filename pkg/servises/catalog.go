@@ -88,5 +88,4 @@ func (c CatalogService) GetClasses(pagination *models.Pagination) (string, error
 	p, _ := json.Marshal(d)
 
 	return string(p), nil
-
 }

@@ -56,6 +56,10 @@ type Classes interface {
 	UpdateTheoreticClass(classData models.TheoreticClass, classId uint) error
 	UpdatePracticClass(classData models.PracticClass, classId uint) error
 	UpdateKeyClass(classData models.KeyClass, classId uint) error
+	GetClassById(classId string) (models.Class, error)
+}
+type Booking interface {
+	BookingClass(data forms.BookingClassInput, mentiId uint) error
 }
 
 type Repository struct {
@@ -63,6 +67,7 @@ type Repository struct {
 	UserData
 	Catalog
 	Classes
+	Booking
 }
 
 func NewRepository(db *gorm.DB) *Repository {
@@ -71,5 +76,6 @@ func NewRepository(db *gorm.DB) *Repository {
 		UserData:      NewUserDataPostgres(db),
 		Catalog:       NewCatalogPostgres(db),
 		Classes:       NewClassesPostgres(db),
+		Booking:       NewBookingPostgres(db),
 	}
 }

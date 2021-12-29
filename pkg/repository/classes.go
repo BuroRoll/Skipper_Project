@@ -58,7 +58,7 @@ func (c ClassesPostgres) GetCatalogTags(catalogId uint) (models.Catalog3, error)
 
 func (c ClassesPostgres) GetUserClasses(userId uint) ([]models.Class, error) {
 	var classes []models.Class
-	result := c.db.Raw("SELECT * FROM classes WHERE parent_id = ?", userId).Preload("Tags").Preload(clause.Associations).Find(&classes)
+	result := c.db.Raw("SELECT * FROM classes WHERE parent_id = ? AND deleted_at IS NULL", userId).Preload("Tags").Preload(clause.Associations).Find(&classes)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return nil, result.Error
 	}
@@ -66,10 +66,14 @@ func (c ClassesPostgres) GetUserClasses(userId uint) ([]models.Class, error) {
 }
 
 func (c ClassesPostgres) DeleteClass(classId string) error {
-	result := c.db.Unscoped().Delete(&models.Class{}, classId)
-	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		return result.Error
-	}
+	//var class models.Class
+	//c.db.First(&class, classId)
+
+	c.db.Exec("DELETE FROM catalog3_class WHERE class_id = ?;", classId)
+	c.db.Exec("DELETE FROM practic_classes WHERE class_parent_id = ?;", classId)
+	c.db.Exec("DELETE FROM theoretic_classes WHERE class_parent_id = ?;", classId)
+	c.db.Exec("DELETE FROM key_classes WHERE class_parent_id = ?;", classId)
+	c.db.Exec("DELETE FROM classes WHERE id = ?", classId)
 	return nil
 }
 
@@ -162,4 +166,13 @@ func (c ClassesPostgres) UpdateKeyClass(classData models.KeyClass, classId uint)
 		return result.Error
 	}
 	return nil
+}
+
+func (c ClassesPostgres) GetClassById(classId string) (models.Class, error) {
+	var class models.Class
+	result := c.db.Preload(clause.Associations).First(&class, classId)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return models.Class{}, result.Error
+	}
+	return class, nil
 }
