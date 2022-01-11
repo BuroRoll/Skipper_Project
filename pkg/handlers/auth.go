@@ -103,10 +103,21 @@ func (h *Handler) userToMentorSignUp(c *gin.Context) {
 		err := h.services.Authorization.UpgradeUserToMentor(id, input)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Ошибка обновления профиля"})
+			return
 		}
 	} else {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Пользователь не авторизован как менти"})
+		return
 	}
+	token, refreshToken, err := h.services.Authorization.GenerateTokenByID(userId.(uint), true)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ошибка генерации токена"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"token":        token,
+		"refreshToken": refreshToken,
+	})
 }
 
 func (h *Handler) verifyEmail(c *gin.Context) {
