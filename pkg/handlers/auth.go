@@ -99,6 +99,10 @@ func (h *Handler) userToMentorSignUp(c *gin.Context) {
 		return
 	}
 	userId, _ := c.Get(userCtx)
+	file, header, err := c.Request.FormFile("file")
+	filename := header.Filename
+	_, err = h.services.Authorization.SaveProfilePicture(file, filename)
+	err = h.services.UserData.UpdateProfilePicture(filename, userId.(uint))
 	if id, ok := userId.(uint); ok {
 		err := h.services.Authorization.UpgradeUserToMentor(id, input)
 		if err != nil {
