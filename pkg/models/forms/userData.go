@@ -1,12 +1,12 @@
 package forms
 
 type UpdateBaseProfileData struct {
-	FirstName      string `json:"first_name" binding:"required"`
-	SecondName     string `json:"second_name" binding:"required"`
+	FirstName      string `json:"first_name"`
+	SecondName     string `json:"second_name"`
 	Patronymic     string `json:"patronymic"`
-	DateOfBirthday string `json:"date_of_birthday" binding:"required"`
-	Time           string `json:"time" binding:"required"`
-	Description    string `json:"description" binding:"required"`
+	DateOfBirthday string `json:"date_of_birthday"`
+	Time           string `json:"time"`
+	Description    string `json:"description"`
 }
 
 type UserCommunicationInput struct {

@@ -42,6 +42,7 @@ func (h *Handler) GetUserData(c *gin.Context) {
 				"is_verify_phone":  user.IsVerifyPhone,
 				"profile_picture":  pathToProfilePicture + user.ProfilePicture,
 				"time":             user.Time,
+				"specialization":   user.Specialization,
 			})
 	}
 }
