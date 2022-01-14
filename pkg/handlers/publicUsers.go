@@ -21,6 +21,7 @@ func (h *Handler) GetMentorData(c *gin.Context) {
 	education, err := h.services.GetUserEducation(mentorId)
 	classes, err := h.services.GetUserClasses(mentorId)
 	communications, err := h.services.GetUserCommunications(mentorId)
+	otherInfo, err := h.services.GetUserOtherInfo(mentorId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Не удалось получить данные пользователя"})
 		return
@@ -40,6 +41,7 @@ func (h *Handler) GetMentorData(c *gin.Context) {
 			"education":       education,
 			"classes":         classes,
 			"communications":  communications,
+			"other_info":      otherInfo,
 		},
 	)
 }
