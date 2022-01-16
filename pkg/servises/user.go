@@ -27,7 +27,7 @@ func (u UserDataService) GetMessengers() ([]models.Messenger, error) {
 	return u.repo.GetMessengers()
 }
 
-func (u UserDataService) CreateUserCommunication(input forms.UserCommunicationInput, userId uint) error {
+func (u UserDataService) CreateUserCommunication(input forms.UserCommunicationInput, userId uint) (uint, error) {
 	return u.repo.CreateUserCommunication(input, userId)
 }
 
@@ -51,11 +51,11 @@ func (u UserDataService) GetUserEducation(userId uint) (string, error) {
 	return string(jsonData), nil
 }
 
-func (u UserDataService) CreateUserEducation(education forms.UserEducationInput, userId uint) error {
+func (u UserDataService) CreateUserEducation(education forms.UserEducationInput, userId uint) (uint, error) {
 	return u.repo.CreateUserEducation(education, userId)
 }
 
-func (u UserDataService) CreateUserWorkExperience(workExperience forms.UserWorkExperience, userId uint) error {
+func (u UserDataService) CreateUserWorkExperience(workExperience forms.UserWorkExperience, userId uint) (uint, error) {
 	return u.repo.CreateUserWorkExperience(workExperience, userId)
 }
 
@@ -79,7 +79,7 @@ func (u UserDataService) UpdateMentorSpecialization(specialization string, userI
 	return u.repo.UpdateMentorSpecialization(specialization, userId)
 }
 
-func (u UserDataService) AddUserOtherInfo(data string, userId uint) error {
+func (u UserDataService) AddUserOtherInfo(data string, userId uint) (uint, error) {
 	return u.repo.AddUserOtherInfo(data, userId)
 }
 
@@ -93,4 +93,20 @@ func (u UserDataService) GetUserOtherInfo(userId uint) (string, error) {
 		return "", err
 	}
 	return string(jsonData), nil
+}
+
+func (u UserDataService) DeleteUserCommunication(communicationId string) error {
+	return u.repo.DeleteUserCommunication(communicationId)
+}
+
+func (u UserDataService) DeleteUserEducation(educationId string) error {
+	return u.repo.DeleteUserEducation(educationId)
+}
+
+func (u UserDataService) DeleteUserWorkExperience(workExperienceId string) error {
+	return u.repo.DeleteUserWorkExperience(workExperienceId)
+}
+
+func (u UserDataService) DeleteUserOtherInfo(otherInfoId string) error {
+	return u.repo.DeleteUserOtherInfo(otherInfoId)
 }

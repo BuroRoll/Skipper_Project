@@ -45,7 +45,7 @@ func (u UserDataPostgres) GetMessengers() ([]models.Messenger, error) {
 	return messengers, nil
 }
 
-func (u UserDataPostgres) CreateUserCommunication(input forms.UserCommunicationInput, userId uint) error {
+func (u UserDataPostgres) CreateUserCommunication(input forms.UserCommunicationInput, userId uint) (uint, error) {
 	var communication models.Communication
 	var messenger models.Messenger
 	u.db.First(&messenger, input.MessengerId)
@@ -53,7 +53,7 @@ func (u UserDataPostgres) CreateUserCommunication(input forms.UserCommunicationI
 	communication.ParentId = userId
 	communication.Messenger = append(communication.Messenger, &messenger)
 	u.db.Omit("Messenger.*").Create(&communication)
-	return nil
+	return communication.ID, nil
 }
 
 func (u UserDataPostgres) UpdateBaseProfileData(input forms.UpdateBaseProfileData, userId uint) error {
@@ -92,7 +92,7 @@ func (u UserDataPostgres) GetUserEducation(userId uint) ([]models.Education, err
 	return education, nil
 }
 
-func (u UserDataPostgres) CreateUserEducation(education forms.UserEducationInput, userId uint) error {
+func (u UserDataPostgres) CreateUserEducation(education forms.UserEducationInput, userId uint) (uint, error) {
 	userEducation := models.Education{
 		ParentId:    userId,
 		Institution: education.Institution,
@@ -102,12 +102,12 @@ func (u UserDataPostgres) CreateUserEducation(education forms.UserEducationInput
 	}
 	result := u.db.Create(&userEducation)
 	if errors.Is(result.Error, gorm.ErrRegistered) {
-		return gorm.ErrRegistered
+		return 0, gorm.ErrRegistered
 	}
-	return nil
+	return userEducation.ID, nil
 }
 
-func (u UserDataPostgres) CreateUserWorkExperience(workExperience forms.UserWorkExperience, userId uint) error {
+func (u UserDataPostgres) CreateUserWorkExperience(workExperience forms.UserWorkExperience, userId uint) (uint, error) {
 	userWorkExperience := models.WorkExperience{
 		ParentId:     userId,
 		Organization: workExperience.Organization,
@@ -116,9 +116,9 @@ func (u UserDataPostgres) CreateUserWorkExperience(workExperience forms.UserWork
 	}
 	result := u.db.Create(&userWorkExperience)
 	if errors.Is(result.Error, gorm.ErrRegistered) {
-		return gorm.ErrRegistered
+		return 0, gorm.ErrRegistered
 	}
-	return nil
+	return userWorkExperience.ID, nil
 }
 
 func (u UserDataPostgres) GetUserWorkExperience(userId uint) ([]models.WorkExperience, error) {
@@ -152,16 +152,16 @@ func (u UserDataPostgres) UpdateMentorSpecialization(specialization string, user
 	return nil
 }
 
-func (u UserDataPostgres) AddUserOtherInfo(data string, userId uint) error {
+func (u UserDataPostgres) AddUserOtherInfo(data string, userId uint) (uint, error) {
 	otherInfo := models.OtherInformation{
 		ParentId: userId,
 		Data:     data,
 	}
 	result := u.db.Create(&otherInfo)
 	if errors.Is(result.Error, gorm.ErrRegistered) {
-		return gorm.ErrRegistered
+		return 0, gorm.ErrRegistered
 	}
-	return nil
+	return otherInfo.ID, nil
 }
 
 func (u UserDataPostgres) GetUserOtherInfo(userId uint) ([]models.OtherInformation, error) {
@@ -171,4 +171,37 @@ func (u UserDataPostgres) GetUserOtherInfo(userId uint) ([]models.OtherInformati
 		return nil, gorm.ErrRecordNotFound
 	}
 	return userOtherInfo, nil
+}
+
+func (u UserDataPostgres) DeleteUserCommunication(communicationId string) error {
+	result := u.db.Exec("DELETE FROM messenger_communication WHERE communication_id = (?)", communicationId)
+	result = u.db.Exec("DELETE FROM communications WHERE id = (?)", communicationId)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return gorm.ErrRecordNotFound
+	}
+	return nil
+}
+
+func (u UserDataPostgres) DeleteUserEducation(educationId string) error {
+	result := u.db.Exec("DELETE FROM educations WHERE id = (?)", educationId)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return gorm.ErrRecordNotFound
+	}
+	return nil
+}
+
+func (u UserDataPostgres) DeleteUserWorkExperience(workExperienceId string) error {
+	result := u.db.Exec("DELETE FROM work_experiences WHERE id = (?)", workExperienceId)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return gorm.ErrRecordNotFound
+	}
+	return nil
+}
+
+func (u UserDataPostgres) DeleteUserOtherInfo(otherInfoId string) error {
+	result := u.db.Exec("DELETE FROM other_informations WHERE id = ?", otherInfoId)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return gorm.ErrRecordNotFound
+	}
+	return nil
 }
