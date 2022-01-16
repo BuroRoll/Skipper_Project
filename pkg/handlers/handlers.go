@@ -39,22 +39,26 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 			communication := api.Group("/communication")
 			{
+				communication.DELETE("user-communication/:id", h.DeleteUserCommunication)
 				communication.GET("/user-communications", h.GetUserCommunications)
 				communication.GET("/messenger-list", h.GetMessengers)
 				communication.POST("/create-user-communication", h.CreateUserCommunication)
 			}
 			education := api.Group("/education")
 			{
+				education.DELETE("/user-education/:id", h.DeleteUserEducation)
 				education.GET("/user-education", h.GetUserEducations)
 				education.POST("/add-user-education", h.AddUserEducation)
 			}
 			workExperience := api.Group("/work-experience")
 			{
+				workExperience.DELETE("/user-work-experience/:id", h.DeleteUserWorkExperience)
 				workExperience.POST("/add-user-work-experience", h.AddUserWorkExperience)
 				workExperience.GET("/user-work-experience", h.GetUserWorkExperience)
 			}
 			otherInfo := api.Group("/other-info")
 			{
+				otherInfo.DELETE("/user-other-info/:id", h.DeleteUserOtherInfo)
 				otherInfo.POST("/add-user-other-info", h.AddUserOtherInfo)
 				otherInfo.GET("/user-other-info", h.GetUserOtherInfo)
 			}

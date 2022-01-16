@@ -19,17 +19,21 @@ type UserData interface {
 	GetUserById(userId uint) (models.User, error)
 	GetUserCommunications(userId uint) ([]models.Communication, error)
 	GetMessengers() ([]models.Messenger, error)
-	CreateUserCommunication(input forms.UserCommunicationInput, userId uint) error
+	CreateUserCommunication(input forms.UserCommunicationInput, userId uint) (uint, error)
 	UpdateBaseProfileData(input forms.UpdateBaseProfileData, userId uint) error
 	UpdateProfilePicture(filename string, userId uint) error
 	GetUserEducation(userId uint) ([]models.Education, error)
-	CreateUserEducation(education forms.UserEducationInput, userId uint) error
-	CreateUserWorkExperience(workExperience forms.UserWorkExperience, userId uint) error
+	CreateUserEducation(education forms.UserEducationInput, userId uint) (uint, error)
+	CreateUserWorkExperience(workExperience forms.UserWorkExperience, userId uint) (uint, error)
 	GetUserWorkExperience(userId uint) ([]models.WorkExperience, error)
 	SetUserEmail(email string, userId uint) error
 	UpdateMentorSpecialization(specialization string, userId uint) error
-	AddUserOtherInfo(data string, userId uint) error
+	AddUserOtherInfo(data string, userId uint) (uint, error)
 	GetUserOtherInfo(userId uint) ([]models.OtherInformation, error)
+	DeleteUserCommunication(communicationId string) error
+	DeleteUserEducation(educationId string) error
+	DeleteUserWorkExperience(workExperienceId string) error
+	DeleteUserOtherInfo(otherInfoId string) error
 }
 
 type Catalog interface {

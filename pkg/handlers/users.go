@@ -90,12 +90,12 @@ func (h *Handler) CreateUserCommunication(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Неверная форма добавления способа связи"})
 		return
 	}
-	err := h.services.CreateUserCommunication(input, userId.(uint))
+	id, err := h.services.CreateUserCommunication(input, userId.(uint))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ошибка создания способа коммуникации"})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"ok": true})
+	c.JSON(http.StatusOK, gin.H{"ok": true, "id": id})
 }
 
 func (h *Handler) UpdateBaseProfileData(c *gin.Context) {
@@ -158,12 +158,12 @@ func (h *Handler) AddUserEducation(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Неверная форма пользовательских данных"})
 		return
 	}
-	err := h.services.CreateUserEducation(input, userId.(uint))
+	id, err := h.services.CreateUserEducation(input, userId.(uint))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Не удалось сохранить образование пользователя"})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"status": "ok"})
+	c.JSON(http.StatusOK, gin.H{"status": "ok", "id": id})
 }
 
 func (h *Handler) AddUserWorkExperience(c *gin.Context) {
@@ -178,12 +178,12 @@ func (h *Handler) AddUserWorkExperience(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Неверная форма пользовательских данных"})
 		return
 	}
-	err := h.services.CreateUserWorkExperience(input, userId.(uint))
+	id, err := h.services.CreateUserWorkExperience(input, userId.(uint))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Не удалось сохранить опыт работы пользователя"})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"status": "ok"})
+	c.JSON(http.StatusOK, gin.H{"status": "ok", "id": id})
 }
 
 func (h *Handler) GetUserWorkExperience(c *gin.Context) {
@@ -252,12 +252,12 @@ func (h *Handler) AddUserOtherInfo(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Неверная форма пользовательских данных"})
 		return
 	}
-	err := h.services.AddUserOtherInfo(input.Data, userId.(uint))
+	id, err := h.services.AddUserOtherInfo(input.Data, userId.(uint))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Не удалось добавить данные"})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"status": "ok"})
+	c.JSON(http.StatusOK, gin.H{"status": "ok", "id": id})
 }
 
 func (h *Handler) GetUserOtherInfo(c *gin.Context) {
@@ -274,5 +274,51 @@ func (h *Handler) GetUserOtherInfo(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"otherInfo": otherInfo,
+	})
+}
+
+func (h *Handler) DeleteUserCommunication(c *gin.Context) {
+	communicationId := c.Param("id")
+	err := h.services.DeleteUserCommunication(communicationId)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Не удалось удалить данные"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"delete": "ok",
+	})
+}
+
+func (h *Handler) DeleteUserEducation(c *gin.Context) {
+	educationId := c.Param("id")
+	err := h.services.DeleteUserEducation(educationId)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Не удалось удалить данные"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"delete": "ok",
+	})
+}
+func (h *Handler) DeleteUserWorkExperience(c *gin.Context) {
+	workExperienceId := c.Param("id")
+	err := h.services.DeleteUserWorkExperience(workExperienceId)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Не удалось удалить данные"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"delete": "ok",
+	})
+}
+func (h *Handler) DeleteUserOtherInfo(c *gin.Context) {
+	otherInfoId := c.Param("id")
+	err := h.services.DeleteUserOtherInfo(otherInfoId)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Не удалось удалить данные"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"delete": "ok",
 	})
 }
