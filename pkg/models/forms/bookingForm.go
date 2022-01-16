@@ -31,6 +31,11 @@ type BookingClassInput struct {
 	Price90_5    uint `json:"price_90_5"`
 
 	Time string `json:"time" binding:"required"`
+	//Time BookingTime[]
 
 	Communication uint `json:"communication" binding:"required"`
 }
+
+//type BookingTime struct {
+//
+//}
