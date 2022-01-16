@@ -55,8 +55,8 @@ type WorkExperience struct {
 	gorm.Model
 	ParentId     uint
 	Organization string
-	StartYear    int
-	EndYear      int
+	StartYear    string
+	EndYear      string
 }
 
 type OtherInformation struct {

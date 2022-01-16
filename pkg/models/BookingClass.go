@@ -1,6 +1,7 @@
 package models
 
 type UserClass struct {
+	ID        uint `gorm:"primaryKey"`
 	UserID    uint `gorm:"primaryKey"`
 	ClassID   uint `gorm:"primaryKey"`
 	ClassType string

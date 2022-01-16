@@ -23,8 +23,8 @@ type UserEducationInput struct {
 
 type UserWorkExperience struct {
 	Organization string `json:"organization" binding:"required"`
-	StartYear    int    `json:"start_year" binding:"required"`
-	EndYear      int    `json:"end_year" binding:"required"`
+	StartYear    string `json:"start_year" binding:"required"`
+	EndYear      string `json:"end_year" binding:"required"`
 }
 
 type MentorOtherInfo struct {
