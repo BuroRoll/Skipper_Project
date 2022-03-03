@@ -26,6 +26,7 @@ func (h *Handler) GetCatalog(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"catalog": catalog,
 	})
+	//c.JSON(http.StatusOK, catalog)
 }
 
 func (h *Handler) GetMainSection(c *gin.Context) {
@@ -62,7 +63,3 @@ func (h *Handler) GetClasses(c *gin.Context) {
 		"catalog_of_mentors": userLists,
 	})
 }
-
-//func (h *Handler) GetClasses2(c *gin.Context) {
-//	fmt.Println(c.Param("id"))
-//}

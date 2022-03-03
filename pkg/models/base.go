@@ -26,24 +26,28 @@ func init() {
 		log.Fatalf("error %s", err)
 	}
 	db = conn
-	err = db.AutoMigrate(
-		&User{},
-		&Catalog0{},
-		&Catalog1{},
-		&Catalog2{},
-		&Catalog3{},
-		&Messenger{},
-		&Communication{},
-		&Education{},
-		&WorkExperience{},
-		&Class{},
-		&TheoreticClass{},
-		&PracticClass{},
-		&KeyClass{},
-		&OtherInformation{},
-		&UserClass{},
-	)
-	err = db.SetupJoinTable(&User{}, "ClassBooking", &UserClass{})
+	//err = db.AutoMigrate(
+	//	&User{},
+	//	&Catalog0{},
+	//	&Catalog1{},
+	//	&Catalog2{},
+	//	&Catalog3{},
+	//	&Messenger{},
+	//	&Communication{},
+	//	&Education{},
+	//	&WorkExperience{},
+	//	&Class{},
+	//	&TheoreticClass{},
+	//	&PracticClass{},
+	//	&KeyClass{},
+	//	&OtherInformation{},
+	//	&UserClass{},
+	//)
+	//
+	//err = db.SetupJoinTable(&User{}, "ClassBooking", &UserClass{})
+	//err = db.AutoMigrate(
+	//	&BookingTime{},
+	//)
 	if err != nil {
 		log.Fatalf(err.Error())
 	}

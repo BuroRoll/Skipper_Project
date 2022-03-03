@@ -36,7 +36,6 @@ func (h *Handler) signIn(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Неверная форма авторизации"})
 		return
 	}
-
 	token, refreshToken, err := h.services.Authorization.GenerateToken(input.Login, input.Password)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Неверный логин или пароль"})
@@ -136,9 +135,9 @@ func (h *Handler) verifyEmail(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Не удалось подтвердить почту"})
 		return
 	}
-	//c.JSON(http.StatusOK, gin.H{
-	//	"status":  "Почта успешно подтверждена",
-	//	"user_id": userId,
-	//})
-	c.Redirect(http.StatusMovedPermanently, "https://www.google.com/")
+	c.JSON(http.StatusOK, gin.H{
+		"status":  "Почта успешно подтверждена",
+		"user_id": userId,
+	})
+	//c.Redirect(http.StatusMovedPermanently, "https://www.google.com/")
 }

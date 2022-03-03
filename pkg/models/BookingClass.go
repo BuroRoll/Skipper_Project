@@ -1,10 +1,13 @@
 package models
 
+import "gorm.io/gorm"
+
 type UserClass struct {
 	ID        uint `gorm:"primaryKey"`
 	UserID    uint `gorm:"primaryKey"`
 	ClassID   uint `gorm:"primaryKey"`
 	ClassType string
+	Status    string `gorm:"default:'consideration'"`
 	MentiId   uint
 
 	Duration15   bool
@@ -30,7 +33,13 @@ type UserClass struct {
 	Duration90_5 bool
 	Price90_5    uint
 
-	Time string
+	Time []BookingTime `gorm:"foreignKey:BookingClassID;references:ID"`
 
 	Communication uint
+}
+
+type BookingTime struct {
+	gorm.Model
+	BookingClassID uint
+	Time           string
 }

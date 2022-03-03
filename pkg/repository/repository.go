@@ -40,7 +40,7 @@ type Catalog interface {
 	CreateMainCatalog(name string) (uint, error)
 	CreateChildCatalog(name string, parentId *uint) (uint, error)
 	GetCatalog() string
-	GetMainCatalog() string
+	GetMainCatalog() []MainCatalog
 	GetCatalogChild() []models.Catalog3
 	GetClasses(**models.Pagination) ([]models.User, error)
 }
@@ -64,6 +64,7 @@ type Classes interface {
 }
 type Booking interface {
 	BookingClass(data forms.BookingClassInput, mentiId uint) error
+	GetBookingsToMe(mentorId uint, status string) ([]UserBooking, error)
 }
 
 type Repository struct {
