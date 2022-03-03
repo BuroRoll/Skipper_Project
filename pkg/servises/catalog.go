@@ -38,7 +38,8 @@ func (c CatalogService) GetCatalog() string {
 
 func (c CatalogService) GetMainCatalog() string {
 	data := c.repo.GetMainCatalog()
-	return data
+	mainCatalog, _ := json.Marshal(data)
+	return string(mainCatalog)
 }
 
 func (c CatalogService) GetCatalogChild() (string, error) {

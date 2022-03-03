@@ -39,15 +39,15 @@ func (c CatalogPostgres) GetCatalog() string {
 	return string(jsonCatalog)
 }
 
-func (c CatalogPostgres) GetMainCatalog() string {
-	type MainCatalog struct {
-		Id   uint   `json:"id"`
-		Name string `json:"name"`
-	}
+type MainCatalog struct {
+	Id   uint   `json:"id"`
+	Name string `json:"name"`
+}
+
+func (c CatalogPostgres) GetMainCatalog() []MainCatalog {
 	var mainCatalogs []MainCatalog
 	c.db.Raw("SELECT id, name FROM catalog1").Find(&mainCatalogs)
-	jsonCatalog, _ := json.Marshal(mainCatalogs)
-	return string(jsonCatalog)
+	return mainCatalogs
 }
 
 func (c CatalogPostgres) GetCatalogChild() []models.Catalog3 {

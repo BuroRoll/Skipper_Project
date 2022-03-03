@@ -69,6 +69,7 @@ type Class interface {
 
 type Booking interface {
 	BookingClass(bookingClassData forms.BookingClassInput, mentiId uint) error
+	GetBookingsToMe(mentorId uint, status string) (string, error)
 }
 
 type Service struct {

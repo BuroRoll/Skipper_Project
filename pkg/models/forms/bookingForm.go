@@ -30,12 +30,8 @@ type BookingClassInput struct {
 	Duration90_5 bool `json:"duration_90_5"`
 	Price90_5    uint `json:"price_90_5"`
 
-	Time string `json:"time" binding:"required"`
-	//Time BookingTime[]
+	//Time string `json:"time" binding:"required"`
+	Time []string `json:"time" binding:"required"`
 
 	Communication uint `json:"communication" binding:"required"`
 }
-
-//type BookingTime struct {
-//
-//}
