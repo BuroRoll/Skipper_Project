@@ -7,6 +7,7 @@ import (
 	"Skipper/pkg/repository"
 	service "Skipper/pkg/servises"
 	"log"
+	"os"
 )
 
 func main() {
@@ -15,7 +16,8 @@ func main() {
 	repos := repository.NewRepository(db)
 	services := service.NewService(repos)
 	handlerses := handlers.NewHandler(services)
-	if err := srv.Run("8000", handlerses.InitRoutes()); err != nil {
+	//if err := srv.Run("8000", handlerses.InitRoutes()); err != nil {
+	if err := srv.Run(os.Getenv("PORT"), handlerses.InitRoutes()); err != nil {
 		log.Fatalf("Error run server: %s", err)
 	}
 }
