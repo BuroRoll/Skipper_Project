@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"Skipper/pkg/models/forms"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -43,10 +44,33 @@ func (h *Handler) BookClass(c *gin.Context) {
 func (h *Handler) GetBookingsToMe(c *gin.Context) {
 	userId, _ := c.Get(userCtx)
 	status := c.Query("status")
-	considerationBookings, err := h.services.GetBookingsToMe(userId.(uint), status)
+	Bookings, err := h.services.GetBookingsToMe(userId.(uint), status)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ошибка получения списка занятий"})
 		return
 	}
-	c.JSON(http.StatusOK, considerationBookings)
+	c.JSON(http.StatusOK, Bookings)
+}
+
+func (h *Handler) ChangeStatusBookingClass(c *gin.Context) {
+	bookingId := c.Query("booking_id")
+	newStatus := c.Query("new_status")
+	err := h.services.ChangeStatusBookingClass(newStatus, bookingId)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ошибка смены статуса занятия"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"status": "ok"})
+}
+
+func (h *Handler) GetMyBookings(c *gin.Context) {
+	userId, _ := c.Get(userCtx)
+	status := c.Query("status")
+	bookings, err := h.services.GetMyBookings(userId.(uint), status)
+	fmt.Println(bookings)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ошибка получения списка занятий"})
+		return
+	}
+	c.JSON(http.StatusOK, bookings)
 }

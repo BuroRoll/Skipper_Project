@@ -86,7 +86,11 @@ func (h *Handler) InitRoutes() *gin.Engine {
 					booking.GET("", h.GetClassData)
 					booking.POST("", h.BookClass)
 					booking.GET("to-me", h.GetBookingsToMe)
-					//booking.GET("my", h.GetBookingsToMe)
+					booking.GET("my", h.GetMyBookings)
+					changeStatus := booking.Group("/")
+					{
+						changeStatus.PUT("/", h.ChangeStatusBookingClass)
+					}
 				}
 			}
 		}

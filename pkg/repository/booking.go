@@ -64,50 +64,74 @@ type UserBooking struct {
 	Status    string
 	MentiId   uint
 
-	Duration15   bool
-	Price15      uint
-	Duration30_1 bool
-	Price30_1    uint
-	Duration30_3 bool
-	Price30_3    uint
-	Duration30_5 bool
-	Price30_5    uint
-
-	Duration60_1 bool
-	Price60_1    uint
-	Duration60_3 bool
-	Price60_3    uint
-	Duration60_5 bool
-	Price60_5    uint
-
-	Duration90_1 bool
-	Price90_1    uint
-	Duration90_3 bool
-	Price90_3    uint
-	Duration90_5 bool
-	Price90_5    uint
+	//Duration15   bool
+	//Price15      uint
+	//Duration30_1 bool
+	//Price30_1    uint
+	//Duration30_3 bool
+	//Price30_3    uint
+	//Duration30_5 bool
+	//Price30_5    uint
+	//
+	//Duration60_1 bool
+	//Price60_1    uint
+	//Duration60_3 bool
+	//Price60_3    uint
+	//Duration60_5 bool
+	//Price60_5    uint
+	//
+	//Duration90_1 bool
+	//Price90_1    uint
+	//Duration90_3 bool
+	//Price90_3    uint
+	//Duration90_5 bool
+	//Price90_5    uint
 
 	Time []models.BookingTime `gorm:"foreignKey:BookingClassID;references:ID"`
 
-	Communication uint
-	First_name    string `json:"menti_first_name"`
-	Second_name   string `json:"menti_second_name"`
-	User_time     string `json:"user_time"`
+	Communication       uint
+	First_name          string `json:"menti_first_name"`
+	Second_name         string `json:"menti_second_name"`
+	User_time           string `json:"user_time"`
+	Communication_login string `json:"communication_login"`
+	Messenger_name      string `json:"messenger_name"`
 }
 
 func (b BookingPostgres) GetBookingsToMe(mentorId uint, status string) ([]UserBooking, error) {
 	var bookings []UserBooking
 
-	b.db.
+	b.db.Debug().
 		Unscoped().
 		Preload("Time").
 		Table("user_classes").
 		Select("*").
 		Where("user_id=? AND status = ?", mentorId, status).
 		Joins("LEFT JOIN (select id as user_data_id, first_name, second_name, time as user_time from Users) AS menti_data ON user_classes.menti_id = menti_data.user_data_id").
-		//"LEFT JOIN (select id as communication_id, ").
-
-		//Joins("left join (select id, login from Communications) AS menti_communications ON user_classes.menti_id = menti_communications.id").
+		Joins("LEFT JOIN (SELECT parent_id, login AS communication_login, id AS communication_id FROM communications) AS communications_data ON parent_id = menti_data.user_data_id").
+		Joins("LEFT JOIN (SELECT id AS messenger_id, name AS messenger_name FROM messengers) AS messenger_data ON messenger_id = communication").
 		Find(&bookings)
 	return bookings, nil
+}
+
+func (b BookingPostgres) GetMyBookings(mentiId uint, status string) ([]UserBooking, error) {
+	var bookings []UserBooking
+
+	b.db.Debug().
+		Unscoped().
+		Preload("Time").
+		Table("user_classes").
+		Select("*").
+		Where("menti_id=? AND status = ?", mentiId, status).
+		Joins("LEFT JOIN (select id as user_data_id, first_name, second_name, time as user_time from Users) AS mentor_data ON user_classes.user_id = mentor_data.user_data_id").
+		Joins("LEFT JOIN (SELECT id AS messenger_id, name AS messenger_name FROM messengers) AS messenger_data ON messenger_id = communication").
+		Find(&bookings)
+	return bookings, nil
+}
+
+func (b BookingPostgres) ChangeStatusBookingClass(newStatus string, bookingClassId string) error {
+	err := b.db.Model(&models.UserClass{}).Where("id = ?", bookingClassId).Update("status", newStatus)
+	if err != nil {
+		return err.Error
+	}
+	return nil
 }

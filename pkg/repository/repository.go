@@ -65,6 +65,8 @@ type Classes interface {
 type Booking interface {
 	BookingClass(data forms.BookingClassInput, mentiId uint) error
 	GetBookingsToMe(mentorId uint, status string) ([]UserBooking, error)
+	GetMyBookings(mentiId uint, status string) ([]UserBooking, error)
+	ChangeStatusBookingClass(newStatus string, bookingClassId string) error
 }
 
 type Repository struct {
