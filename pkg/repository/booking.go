@@ -126,7 +126,7 @@ func (b BookingPostgres) GetMyBookings(mentiId uint, status string) ([]UserBooki
 		Where("menti_id=? AND status = ?", mentiId, status).
 		Joins("LEFT JOIN (select id as user_data_id, first_name, second_name, time as user_time from Users) AS mentor_data ON user_classes.user_id = mentor_data.user_data_id").
 		//Joins("LEFT JOIN (SELECT id AS messenger_id, name AS messenger_name FROM messengers) AS messenger_data ON messenger_id = communication").
-		Joins("LEFT JOIN (SELECT messenger_id, communication_id as cmc_id FROM messenger_communication) AS messager_communications ON messager_communications.cmc_id = messager_communications.cmc_id").
+		Joins("LEFT JOIN (SELECT messenger_id, communication_id as cmc_id FROM messenger_communication) AS messager_communications ON ON messager_communications.cmc_id = communication").
 		Joins("LEFT JOIN (SELECT id AS messenger_id, name AS messenger_name FROM messengers) AS messenger_data ON messager_communications.messenger_id = messenger_data.messenger_id").
 		Find(&bookings)
 	return bookings, nil
