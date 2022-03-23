@@ -63,7 +63,7 @@ func (c CatalogPostgres) GetClasses(pagination **models.Pagination) ([]models.Us
 	var result *gorm.DB
 	if (len((*pagination).Search)) > 0 {
 		//queryBuider = queryBuider.Preload("Classes.Tags", "id IN (?)", (*pagination).Search)
-		result = queryBuider.Debug().
+		result = queryBuider.
 			Preload("Classes").
 			Preload("Classes.Tags").
 			Preload("Classes.Tags", "id IN (?)", (*pagination).Search).
@@ -72,7 +72,7 @@ func (c CatalogPostgres) GetClasses(pagination **models.Pagination) ([]models.Us
 			Group("\"users\".id").
 			Find(&users)
 	} else {
-		result = queryBuider.Debug().
+		result = queryBuider.
 			Preload("Classes").
 			Preload("Classes.Tags").
 			Joins("LEFT JOIN (SELECT parent_id as classes_user_id from classes) as classes_data ON classes_data.classes_user_id = id").
