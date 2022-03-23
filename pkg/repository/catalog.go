@@ -59,7 +59,7 @@ func (c CatalogPostgres) GetCatalogChild() []models.Catalog3 {
 func (c CatalogPostgres) GetClasses(pagination **models.Pagination) ([]models.User, error) {
 	var users []models.User
 	offset := ((*pagination).Page - 1) * (*pagination).Limit
-	queryBuider := c.db.Limit((*pagination).Limit).Offset(offset).Order((*pagination).Sort)
+	queryBuider := c.db.Limit((*pagination).Limit).Offset(offset)
 	var result *gorm.DB
 	if (len((*pagination).Search)) > 0 {
 		//queryBuider = queryBuider.Preload("Classes.Tags", "id IN (?)", (*pagination).Search)
@@ -69,6 +69,7 @@ func (c CatalogPostgres) GetClasses(pagination **models.Pagination) ([]models.Us
 			Preload("Classes.Tags", "id IN (?)", (*pagination).Search).
 			Joins("LEFT JOIN (SELECT parent_id as classes_user_id from classes) as classes_data ON classes_data.classes_user_id = id").
 			Where("is_mentor = true AND classes_user_id IS NOT NULL").
+			Group("\"users\".id").
 			Find(&users)
 	} else {
 		result = queryBuider.Debug().
@@ -76,6 +77,7 @@ func (c CatalogPostgres) GetClasses(pagination **models.Pagination) ([]models.Us
 			Preload("Classes.Tags").
 			Joins("LEFT JOIN (SELECT parent_id as classes_user_id from classes) as classes_data ON classes_data.classes_user_id = id").
 			Where("is_mentor = true AND classes_user_id IS NOT NULL").
+			Group("\"users\".id").
 			Find(&users)
 	}
 	//result = queryBuider.Preload("Classes").
