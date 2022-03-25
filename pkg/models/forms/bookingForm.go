@@ -9,11 +9,11 @@ type BookingClassInput struct {
 	Duration15 bool `json:"duration_15"`
 	Price15    uint `json:"price_15"`
 
-	Duration30_1 bool `json:"duration_15_1"`
+	Duration30_1 bool `json:"duration_30_1"`
 	Price30_1    uint `json:"price_30_1"`
-	Duration30_3 bool `json:"duration_15_3"`
+	Duration30_3 bool `json:"duration_30_3"`
 	Price30_3    uint `json:"price_30_3"`
-	Duration30_5 bool `json:"duration_15_5"`
+	Duration30_5 bool `json:"duration_30_5"`
 	Price30_5    uint `json:"price_30_5"`
 
 	Duration60_1 bool `json:"duration_60_1"`
@@ -30,7 +30,6 @@ type BookingClassInput struct {
 	Duration90_5 bool `json:"duration_90_5"`
 	Price90_5    uint `json:"price_90_5"`
 
-	//Time string `json:"time" binding:"required"`
 	Time []string `json:"time" binding:"required"`
 
 	Communication uint `json:"communication" binding:"required"`
