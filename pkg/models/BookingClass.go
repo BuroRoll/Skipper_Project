@@ -4,8 +4,8 @@ import "gorm.io/gorm"
 
 type UserClass struct {
 	ID      uint `gorm:"primaryKey"`
-	UserID  uint `gorm:"primaryKey"`
-	ClassID uint `gorm:"primaryKey"`
+	UserID  uint
+	ClassID uint
 	Class   Class
 
 	ClassType string
