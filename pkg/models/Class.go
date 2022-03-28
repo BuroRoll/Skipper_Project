@@ -8,6 +8,7 @@ type Class struct {
 	ClassName   string
 	Description string
 	Tags        []*Catalog3 `gorm:"many2many:catalog3_class; OnDelete:CASCADE"`
+	//Bookings    []UserClass
 
 	TheoreticClass TheoreticClass `gorm:"foreignkey:ClassParentId; default:null'; OnDelete:CASCADE"`
 	PracticClass   PracticClass   `gorm:"foreignkey:ClassParentId; default:null'; OnDelete:CASCADE"`

@@ -20,7 +20,7 @@ type User struct {
 	IsVerifyPhone  bool            `gorm:"default:false"`
 	Communications []Communication `gorm:"ForeignKey:ParentId"`
 
-	ClassBooking []Class `gorm:"many2many:user_classes;"`
+	//ClassBooking []Class `gorm:"many2many:user_classes;"`
 	//Mentor information
 	Specialization   string
 	Educations       []Education        `gorm:"ForeignKey:ParentId"`

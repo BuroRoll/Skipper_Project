@@ -16,6 +16,10 @@ func NewBookingPostgres(db *gorm.DB) *BookingPostgres {
 
 func (b BookingPostgres) BookingClass(data forms.BookingClassInput, mentiId uint) error {
 	var booking models.UserClass
+	var class models.Class
+	b.db.First(&class, data.ClassId)
+
+	booking.Class = class
 	booking.UserID = data.MentorId
 	booking.ClassID = data.ClassId
 	booking.ClassType = data.ClassType
@@ -43,7 +47,10 @@ func (b BookingPostgres) BookingClass(data forms.BookingClassInput, mentiId uint
 	booking.Duration90_3 = data.Duration90_3
 	booking.Price90_3 = data.Price90_3
 	booking.Duration90_5 = data.Duration90_5
-	booking.Price90_5 = data.Price90_1
+	booking.Price90_5 = data.Price90_5
+
+	booking.PriceFullTime = data.PriceFullTime
+	booking.FullTime = data.FullTime
 
 	booking.Communication = data.Communication
 
@@ -63,6 +70,7 @@ type UserBooking struct {
 	ClassType string
 	Status    string
 	MentiId   uint
+	Class     models.Class
 
 	Duration15   bool
 	Price15      uint
@@ -87,7 +95,11 @@ type UserBooking struct {
 	Duration90_5 bool
 	Price90_5    uint
 
+	FullTime      bool
+	PriceFullTime uint
+
 	Time []models.BookingTime `gorm:"foreignKey:BookingClassID;references:ID"`
+	//Tags []models.Catalog3
 
 	Communication       uint
 	First_name          string `json:"menti_first_name"`
@@ -102,8 +114,9 @@ func (b BookingPostgres) GetBookingsToMe(mentorId uint, status string) ([]UserBo
 
 	b.db.Debug().
 		Unscoped().
-		Preload("Time").
 		Table("user_classes").
+		Preload("Class.Tags").
+		Preload("Time").
 		Select("*").
 		Where("user_id=? AND status = ?", mentorId, status).
 		Joins("LEFT JOIN (select id as user_data_id, first_name, second_name, time as user_time from Users) AS menti_data ON user_classes.menti_id = menti_data.user_data_id").
@@ -117,11 +130,11 @@ func (b BookingPostgres) GetBookingsToMe(mentorId uint, status string) ([]UserBo
 
 func (b BookingPostgres) GetMyBookings(mentiId uint, status string) ([]UserBooking, error) {
 	var bookings []UserBooking
-
 	b.db.Debug().
 		Unscoped().
-		Preload("Time").
 		Table("user_classes").
+		Preload("Class.Tags").
+		Preload("Time").
 		Select("*").
 		Where("menti_id=? AND status = ?", mentiId, status).
 		Joins("LEFT JOIN (select id as user_data_id, first_name, second_name, time as user_time from Users) AS mentor_data ON user_classes.user_id = mentor_data.user_data_id").

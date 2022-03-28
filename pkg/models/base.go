@@ -45,7 +45,7 @@ func init() {
 	)
 	err = db.AutoMigrate(&BookingTime{})
 	err = db.AutoMigrate(&UserClass{})
-	err = db.SetupJoinTable(&User{}, "ClassBooking", &UserClass{})
+	//err = db.SetupJoinTable(&User{}, "ClassBooking", &UserClass{})
 
 	if err != nil {
 		log.Fatalf(err.Error())
