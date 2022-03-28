@@ -122,7 +122,7 @@ func (b BookingPostgres) GetBookingsToMe(mentorId uint, status string) ([]UserBo
 		Joins("LEFT JOIN (select id as user_data_id, first_name, second_name, time as user_time from Users) AS menti_data ON user_classes.menti_id = menti_data.user_data_id").
 		Joins("LEFT JOIN (SELECT parent_id, login AS communication_login, id AS communication_id FROM communications) AS communications_data ON parent_id = menti_data.user_data_id").
 		//Joins("LEFT JOIN (SELECT id AS messenger_id, name AS messenger_name FROM messengers) AS messenger_data ON messenger_id = communication").
-		Joins("LEFT JOIN (SELECT messenger_id, communication_id as cmc_id FROM messenger_communication) AS messager_communications ON communication_id = messager_communications.cmc_id").
+		Joins("LEFT JOIN (SELECT messenger_id, communication_id as cmc_id FROM messenger_communication) AS messager_communications ON messager_communications.cmc_id = communication").
 		Joins("LEFT JOIN (SELECT id AS messenger_id, name AS messenger_name FROM messengers) AS messenger_data ON messager_communications.messenger_id = messenger_data.messenger_id").
 		Find(&bookings)
 	return bookings, nil
