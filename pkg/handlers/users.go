@@ -43,6 +43,7 @@ func (h *Handler) GetUserData(c *gin.Context) {
 				"profile_picture":  pathToProfilePicture + user.ProfilePicture,
 				"time":             user.Time,
 				"specialization":   user.Specialization,
+				"communications":   user.Communications,
 			})
 	}
 }
