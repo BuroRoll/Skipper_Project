@@ -6,6 +6,7 @@ import (
 	"Skipper/pkg/repository"
 	"encoding/json"
 	"errors"
+	"fmt"
 )
 
 type BookingService struct {
@@ -50,8 +51,10 @@ func (b BookingService) ChangeStatusBookingClass(newStatus string, bookingClassI
 
 func (b BookingService) CheckBookingCommunications(userCommunications []models.Communication, communicationId uint) error {
 	messengerId := b.repo.GetMessengerByCommunication(communicationId)
+	fmt.Println("Messenger_id from communication", messengerId)
 	for _, i := range userCommunications {
 		for _, j := range i.Messenger {
+			fmt.Println("user_messenger_id", j.ID)
 			if j.ID == messengerId {
 				return nil
 			}
