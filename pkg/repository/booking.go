@@ -155,8 +155,8 @@ func (b BookingPostgres) ChangeStatusBookingClass(newStatus string, bookingClass
 }
 
 type messenger_communication struct {
-	messengerId     uint
-	communicationId uint
+	MessengerId     uint `json:"messenger_id"`
+	CommunicationId uint `json:"communication_id"`
 }
 
 func (b BookingPostgres) GetMessengerByCommunication(id uint) uint {
@@ -165,5 +165,5 @@ func (b BookingPostgres) GetMessengerByCommunication(id uint) uint {
 		Table("messenger_communication").
 		Where("communication_id = ?", id).
 		Find(&data)
-	return data.messengerId
+	return data.MessengerId
 }
