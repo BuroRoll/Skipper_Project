@@ -162,7 +162,7 @@ type messenger_communication struct {
 func (b BookingPostgres) GetMessengerByCommunication(id uint) uint {
 	var data messenger_communication
 	b.db.
-		Table("messenger_communications").
+		Table("messenger_communication").
 		Where("communication_id = ?", id).
 		Find(&data)
 	return data.messengerId
