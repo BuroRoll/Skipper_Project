@@ -72,6 +72,7 @@ type Booking interface {
 	GetBookingsToMe(mentorId uint, status string) (string, error)
 	GetMyBookings(mentorId uint, status string) (string, error)
 	ChangeStatusBookingClass(newStatus string, bookingClassId string) error
+	CheckBookingCommunications(userCommunications []models.Communication, communicationId uint) error
 }
 
 type Service struct {

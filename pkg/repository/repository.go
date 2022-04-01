@@ -67,6 +67,7 @@ type Booking interface {
 	GetBookingsToMe(mentorId uint, status string) ([]UserBooking, error)
 	GetMyBookings(mentiId uint, status string) ([]UserBooking, error)
 	ChangeStatusBookingClass(newStatus string, bookingClassId string) error
+	GetMessengerByCommunication(id uint) uint
 }
 
 type Repository struct {

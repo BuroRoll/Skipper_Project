@@ -1,9 +1,11 @@
 package service
 
 import (
+	"Skipper/pkg/models"
 	"Skipper/pkg/models/forms"
 	"Skipper/pkg/repository"
 	"encoding/json"
+	"errors"
 )
 
 type BookingService struct {
@@ -44,4 +46,16 @@ func (b BookingService) ChangeStatusBookingClass(newStatus string, bookingClassI
 		return err
 	}
 	return nil
+}
+
+func (b BookingService) CheckBookingCommunications(userCommunications []models.Communication, communicationId uint) error {
+	messengerId := b.repo.GetMessengerByCommunication(communicationId)
+	for _, i := range userCommunications {
+		for _, j := range i.Messenger {
+			if j.ID == messengerId {
+				return nil
+			}
+		}
+	}
+	return errors.New("user have not communication")
 }

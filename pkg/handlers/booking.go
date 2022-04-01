@@ -33,21 +33,17 @@ func (h *Handler) BookClass(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Неверная форма записи на занятие"})
 		return
 	}
-	data, _ := h.services.GetUserCommunications(userId.(uint))
-	fmt.Println("data from user communications")
-	for _, i := range data {
-		for _, j := range i.Messenger {
-			fmt.Println(j.ID)
-		}
+	userCommunications, _ := h.services.GetUserCommunications(userId.(uint))
+	err := h.services.CheckBookingCommunications(userCommunications, bookingInput.Communication)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "У пользователя нет способа связи с ментором"})
+		return
 	}
-	fmt.Println("--------------------")
-	fmt.Println("data from input data")
-	fmt.Println(bookingInput.Communication)
-	//err := h.services.BookingClass(bookingInput, userId.(uint))
-	//if err != nil {
-	//	c.JSON(http.StatusInternalServerError, gin.H{"error": "Ошибка записи на занятие"})
-	//	return
-	//}
+	err = h.services.BookingClass(bookingInput, userId.(uint))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ошибка записи на занятие"})
+		return
+	}
 	c.JSON(http.StatusOK, gin.H{})
 }
 

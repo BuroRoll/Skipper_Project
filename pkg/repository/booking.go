@@ -112,7 +112,7 @@ type UserBooking struct {
 func (b BookingPostgres) GetBookingsToMe(mentorId uint, status string) ([]UserBooking, error) {
 	var bookings []UserBooking
 
-	b.db.Debug().
+	b.db.
 		Unscoped().
 		Table("user_classes").
 		Preload("Class.Tags").
@@ -131,7 +131,7 @@ func (b BookingPostgres) GetBookingsToMe(mentorId uint, status string) ([]UserBo
 
 func (b BookingPostgres) GetMyBookings(mentiId uint, status string) ([]UserBooking, error) {
 	var bookings []UserBooking
-	b.db.Debug().
+	b.db.
 		Unscoped().
 		Table("user_classes").
 		Preload("Class.Tags").
@@ -152,4 +152,18 @@ func (b BookingPostgres) ChangeStatusBookingClass(newStatus string, bookingClass
 		return err.Error
 	}
 	return nil
+}
+
+type messenger_communication struct {
+	messengerId     uint
+	communicationId uint
+}
+
+func (b BookingPostgres) GetMessengerByCommunication(id uint) uint {
+	var data messenger_communication
+	b.db.
+		Table("messenger_communications").
+		Where("communication_id = ?", id).
+		Find(&data)
+	return data.messengerId
 }
