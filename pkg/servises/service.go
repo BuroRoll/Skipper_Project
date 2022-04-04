@@ -75,12 +75,19 @@ type Booking interface {
 	CheckBookingCommunications(userCommunications []models.Communication, communicationId uint) error
 }
 
+type Chat interface {
+	CreateMessage(messageInput forms.MessageInput) (string, error)
+	GetOpenChats(userId uint) (string, error)
+	GetChatData(userId uint, receiverID string) (string, string, error)
+}
+
 type Service struct {
 	Authorization
 	UserData
 	Catalog
 	Class
 	Booking
+	Chat
 }
 
 func NewService(repos *repository.Repository) *Service {
@@ -90,5 +97,6 @@ func NewService(repos *repository.Repository) *Service {
 		Catalog:       NewCatalogService(repos.Catalog),
 		Class:         NewClassesService(repos.Classes),
 		Booking:       NewBookingService(repos.Booking),
+		Chat:          NewChatService(repos.Chat),
 	}
 }

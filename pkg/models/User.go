@@ -7,7 +7,7 @@ type User struct {
 	//Base information
 	Email          string
 	Phone          string `gorm:"index:unique"`
-	Password       string
+	Password       string `json:"-"`
 	FirstName      string
 	SecondName     string
 	Patronymic     string
