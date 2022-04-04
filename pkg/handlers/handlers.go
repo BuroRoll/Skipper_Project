@@ -93,6 +93,12 @@ func (h *Handler) InitRoutes() *gin.Engine {
 					}
 				}
 			}
+
+			chat := api.Group("/chat")
+			{
+				chat.GET("/", h.GetChatsList)
+				chat.GET("/:userID", h.GetChatMessages)
+			}
 		}
 
 	}
@@ -111,6 +117,11 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			catalog.GET("/classes", h.GetClasses)
 		}
 		publicApi.GET("/user/profile-picture/:filename", h.GetUserProfilePicture)
+	}
+	socket := router.Group("/", h.userIdentity)
+	{
+		socket.GET("/socket.io/*any", gin.WrapH(SocketServer))
+		socket.POST("/socket.io/*any", gin.WrapH(SocketServer))
 	}
 
 	router.GET("/verify-email", h.verifyEmail)

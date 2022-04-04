@@ -70,12 +70,19 @@ type Booking interface {
 	GetMessengerByCommunication(id uint) uint
 }
 
+type Chat interface {
+	CreateMessage(input forms.MessageInput) (models.Message, error)
+	GetOpenChats(userId uint) ([]models.Chat, error)
+	GetChatData(userId string, receiverID string) (models.Chat, []models.Message, error)
+}
+
 type Repository struct {
 	Authorization
 	UserData
 	Catalog
 	Classes
 	Booking
+	Chat
 }
 
 func NewRepository(db *gorm.DB) *Repository {
@@ -85,5 +92,6 @@ func NewRepository(db *gorm.DB) *Repository {
 		Catalog:       NewCatalogPostgres(db),
 		Classes:       NewClassesPostgres(db),
 		Booking:       NewBookingPostgres(db),
+		Chat:          NewChatPostgres(db),
 	}
 }
