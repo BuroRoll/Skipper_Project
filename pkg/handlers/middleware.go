@@ -24,6 +24,7 @@ func corsMiddleware() gin.HandlerFunc {
 		if c.Request.Method == "OPTIONS" {
 			c.AbortWithStatus(200)
 		} else {
+			c.Request.Header.Del("Origin")
 			c.Next()
 		}
 	}

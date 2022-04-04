@@ -118,7 +118,8 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		}
 		publicApi.GET("/user/profile-picture/:filename", h.GetUserProfilePicture)
 	}
-	socket := router.Group("/", h.userIdentity)
+	//socket := router.Group("/", h.userIdentity)
+	socket := router.Group("/")
 	{
 		socket.GET("/socket.io/*any", gin.WrapH(SocketServer))
 		socket.POST("/socket.io/*any", gin.WrapH(SocketServer))
