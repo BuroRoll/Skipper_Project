@@ -33,6 +33,12 @@ func (c ChatPostgres) CreateMessage(input forms.MessageInput) (models.Message, e
 func (c ChatPostgres) GetOpenChats(userId uint) ([]models.Chat, error) {
 	var chats []models.Chat
 	c.db.
+		Preload("Sender", func(tx *gorm.DB) *gorm.DB {
+			return tx.Select("id, first_name, second_name, profile_picture")
+		}).
+		Preload("Receiver", func(tx *gorm.DB) *gorm.DB {
+			return tx.Select("id, first_name, second_name, profile_picture")
+		}).
 		Where("sender_id = ?", userId).
 		Or("receiver_id = ?", userId).
 		Find(&chats)
@@ -45,10 +51,10 @@ func (c ChatPostgres) GetChatData(userId string, receiverID string) (models.Chat
 		"sender_id = ? AND receiver_id = ?", userId, receiverID).Or(
 		"sender_id = ? AND receiver_id = ?", receiverID, userId).
 		Preload("Sender", func(tx *gorm.DB) *gorm.DB {
-			return tx.Select("id, first_name, second_name")
+			return tx.Select("id, first_name, second_name, profile_picture")
 		}).
 		Preload("Receiver", func(tx *gorm.DB) *gorm.DB {
-			return tx.Select("id, first_name, second_name")
+			return tx.Select("id, first_name, second_name, profile_picture")
 		}).
 		First(&chat).Error; err != nil {
 		chat.SenderID = userId
