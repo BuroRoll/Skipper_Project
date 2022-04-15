@@ -4,19 +4,23 @@ import (
 	"Skipper/pkg/models/forms"
 	"encoding/json"
 	"fmt"
+	"github.com/alexandrevicenzi/go-sse"
 	socketio "github.com/googollee/go-socket.io"
 	"log"
 )
 
 var SocketServer *socketio.Server
+var SseNotification *sse.Server
 
-// InitSocket handler for use by app
 func InitSocket() error {
 	SocketServer = socketio.NewServer(nil)
 	return nil
 }
 
-// SocketEvents from websocket
+func InitSseServe(sse *sse.Server) {
+	SseNotification = sse
+}
+
 func (h *Handler) SocketEvents() {
 	SocketServer.OnConnect("/", func(conn socketio.Conn) error {
 		url := conn.URL()
@@ -35,8 +39,7 @@ func (h *Handler) SocketEvents() {
 		if err != nil {
 			return
 		}
-		conn.SetContext("")
-
+		SendMsgNotification(message, input.ReceiverID)
 		SocketServer.BroadcastToRoom("/", input.ChatID, "message", message)
 		conn.Emit("message"+input.SenderID, message)
 	})
@@ -53,4 +56,8 @@ func (h *Handler) SocketEvents() {
 	SocketServer.OnDisconnect("/", func(conn socketio.Conn, reason string) {
 		fmt.Println("closed:", reason)
 	})
+}
+
+func SendMsgNotification(message string, userId string) {
+	SseNotification.SendMessage("/notifications/message/"+userId, sse.SimpleMessage(message))
 }

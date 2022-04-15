@@ -2,6 +2,7 @@ package handlers
 
 import (
 	service "Skipper/pkg/servises"
+	"github.com/alexandrevicenzi/go-sse"
 	"github.com/gin-gonic/gin"
 )
 
@@ -13,9 +14,12 @@ func NewHandler(services *service.Service) *Handler {
 	return &Handler{services: services}
 }
 
-func (h *Handler) InitRoutes() *gin.Engine {
+func (h *Handler) InitRoutes() {
 	router := gin.Default()
 	router.Use(corsMiddleware())
+	sseRouter := sse.NewServer(nil)
+	defer sseRouter.Shutdown()
+	InitSseServe(sseRouter)
 
 	auth := router.Group("/auth")
 	{
@@ -127,5 +131,11 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 	router.GET("/verify-email", h.verifyEmail)
 
-	return router
+	notifications := router.Group("/notifications")
+	{
+		notifications.GET("/message/:userId", func(c *gin.Context) {
+			sseRouter.ServeHTTP(c.Writer, c.Request)
+		})
+	}
+	router.Run(":8000")
 }
