@@ -23,10 +23,14 @@ func (c ChatPostgres) CreateMessage(input forms.MessageInput) (models.Message, e
 		Body:       input.Message,
 		IsRead:     false,
 	}
-	result := c.db.Create(&message)
-	if result.Error != nil {
-		return models.Message{}, result.Error
-	}
+	var chat models.Chat
+	c.db.First(&chat, input.ChatID)
+	chat.LastMessage = message
+	c.db.Save(&chat)
+	//result := c.db.Create(&message)
+	//if result.Error != nil {
+	//	return models.Message{}, result.Error
+	//}
 	return message, nil
 }
 
@@ -39,6 +43,7 @@ func (c ChatPostgres) GetOpenChats(userId uint) ([]models.Chat, error) {
 		Preload("Receiver", func(tx *gorm.DB) *gorm.DB {
 			return tx.Select("id, first_name, second_name, profile_picture")
 		}).
+		Preload("LastMessage").
 		Where("sender_id = ?", userId).
 		Or("receiver_id = ?", userId).
 		Find(&chats)
