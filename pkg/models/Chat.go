@@ -13,9 +13,10 @@ type Message struct {
 
 type Chat struct {
 	gorm.Model
-	Sender      User `gorm:"foreignkey:SenderID"`
-	SenderID    string
-	Receiver    User `gorm:"foreignkey:ReceiverID"`
-	ReceiverID  string
-	LastMessage Message
+	Sender        User `gorm:"foreignkey:SenderID"`
+	SenderID      string
+	Receiver      User `gorm:"foreignkey:ReceiverID"`
+	ReceiverID    string
+	LastMessage   Message
+	LastMessageId string
 }

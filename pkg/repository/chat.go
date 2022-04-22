@@ -27,16 +27,25 @@ func (c ChatPostgres) CreateMessage(input forms.MessageInput) (models.Message, e
 	c.db.First(&chat, input.ChatID)
 	chat.LastMessage = message
 	c.db.Save(&chat)
-	//result := c.db.Create(&message)
-	//if result.Error != nil {
-	//	return models.Message{}, result.Error
-	//}
+	chat.LastMessageId = strconv.Itoa(int(chat.LastMessage.ID))
+	c.db.Save(&chat)
 	return message, nil
 }
 
-func (c ChatPostgres) GetOpenChats(userId uint) ([]models.Chat, error) {
-	var chats []models.Chat
-	c.db.
+type Chats struct {
+	gorm.Model
+	Sender              models.User `gorm:"foreignkey:SenderID"`
+	SenderID            string
+	Receiver            models.User `gorm:"foreignkey:ReceiverID"`
+	ReceiverID          string
+	LastMessage         models.Message `gorm:"foreignKey:ChatID;references:ID"`
+	CountUnreadMessages uint           `json:"count_unread_messages"`
+}
+
+func (c ChatPostgres) GetOpenChats(userId uint) ([]Chats, error) {
+	var chats []Chats
+	//var chats []models.Chat
+	c.db.Debug().
 		Preload("Sender", func(tx *gorm.DB) *gorm.DB {
 			return tx.Select("id, first_name, second_name, profile_picture")
 		}).
@@ -44,8 +53,12 @@ func (c ChatPostgres) GetOpenChats(userId uint) ([]models.Chat, error) {
 			return tx.Select("id, first_name, second_name, profile_picture")
 		}).
 		Preload("LastMessage").
+		Select("*").
+		Joins("INNER JOIN (SELECT created_at AS last_message_time, id AS message_id FROM messages) AS message_data ON message_data.message_id::varchar(255) = chats.last_message_id").
+		Joins("LEFT JOIN (SELECT chat_id, COUNT(*) as count_unread_messages FROM messages WHERE (receiver_id in (?) AND is_read IS false) GROUP BY chat_id) AS d ON chat_id = chats.id", strconv.Itoa(int(userId))).
 		Where("sender_id = ?", userId).
 		Or("receiver_id = ?", userId).
+		Order("last_message_time DESC").
 		Find(&chats)
 	return chats, nil
 }

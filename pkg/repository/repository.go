@@ -72,7 +72,7 @@ type Booking interface {
 
 type Chat interface {
 	CreateMessage(input forms.MessageInput) (models.Message, error)
-	GetOpenChats(userId uint) ([]models.Chat, error)
+	GetOpenChats(userId uint) ([]Chats, error)
 	GetChatData(userId string, receiverID string) (models.Chat, []models.Message, error)
 }
 
