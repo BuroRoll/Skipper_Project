@@ -79,6 +79,7 @@ type Chat interface {
 	CreateMessage(messageInput forms.MessageInput) (string, error)
 	GetOpenChats(userId uint) (string, error)
 	GetChatData(userId uint, receiverID string) (string, string, error)
+	ReadMessages(chatId string, userId uint) error
 }
 
 type Service struct {

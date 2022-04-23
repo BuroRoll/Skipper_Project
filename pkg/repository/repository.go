@@ -74,6 +74,7 @@ type Chat interface {
 	CreateMessage(input forms.MessageInput) (models.Message, error)
 	GetOpenChats(userId uint) ([]Chats, error)
 	GetChatData(userId string, receiverID string) (models.Chat, []models.Message, error)
+	ReadMessages(chatId string, userId string) error
 }
 
 type Repository struct {

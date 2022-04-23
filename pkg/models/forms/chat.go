@@ -6,3 +6,7 @@ type MessageInput struct {
 	Message    string `json:"message"`
 	ChatID     string `json:"chatId"`
 }
+
+type ReadChatInput struct {
+	ChatId string `json:"chatId"`
+}

@@ -45,3 +45,8 @@ func (c ChatService) GetChatData(userId uint, receiverID string) (string, string
 	messagesList, _ := json.Marshal(messages)
 	return string(chatInfo), string(messagesList), nil
 }
+
+func (c ChatService) ReadMessages(chatId string, userId uint) error {
+	user_id := strconv.FormatUint(uint64(userId), 10)
+	return c.repo.ReadMessages(chatId, user_id)
+}

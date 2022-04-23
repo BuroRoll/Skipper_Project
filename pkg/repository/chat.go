@@ -45,7 +45,7 @@ type Chats struct {
 func (c ChatPostgres) GetOpenChats(userId uint) ([]Chats, error) {
 	var chats []Chats
 	//var chats []models.Chat
-	c.db.Debug().
+	c.db.
 		Preload("Sender", func(tx *gorm.DB) *gorm.DB {
 			return tx.Select("id, first_name, second_name, profile_picture")
 		}).
@@ -93,4 +93,14 @@ func (c ChatPostgres) GetChatData(userId string, receiverID string) (models.Chat
 	chatId := strconv.FormatUint(uint64(chat.ID), 10)
 	c.db.Debug().Where("chat_id = ?", chatId).Find(&messages)
 	return chat, messages, nil
+}
+
+func (c ChatPostgres) ReadMessages(chatId string, userId string) error {
+	var message models.Message
+
+	c.db.
+		Model(&message).
+		Where("chat_id in (?) and receiver_id in (?)", chatId, userId).
+		UpdateColumn("is_read", true)
+	return nil
 }
