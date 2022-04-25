@@ -39,5 +39,8 @@ jobs:
 #           port: ${{ secrets.PORT }}
           script: |
             cd skipper_backend
-            docker-compose up -d 
+            docker-compose stop
+            docker-compose rm -f
+            docker-compose pull
+            docker-compose up --build -d
           
