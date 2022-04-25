@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  skipper_backend:
+    image: buroroll/skipper:latest
+    container_name: skipper_backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    deploy:
+      restart_policy:
+        condition: on-failure
