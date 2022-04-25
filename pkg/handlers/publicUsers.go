@@ -22,6 +22,7 @@ func (h *Handler) GetMentorData(c *gin.Context) {
 	classes, err := h.services.GetUserClasses(mentorId)
 	communications, err := h.services.GetUserCommunications(mentorId)
 	otherInfo, err := h.services.GetUserOtherInfo(mentorId)
+	comments, err := h.services.GetComments(mentorId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Не удалось получить данные пользователя"})
 		return
@@ -42,6 +43,7 @@ func (h *Handler) GetMentorData(c *gin.Context) {
 			"classes":         classes,
 			"communications":  communications,
 			"other_info":      otherInfo,
+			"comments":        comments,
 		},
 	)
 }
@@ -49,6 +51,7 @@ func (h *Handler) GetMentorData(c *gin.Context) {
 func (h *Handler) GetMentiData(c *gin.Context) {
 	mentiId := parseId(c.Param("id"))
 	user, err := h.services.GetUserData(mentiId)
+	comments, err := h.services.GetComments(mentiId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Не удалось получить данные пользователя"})
 		return
@@ -61,6 +64,7 @@ func (h *Handler) GetMentiData(c *gin.Context) {
 			"patronymic":      user.Patronymic,
 			"profile_picture": pathToProfilePicture + user.ProfilePicture,
 			"register_date":   user.CreatedAt,
+			"comments":        comments,
 		},
 	)
 }

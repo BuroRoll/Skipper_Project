@@ -103,6 +103,12 @@ func (h *Handler) InitRoutes() {
 				chat.GET("/", h.GetChatsList)
 				chat.GET("/:userID", h.GetChatMessages)
 			}
+
+			comments := api.Group("/comments")
+			{
+				comments.POST("/", h.CreateComment)
+				//comments.GET("/:id", h.GetComments)
+			}
 		}
 
 	}
