@@ -77,6 +77,11 @@ type Chat interface {
 	ReadMessages(chatId string, userId string) error
 }
 
+type Comments interface {
+	CreateComment(comment forms.CommentInput) error
+	GetComments(userId uint) ([]models.Comment, error)
+}
+
 type Repository struct {
 	Authorization
 	UserData
@@ -84,6 +89,7 @@ type Repository struct {
 	Classes
 	Booking
 	Chat
+	Comments
 }
 
 func NewRepository(db *gorm.DB) *Repository {
@@ -94,5 +100,6 @@ func NewRepository(db *gorm.DB) *Repository {
 		Classes:       NewClassesPostgres(db),
 		Booking:       NewBookingPostgres(db),
 		Chat:          NewChatPostgres(db),
+		Comments:      NewCommentsPostgres(db),
 	}
 }

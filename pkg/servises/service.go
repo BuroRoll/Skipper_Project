@@ -82,6 +82,11 @@ type Chat interface {
 	ReadMessages(chatId string, userId uint) error
 }
 
+type Comments interface {
+	CreateComment(comment forms.CommentInput) error
+	GetComments(userId uint) (string, error)
+}
+
 type Service struct {
 	Authorization
 	UserData
@@ -89,6 +94,7 @@ type Service struct {
 	Class
 	Booking
 	Chat
+	Comments
 }
 
 func NewService(repos *repository.Repository) *Service {
@@ -99,5 +105,6 @@ func NewService(repos *repository.Repository) *Service {
 		Class:         NewClassesService(repos.Classes),
 		Booking:       NewBookingService(repos.Booking),
 		Chat:          NewChatService(repos.Chat),
+		Comments:      NewCommentsService(repos.Comments),
 	}
 }
