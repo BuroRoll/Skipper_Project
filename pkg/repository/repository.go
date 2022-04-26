@@ -79,7 +79,7 @@ type Chat interface {
 
 type Comments interface {
 	CreateComment(comment forms.CommentInput) error
-	GetComments(userId uint) ([]models.Comment, error)
+	GetComments(userId uint) ([]CommentData, error)
 }
 
 type Repository struct {

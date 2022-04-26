@@ -32,9 +32,27 @@ func (c CommentsPostgres) CreateComment(commInput forms.CommentInput) error {
 	return nil
 }
 
-func (c CommentsPostgres) GetComments(userId uint) ([]models.Comment, error) {
-	var comments []models.Comment
-	result := c.db.Where("recipien_id=?", userId).Find(&comments)
+type CommentData struct {
+	gorm.Model
+	SenderId             *uint
+	RecipienId           uint
+	Text                 string
+	Rating               uint
+	Anonymous            bool
+	LessonsCount         *uint
+	SenderFirstName      string `json:"sender_first_name"`
+	SenderSecondName     string `json:"sender_second_name"`
+	SenderProfilePicture string `json:"sender_profile_picture"`
+}
+
+func (c CommentsPostgres) GetComments(userId uint) ([]CommentData, error) {
+	var comments []CommentData
+	result := c.db.Debug().
+		Select("*").
+		Table("comments").
+		Joins("LEFT JOIN (SELECT id AS sender_id, first_name AS sender_first_name, second_name AS sender_second_name, profile_picture AS sender_profile_picture FROM users) AS sender_data ON sender_data.sender_id = recipien_id").
+		Where("recipien_id=?", userId).
+		Find(&comments)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return nil, gorm.ErrRecordNotFound
 	}
