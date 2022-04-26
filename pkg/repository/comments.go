@@ -50,7 +50,7 @@ func (c CommentsPostgres) GetComments(userId uint) ([]CommentData, error) {
 	result := c.db.Debug().
 		Select("*").
 		Table("comments").
-		Joins("LEFT JOIN (SELECT id AS sender_id, first_name AS sender_first_name, second_name AS sender_second_name, profile_picture AS sender_profile_picture FROM users) AS sender_data ON sender_data.sender_id = recipien_id").
+		Joins("LEFT JOIN (SELECT id AS sender_id_data, first_name AS sender_first_name, second_name AS sender_second_name, profile_picture AS sender_profile_picture FROM users) AS sender_data ON sender_data.sender_id_data = sender_id").
 		Where("recipien_id=?", userId).
 		Find(&comments)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
