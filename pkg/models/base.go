@@ -2,24 +2,21 @@ package models
 
 import (
 	"fmt"
-	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"log"
 	"os"
-	"path/filepath"
-	"runtime"
 )
 
 var db *gorm.DB
 
 func init() {
-	_, b, _, _ := runtime.Caller(0)
-	Root := filepath.Join(filepath.Dir(b), "../..")
-	err := godotenv.Load(Root + "/.env")
-	if err != nil {
-		log.Fatalf("Error loading .env file")
-	}
+	//_, b, _, _ := runtime.Caller(0)
+	//Root := filepath.Join(filepath.Dir(b), "../..")
+	//err := godotenv.Load(Root + "/.env")
+	//if err != nil {
+	//	log.Fatalf("Error loading .env file")
+	//}
 	//dbUri := os.Getenv("DATABASE_URL")
 	dbUri := fmt.Sprintf("host=%s user=%s dbname=%s sslmode=disable password=%s", os.Getenv("DB_HOST"), os.Getenv("DB_USER"), os.Getenv("DB_NAME"), os.Getenv("DB_PASSWORD"))
 	conn, err := gorm.Open(postgres.Open(dbUri), &gorm.Config{})
