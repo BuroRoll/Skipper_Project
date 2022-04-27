@@ -10,7 +10,7 @@ COPY ./ ./
 
 RUN go build cmd/main.go
 
-#EXPOSE 8000
+EXPOSE 8000
 
 CMD [ "./main" ]
 
