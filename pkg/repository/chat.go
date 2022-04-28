@@ -57,7 +57,7 @@ func (c ChatPostgres) GetOpenChats(userId uint) ([]Chats, error) {
 		}).
 		Preload("LastMessage").
 		Select("*").
-		//Joins("INNER JOIN (SELECT created_at AS last_message_time, id AS message_id FROM messages) AS message_data ON message_data.message_id::varchar(255) = chats.last_message_id").
+		Joins("INNER JOIN (SELECT created_at AS last_message_time, id AS message_id FROM messages) AS message_data ON message_data.message_id::varchar(255) = chats.last_message_id").
 		Joins("LEFT JOIN (SELECT chat_id, COUNT(*) as count_unread_messages FROM messages WHERE (receiver_id in (?) AND is_read IS false) GROUP BY chat_id) AS d ON chat_id = chats.id", strconv.Itoa(int(userId))).
 		Where("sender_id = ?", userId).
 		Or("receiver_id = ?", userId).
