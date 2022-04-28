@@ -25,13 +25,13 @@ func (h *Handler) SocketEvents() {
 	SocketServer.OnConnect("/", func(conn socketio.Conn) error {
 		url := conn.URL()
 		roomId := url.Query().Get("roomId")
-		//token := url.Query().Get("token")[7:]
-		//userId, _, err := h.services.Authorization.ParseToken(token)
-		//if err != nil {
-		//	return nil
-		//}
+		token := url.Query().Get("token")
+		userId, _, err := h.services.Authorization.ParseToken(token)
+		if err != nil {
+			return nil
+		}
 		conn.Join(roomId)
-		//_ = h.services.ReadMessages(roomId, userId)
+		_ = h.services.ReadMessages(roomId, userId)
 		return nil
 	})
 
