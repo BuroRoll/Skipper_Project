@@ -48,7 +48,7 @@ type Chats struct {
 func (c ChatPostgres) GetOpenChats(userId uint) ([]Chats, error) {
 	var chats []Chats
 	//var chats []models.Chat
-	c.db.
+	c.db.Debug().
 		Preload("Sender", func(tx *gorm.DB) *gorm.DB {
 			return tx.Select("id, first_name, second_name, profile_picture")
 		}).
