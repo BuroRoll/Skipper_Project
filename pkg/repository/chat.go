@@ -32,7 +32,7 @@ func (c ChatPostgres) CreateMessage(input forms.MessageInput) (models.Message, e
 	c.db.Save(&chat)
 	//c.db.Save(&message)
 	fmt.Println(chat.LastMessage)
-	return chat.LastMessage, nil
+	return message, nil
 }
 
 type Chats struct {
