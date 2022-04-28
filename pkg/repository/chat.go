@@ -94,7 +94,7 @@ func (c ChatPostgres) GetChatData(userId string, receiverID string) (models.Chat
 
 	var messages []models.Message
 	chatId := strconv.FormatUint(uint64(chat.ID), 10)
-	c.db.Debug().Where("chat_id = ?", chatId).Find(&messages)
+	c.db.Debug().Where("chat_id = ?", chatId).Order("created_at").Find(&messages)
 	return chat, messages, nil
 }
 
