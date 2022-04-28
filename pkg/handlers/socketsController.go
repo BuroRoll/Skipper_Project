@@ -46,6 +46,7 @@ func (h *Handler) SocketEvents() {
 			return
 		}
 		SendMsgNotification(message, input.ReceiverID)
+		fmt.Println(message)
 		SocketServer.BroadcastToRoom("/", input.ChatID, "message", message)
 		conn.Emit("message"+input.SenderID, message)
 	})
