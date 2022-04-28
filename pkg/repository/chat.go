@@ -31,7 +31,7 @@ func (c ChatPostgres) CreateMessage(input forms.MessageInput) (models.Message, e
 	chat.LastMessageId = strconv.Itoa(int(chat.LastMessage.ID))
 	c.db.Save(&chat)
 	//c.db.Save(&message)
-	fmt.Println(message)
+	fmt.Println(chat.LastMessage)
 	return chat.LastMessage, nil
 }
 
@@ -48,7 +48,7 @@ type Chats struct {
 func (c ChatPostgres) GetOpenChats(userId uint) ([]Chats, error) {
 	var chats []Chats
 	//var chats []models.Chat
-	c.db.Debug().
+	c.db.
 		Preload("Sender", func(tx *gorm.DB) *gorm.DB {
 			return tx.Select("id, first_name, second_name, profile_picture")
 		}).
@@ -63,6 +63,7 @@ func (c ChatPostgres) GetOpenChats(userId uint) ([]Chats, error) {
 		Or("receiver_id = ?", userId).
 		Order("last_message_time DESC").
 		Find(&chats)
+	fmt.Println(chats)
 	return chats, nil
 }
 
