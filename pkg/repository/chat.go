@@ -3,6 +3,7 @@ package repository
 import (
 	"Skipper/pkg/models"
 	"Skipper/pkg/models/forms"
+	"fmt"
 	"gorm.io/gorm"
 	"strconv"
 )
@@ -29,6 +30,7 @@ func (c ChatPostgres) CreateMessage(input forms.MessageInput) (models.Message, e
 	c.db.Save(&chat)
 	chat.LastMessageId = strconv.Itoa(int(chat.LastMessage.ID))
 	c.db.Save(&chat)
+	fmt.Println(message)
 	return message, nil
 }
 
