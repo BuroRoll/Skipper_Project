@@ -167,3 +167,52 @@ func (b BookingPostgres) GetMessengerByCommunication(id uint) uint {
 		Find(&data)
 	return data.MessengerId
 }
+
+type BookingTimeMask struct {
+	Time string `json:"time"`
+}
+
+func (b BookingPostgres) GetClassTimeMask(classId string) (BookingTimeMask, error) {
+	var class models.UserClass
+	var bookingTimeMask BookingTimeMask
+	b.db.
+		Table("user_classes").
+		Select("id, class_id, class_type").
+		Where("id = ?", classId).
+		Find(&class)
+	b.db.
+		Table(class.ClassType+"es").
+		Select("id, class_parent_id, time").
+		Where("class_parent_id = ?", class.ClassID).
+		Find(&bookingTimeMask)
+	return bookingTimeMask, nil
+}
+
+type ClassTime struct {
+	Time string `json:"time"`
+}
+
+func (b BookingPostgres) GetClassTime(classId string) ([]ClassTime, error) {
+	var classTime []ClassTime
+	b.db.
+		Table("booking_times").
+		Select("time").
+		Where("booking_class_id = ? AND deleted_at IS NULL", classId).
+		Find(&classTime)
+	return classTime, nil
+}
+
+func (b BookingPostgres) ChangeBookingTime(classId uint, time []string) error {
+	var booking models.UserClass
+	b.db.
+		Exec("DELETE FROM booking_times WHERE booking_class_id = ?", classId)
+	b.db.Find(&booking, classId)
+	booking.Time = nil
+	for _, t := range time {
+		booking.Time = append(booking.Time, models.BookingTime{
+			Time: t,
+		})
+	}
+	b.db.Save(&booking)
+	return nil
+}

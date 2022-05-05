@@ -59,3 +59,32 @@ func (b BookingService) CheckBookingCommunications(userCommunications []models.C
 	}
 	return errors.New("user have not communication")
 }
+
+func (b BookingService) GetClassTimeMask(classId string) (string, error) {
+	classTimeMask, err := b.repo.GetClassTimeMask(classId)
+	if err != nil {
+		return "", err
+	}
+	return classTimeMask.Time, nil
+}
+
+func (b BookingService) GetClassTime(classId string) (string, error) {
+	classTime, err := b.repo.GetClassTime(classId)
+	if err != nil {
+		return "", err
+	}
+	var classTimes []string
+	for _, j := range classTime {
+		classTimes = append(classTimes, j.Time)
+	}
+	jsonClassTime, _ := json.Marshal(classTimes)
+	return string(jsonClassTime), nil
+}
+
+func (b BookingService) ChangeBookingTime(newBookingTime forms.ChangeBookingTimeInput) error {
+	err := b.repo.ChangeBookingTime(newBookingTime.ClassId, newBookingTime.Time)
+	if err != nil {
+		return err
+	}
+	return nil
+}

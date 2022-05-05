@@ -80,3 +80,31 @@ func (h *Handler) GetMyBookings(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, bookings)
 }
+
+func (h *Handler) GetBookingTimes(c *gin.Context) {
+	bookingClassId := c.Param("booking_class_id")
+	classMaskTime, err := h.services.GetClassTimeMask(bookingClassId)
+	classTime, err := h.services.GetClassTime(bookingClassId)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ошибка получения времени занятия"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"class_time_mask": classMaskTime,
+		"class_time":      classTime,
+	})
+}
+
+func (h *Handler) ChangeBookingTimes(c *gin.Context) {
+	var newBookingTimeInput forms.ChangeBookingTimeInput
+	if err := c.BindJSON(&newBookingTimeInput); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Неверная форма изменения времени занятия"})
+		return
+	}
+	err := h.services.ChangeBookingTime(newBookingTimeInput)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Не удалось изменить время занятия"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"status": "ok"})
+}

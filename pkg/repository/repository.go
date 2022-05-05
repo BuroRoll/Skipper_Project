@@ -34,6 +34,7 @@ type UserData interface {
 	DeleteUserEducation(educationId string) error
 	DeleteUserWorkExperience(workExperienceId string) error
 	DeleteUserOtherInfo(otherInfoId string) error
+	GetRating(userId uint) (float32, error)
 }
 
 type Catalog interface {
@@ -68,6 +69,9 @@ type Booking interface {
 	GetMyBookings(mentiId uint, status string) ([]UserBooking, error)
 	ChangeStatusBookingClass(newStatus string, bookingClassId string) error
 	GetMessengerByCommunication(id uint) uint
+	GetClassTimeMask(classId string) (BookingTimeMask, error)
+	GetClassTime(classId string) ([]ClassTime, error)
+	ChangeBookingTime(classId uint, time []string) error
 }
 
 type Chat interface {

@@ -100,6 +100,11 @@ func (h *Handler) InitRoutes() {
 					{
 						changeStatus.PUT("/", h.ChangeStatusBookingClass)
 					}
+					changeTime := booking.Group("/change-time")
+					{
+						changeTime.GET("/:booking_class_id", h.GetBookingTimes)
+						changeTime.PUT("/", h.ChangeBookingTimes)
+					}
 				}
 			}
 
@@ -112,7 +117,6 @@ func (h *Handler) InitRoutes() {
 			comments := api.Group("/comments")
 			{
 				comments.POST("/", h.CreateComment)
-				//comments.GET("/:id", h.GetComments)
 			}
 		}
 

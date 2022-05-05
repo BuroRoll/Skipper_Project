@@ -205,3 +205,15 @@ func (u UserDataPostgres) DeleteUserOtherInfo(otherInfoId string) error {
 	}
 	return nil
 }
+
+type Rating struct {
+	RecipienId uint    `json:"recipien_id"`
+	Rating     float32 `json:"rating"`
+}
+
+func (u UserDataPostgres) GetRating(userId uint) (float32, error) {
+	var rating Rating
+	u.db.Raw("SELECT recipien_id, avg(rating) AS rating FROM comments WHERE recipien_id = 2 group by recipien_id;", userId).
+		Find(&rating)
+	return rating.Rating, nil
+}

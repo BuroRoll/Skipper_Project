@@ -47,7 +47,7 @@ type CommentData struct {
 
 func (c CommentsPostgres) GetComments(userId uint) ([]CommentData, error) {
 	var comments []CommentData
-	result := c.db.Debug().
+	result := c.db.
 		Select("*").
 		Table("comments").
 		Joins("LEFT JOIN (SELECT id AS sender_id_data, first_name AS sender_first_name, second_name AS sender_second_name, profile_picture AS sender_profile_picture FROM users) AS sender_data ON sender_data.sender_id_data = sender_id").
