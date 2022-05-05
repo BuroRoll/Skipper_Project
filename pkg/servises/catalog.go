@@ -52,14 +52,14 @@ func (c CatalogService) GetCatalogChild() (string, error) {
 }
 
 type ClassesData struct {
-	Id             uint   `json:"ID"`
-	FirstName      string `json:"FirstName"`
-	SecondName     string `json:"SecondName"`
-	ProfilePicture string `json:"ProfilePicture"`
-	Description    string `json:"Description"`
-	Specialization string `json:"Specialization"`
-	//Classes        []models.Class `json:"classes"`
-	Classes []C `json:"classes"`
+	Id             uint    `json:"ID"`
+	FirstName      string  `json:"FirstName"`
+	SecondName     string  `json:"SecondName"`
+	ProfilePicture string  `json:"ProfilePicture"`
+	Description    string  `json:"Description"`
+	Specialization string  `json:"Specialization"`
+	Rating         float32 `json:"rating"`
+	Classes        []C     `json:"classes"`
 }
 
 type C struct {
@@ -75,7 +75,6 @@ type T struct {
 }
 
 func (c CatalogService) GetClasses(pagination *models.Pagination) (string, error) {
-
 	data, err := c.repo.GetClasses(&pagination)
 	if err != nil {
 		return "", nil

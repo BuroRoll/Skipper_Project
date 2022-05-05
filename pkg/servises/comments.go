@@ -20,6 +20,7 @@ func (c CommentsService) CreateComment(comment forms.CommentInput) error {
 		comment.SenderId = nil
 	}
 	err := c.repo.CreateComment(comment)
+	c.CalcRating(comment.RecipienId)
 	if err != nil {
 		return err
 	}
@@ -33,4 +34,8 @@ func (c CommentsService) GetComments(userId uint) (string, error) {
 	}
 	commentsJson, err := json.Marshal(commentsData)
 	return string(commentsJson), nil
+}
+
+func (c CommentsService) CalcRating(userId uint) {
+	c.repo.CalcRating(userId)
 }

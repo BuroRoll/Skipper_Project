@@ -34,7 +34,6 @@ type UserData interface {
 	DeleteUserEducation(educationId string) error
 	DeleteUserWorkExperience(workExperienceId string) error
 	DeleteUserOtherInfo(otherInfoId string) error
-	GetRating(userId uint) (float32, error)
 }
 
 type Catalog interface {
@@ -84,6 +83,7 @@ type Chat interface {
 type Comments interface {
 	CreateComment(comment forms.CommentInput) error
 	GetComments(userId uint) ([]CommentData, error)
+	CalcRating(userId uint)
 }
 
 type Repository struct {

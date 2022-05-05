@@ -58,3 +58,18 @@ func (c CommentsPostgres) GetComments(userId uint) ([]CommentData, error) {
 	}
 	return comments, nil
 }
+
+func (c CommentsPostgres) CalcRating(userId uint) {
+	var user models.User
+	var rating Rating
+	c.db.Raw("SELECT recipien_id, avg(rating) AS rating FROM comments WHERE recipien_id = ? group by recipien_id;", userId).
+		Find(&rating)
+	c.db.Find(&user, userId)
+	user.Rating = rating.Rating
+	c.db.Save(&user)
+}
+
+type Rating struct {
+	RecipienId uint    `json:"recipien_id"`
+	Rating     float32 `json:"rating"`
+}

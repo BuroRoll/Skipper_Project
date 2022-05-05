@@ -110,7 +110,3 @@ func (u UserDataService) DeleteUserWorkExperience(workExperienceId string) error
 func (u UserDataService) DeleteUserOtherInfo(otherInfoId string) error {
 	return u.repo.DeleteUserOtherInfo(otherInfoId)
 }
-
-func (u UserDataService) GetRating(userId uint) (float32, error) {
-	return u.repo.GetRating(userId)
-}

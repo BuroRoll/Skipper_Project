@@ -40,7 +40,6 @@ type UserData interface {
 	DeleteUserEducation(educationId string) error
 	DeleteUserWorkExperience(workExperienceId string) error
 	DeleteUserOtherInfo(otherInfoId string) error
-	GetRating(userId uint) (float32, error)
 }
 
 type Catalog interface {

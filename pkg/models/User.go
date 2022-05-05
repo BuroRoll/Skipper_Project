@@ -19,8 +19,8 @@ type User struct {
 	IsVerifyEmail  bool            `gorm:"default:false"`
 	IsVerifyPhone  bool            `gorm:"default:false"`
 	Communications []Communication `gorm:"ForeignKey:ParentId"`
+	Rating         float32         `gorm:"default:0"`
 
-	//ClassBooking []Class `gorm:"many2many:user_classes;"`
 	//Mentor information
 	Specialization   string
 	Educations       []Education        `gorm:"ForeignKey:ParentId"`

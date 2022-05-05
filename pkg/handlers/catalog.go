@@ -52,7 +52,6 @@ func (h *Handler) GetCatalogChild(c *gin.Context) {
 func (h *Handler) GetClasses(c *gin.Context) {
 	pagination := GeneratePaginationFromRequest(c)
 	userLists, err := h.services.GetClasses(&pagination)
-
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err,
