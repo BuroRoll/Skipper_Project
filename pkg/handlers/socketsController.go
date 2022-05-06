@@ -7,6 +7,7 @@ import (
 	"github.com/alexandrevicenzi/go-sse"
 	socketio "github.com/googollee/go-socket.io"
 	"log"
+	"strconv"
 )
 
 var SocketServer *socketio.Server
@@ -46,28 +47,24 @@ func (h *Handler) SocketEvents() {
 			return
 		}
 		SendMsgNotification(message, input.ReceiverID)
-		fmt.Println(message)
 		SocketServer.BroadcastToRoom("/", input.ChatID, "message", message)
 		conn.Emit("message"+input.SenderID, message)
 	})
 
-	//SocketServer.OnEvent("/", "read_messages", func(s socketio.Conn, msg string) {
-	//	var input forms.ReadChatInput
-	//	if err := json.Unmarshal([]byte(msg), &input); err != nil {
-	//		fmt.Println(err)
-	//		return
-	//	}
-	//	userId, _, err := h.services.Authorization.ParseToken(s.RemoteHeader()["Authorization"][0][7:])
-	//	if err != nil {
-	//		log.Println(err)
-	//	}
-	//	err = h.services.ReadMessages(input.ChatId, userId)
-	//	if err != nil {
-	//		SocketServer.BroadcastToRoom("/", input.ChatId, "read_messages", "read failed")
-	//		return
-	//	}
-	//	SocketServer.BroadcastToRoom("/", input.ChatId, "read_messages", "read successfully")
-	//})
+	SocketServer.OnEvent("/", "read_messages", func(s socketio.Conn, msg string) {
+		var input forms.ReadChatInput
+		if err := json.Unmarshal([]byte(msg), &input); err != nil {
+			fmt.Println(err)
+			return
+		}
+		stringChatId := strconv.FormatUint(uint64(input.ChatId), 10)
+		err := h.services.ReadMessages(stringChatId, input.UserId)
+		if err != nil {
+			SocketServer.BroadcastToRoom("/", stringChatId, "read_messages", "read failed")
+			return
+		}
+		SocketServer.BroadcastToRoom("/", stringChatId, "read_messages", "read successfully")
+	})
 
 	SocketServer.OnEvent("/", "bye", func(s socketio.Conn, msg string) {
 		fmt.Println(msg)

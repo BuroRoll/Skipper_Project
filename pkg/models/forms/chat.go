@@ -8,5 +8,6 @@ type MessageInput struct {
 }
 
 type ReadChatInput struct {
-	ChatId string `json:"chatId"`
+	ChatId uint `json:"chatId"`
+	UserId uint `json:"user_id"`
 }
