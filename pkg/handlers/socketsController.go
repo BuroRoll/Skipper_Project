@@ -4,22 +4,16 @@ import (
 	"Skipper/pkg/models/forms"
 	"encoding/json"
 	"fmt"
-	"github.com/alexandrevicenzi/go-sse"
 	socketio "github.com/googollee/go-socket.io"
 	"log"
 	"strconv"
 )
 
 var SocketServer *socketio.Server
-var SseNotification *sse.Server
 
 func InitSocket() error {
 	SocketServer = socketio.NewServer(nil)
 	return nil
-}
-
-func InitSseServe(sse *sse.Server) {
-	SseNotification = sse
 }
 
 func (h *Handler) SocketEvents() {
@@ -78,8 +72,4 @@ func (h *Handler) SocketEvents() {
 	SocketServer.OnDisconnect("/", func(conn socketio.Conn, reason string) {
 		fmt.Println("closed:", reason)
 	})
-}
-
-func SendMsgNotification(message string, userId string) {
-	SseNotification.SendMessage("/notifications/message/"+userId, sse.SimpleMessage(message))
 }
