@@ -14,21 +14,21 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-#       - name: Login to Docker Hub
-#         uses: docker/login-action@v1
-#         with:
-#           username: ${{ secrets.DOCKER_HUB_USERNAME }}
-#           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-#       - name: Build and push Docker image
-#         id:   docker_build
-#         uses: docker/build-push-action@v2
-#         with:
-#           push: true
-#           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/skipper:latest
+      - name: Build and push Docker image
+        id:   docker_build
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/skipper:latest
 
-#       - name: Image digest
-#         run: echo ${{ steps.docker_build.outputs.digest }}
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
       - name: Reset Permissions before deployment
         uses: appleboy/ssh-action@master
         with:
@@ -37,7 +37,11 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            mkdir test
+            cd skipper_backend
+            sudo docker-compose stop
+            sudo docker-compose rm -f
+            sudo docker-compose pull
+            sudo docker-compose up --build -d
         
 #       - name: executing remote ssh commands using password
 #         uses: appleboy/ssh-action@master
