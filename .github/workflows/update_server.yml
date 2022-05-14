@@ -29,15 +29,15 @@ jobs:
 
 #       - name: Image digest
 #         run: echo ${{ steps.docker_build.outputs.digest }}
-      - name: Install SSH Key
-        uses: shimataro/ssh-key-action@v2
+      - name: Reset Permissions before deployment
+        uses: appleboy/ssh-action@master
         with:
-          key: ${{ secrets.SSH_PRIVATE_KEY }} 
-          name: ubuntu
-          known_hosts: ${{ secrets.SSH_HOST }} 
-      - name: Connect&Update
-        run:
-          mkdir test
+          host: ${{ secrets.SSH_HOST }}
+          username: ubuntu
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            mkdir test
         
 #       - name: executing remote ssh commands using password
 #         uses: appleboy/ssh-action@master
