@@ -33,6 +33,7 @@ jobs:
         uses: shimataro/ssh-key-action@v2
         with:
           key: ${{ secrets.SSH_PRIVATE_KEY }} 
+          name: ubuntu
           known_hosts: ${{ secrets.SSH_HOST }} 
       - name: Connect&Update
         run:
