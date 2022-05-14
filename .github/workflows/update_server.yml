@@ -1,0 +1,54 @@
+name: To Docker Hub
+
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+#       - name: Login to Docker Hub
+#         uses: docker/login-action@v1
+#         with:
+#           username: ${{ secrets.DOCKER_HUB_USERNAME }}
+#           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+#       - name: Build and push Docker image
+#         id:   docker_build
+#         uses: docker/build-push-action@v2
+#         with:
+#           push: true
+#           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/skipper:latest
+
+#       - name: Image digest
+#         run: echo ${{ steps.docker_build.outputs.digest }}
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }} 
+          known_hosts: ${{ secrets.SSH_HOST }} 
+      - name: Connect&Update
+        run:
+          mkdir test
+        
+#       - name: executing remote ssh commands using password
+#         uses: appleboy/ssh-action@master
+#         with:
+#           host: ${{ secrets.HOST }}
+#           username: ${{ secrets.USERNAME }}
+#           password: ${{ secrets.PASSWORD }}
+# #           port: ${{ secrets.PORT }}
+#           script: |
+#             cd skipper_backend
+#             docker-compose stop
+#             docker-compose rm -f
+#             docker-compose pull
+#             docker-compose up --build -d
+          
