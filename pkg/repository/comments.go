@@ -5,6 +5,7 @@ import (
 	"Skipper/pkg/models/forms"
 	"errors"
 	"gorm.io/gorm"
+	"math"
 )
 
 type CommentsPostgres struct {
@@ -65,7 +66,7 @@ func (c CommentsPostgres) CalcRating(userId uint) {
 	c.db.Raw("SELECT recipien_id, avg(rating) AS rating FROM comments WHERE recipien_id = ? group by recipien_id;", userId).
 		Find(&rating)
 	c.db.Find(&user, userId)
-	user.Rating = rating.Rating
+	user.Rating = float32(math.Round(float64(rating.Rating*100)) / 100)
 	c.db.Save(&user)
 }
 
