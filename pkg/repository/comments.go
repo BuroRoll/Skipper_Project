@@ -66,11 +66,11 @@ func (c CommentsPostgres) CalcRating(userId uint) {
 	c.db.Raw("SELECT recipien_id, avg(rating) AS rating FROM comments WHERE recipien_id = ? group by recipien_id;", userId).
 		Find(&rating)
 	c.db.Find(&user, userId)
-	user.Rating = float32(math.Round(float64(rating.Rating*100)) / 100)
+	user.Rating = math.Round(rating.Rating*100) / 100
 	c.db.Save(&user)
 }
 
 type Rating struct {
 	RecipienId uint    `json:"recipien_id"`
-	Rating     float32 `json:"rating"`
+	Rating     float64 `json:"rating"`
 }

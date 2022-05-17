@@ -19,7 +19,7 @@ type User struct {
 	IsVerifyEmail  bool            `gorm:"default:false"`
 	IsVerifyPhone  bool            `gorm:"default:false"`
 	Communications []Communication `gorm:"ForeignKey:ParentId"`
-	Rating         float32         `gorm:"default:0"`
+	Rating         float64         `gorm:"default:0"`
 
 	//Mentor information
 	Specialization   string
