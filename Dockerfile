@@ -7,6 +7,7 @@ COPY go.sum ./
 RUN go mod download
 
 COPY ./ ./
+VOLUME /home/ubuntu/static_files ./media
 
 RUN go build cmd/main.go
 
