@@ -47,4 +47,5 @@ type BookingTime struct {
 	gorm.Model
 	BookingClassID uint
 	Time           string
+	IsEnd          bool `gorm:"default:false"`
 }

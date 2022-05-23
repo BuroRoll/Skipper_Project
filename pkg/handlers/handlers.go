@@ -4,7 +4,6 @@ import (
 	service "Skipper/pkg/servises"
 	"github.com/alexandrevicenzi/go-sse"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 type Handler struct {
@@ -21,10 +20,6 @@ func (h *Handler) InitRoutes() {
 	sseRouter := sse.NewServer(nil)
 	defer sseRouter.Shutdown()
 	InitSseServe(sseRouter)
-
-	router.GET("/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, "Hello from github actions!!!")
-	})
 
 	auth := router.Group("/auth")
 	{
