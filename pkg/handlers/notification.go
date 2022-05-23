@@ -23,9 +23,5 @@ func (h *Handler) SendClassNotification(c *gin.Context) {
 func (h *Handler) GetAllClassNotifications(c *gin.Context) {
 	userId := c.Query("user_id")
 	classNotifications := h.services.GetAllClassNotifications(userId)
-	//if err != nil {
-	//	c.JSON(http.StatusBadRequest, gin.H{"error": "Не удалось получить список чатов"})
-	//	return
-	//}
 	c.JSON(http.StatusOK, classNotifications)
 }
