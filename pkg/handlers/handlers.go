@@ -141,7 +141,7 @@ func (h *Handler) InitRoutes() {
 
 	router.GET("/verify-email", h.verifyEmail)
 
-	notifications := router.Group("/notifications")
+	notifications := router.Group("/notifications", h.userSSEIdentity)
 	{
 		notifications.GET("/message/:userId", func(c *gin.Context) {
 			sseRouter.ServeHTTP(c.Writer, c.Request)

@@ -57,3 +57,25 @@ func (h *Handler) userIdentity(c *gin.Context) {
 	c.Set(userCtx, userId)
 	c.Set(isMentorCtx, isMentor)
 }
+
+func (h *Handler) userSSEIdentity(c *gin.Context) {
+	header := c.GetHeader(authorizationHeader)
+	if header == "" {
+		return
+	}
+	headerParts := strings.Split(header, " ")
+	if len(headerParts) != 2 || headerParts[0] != "Bearer" {
+		return
+	}
+	if len(headerParts[1]) == 0 {
+		return
+	}
+	userId, isMentor, err := h.services.Authorization.ParseToken(headerParts[1])
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Ошибка чтения токена"})
+		c.Abort()
+		return
+	}
+	c.Set(userCtx, userId)
+	c.Set(isMentorCtx, isMentor)
+}

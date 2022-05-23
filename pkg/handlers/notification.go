@@ -21,7 +21,8 @@ func (h *Handler) SendClassNotification(c *gin.Context) {
 }
 
 func (h *Handler) GetAllClassNotifications(c *gin.Context) {
-	userId := c.Query("user_id")
-	classNotifications := h.services.GetAllClassNotifications(userId)
+	userId, _ := c.Get(userCtx)
+	//userId := c.Query("user_id")
+	classNotifications := h.services.GetAllClassNotifications(userId.(string))
 	c.JSON(http.StatusOK, classNotifications)
 }
