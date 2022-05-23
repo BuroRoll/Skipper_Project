@@ -90,6 +90,10 @@ type Comments interface {
 	GetComments(userId uint) (string, error)
 }
 
+type Notifications interface {
+	GetAllClassNotifications(userId string) string
+}
+
 type Service struct {
 	Authorization
 	UserData
@@ -98,6 +102,7 @@ type Service struct {
 	Booking
 	Chat
 	Comments
+	Notifications
 }
 
 func NewService(repos *repository.Repository) *Service {
@@ -109,5 +114,6 @@ func NewService(repos *repository.Repository) *Service {
 		Booking:       NewBookingService(repos.Booking),
 		Chat:          NewChatService(repos.Chat),
 		Comments:      NewCommentsService(repos.Comments),
+		Notifications: NewNotificationsService(repos.Notifications),
 	}
 }

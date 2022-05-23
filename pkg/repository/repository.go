@@ -86,6 +86,10 @@ type Comments interface {
 	CalcRating(userId uint)
 }
 
+type Notifications interface {
+	GetAllClassNotifications(userId string) []models.ClassNotification
+}
+
 type Repository struct {
 	Authorization
 	UserData
@@ -94,6 +98,7 @@ type Repository struct {
 	Booking
 	Chat
 	Comments
+	Notifications
 }
 
 func NewRepository(db *gorm.DB) *Repository {
@@ -105,5 +110,6 @@ func NewRepository(db *gorm.DB) *Repository {
 		Booking:       NewBookingPostgres(db),
 		Chat:          NewChatPostgres(db),
 		Comments:      NewCommentsPostgres(db),
+		Notifications: NewNotificationsPostgres(db),
 	}
 }

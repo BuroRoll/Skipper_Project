@@ -15,3 +15,7 @@ type Event struct {
 func SendMsgNotification(message string, userId string) {
 	SseNotification.SendMessage("/notifications/message/"+userId, sse.SimpleMessage(message))
 }
+
+func SendClassNotification(message string, userId string) {
+	SseNotification.SendMessage("/notifications/class/"+userId, sse.SimpleMessage(message))
+}
