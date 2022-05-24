@@ -151,7 +151,6 @@ func (h *Handler) InitRoutes() {
 		})
 		notifications.POST("/class", h.SendClassNotification)
 		notifications.GET("/class", h.GetAllClassNotifications)
-		//notifications.
 	}
 	router.Run(":8000")
 }
