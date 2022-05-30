@@ -32,6 +32,10 @@ func (n NotificationsPostgres) CreateClassTimeChangeNotification(classId uint, u
 	return notification
 }
 
+func (n NotificationsPostgres) CreateNotification(notification models.ClassNotification) {
+	n.db.Save(&notification)
+}
+
 func jsonData(userFirstName string, userSecondName string, classId uint) string {
 	type Data struct {
 		ClassId        uint

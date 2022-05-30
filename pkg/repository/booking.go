@@ -222,3 +222,27 @@ func (b BookingPostgres) GetReceiverName(userId uint) models.User {
 	b.db.First(&user, userId)
 	return user
 }
+
+type BookingUsers struct {
+	Id               uint   `json:"id"`
+	ClassDataName    string `json:"class_data_name"`
+	MentiDataId      uint   `json:"menti_data_id"`
+	MentiFirstName   string `json:"menti_first_name"`
+	MentiSecondName  string `json:"menti_second_name"`
+	MentorDataId     uint   `json:"mentor_data_id"`
+	MentorFirstName  string `json:"mentor_first_name"`
+	MentorSecondName string `json:"mentor_second_name"`
+}
+
+func (b BookingPostgres) GetBookingUsersById(bookingId string) BookingUsers {
+	var bookingUsers BookingUsers
+	b.db.
+		Table("user_classes").
+		Select("*").
+		Joins("LEFT JOIN (SELECT id AS class_data_id, class_name AS class_data_name FROM classes) AS class_data ON class_data_id = class_id").
+		Joins("LEFT JOIN (SELECT id as menti_data_id, first_name AS menti_first_name, second_name AS menti_second_name FROM users) AS menti_data ON menti_data_id = menti_id").
+		Joins("LEFT JOIN (SELECT id AS mentor_data_id, first_name AS mentor_first_name, second_name AS mentor_second_name FROM users) AS mentor_data ON mentor_data_id = user_classes.user_id").
+		Where("id = ?", bookingId).
+		Find(&bookingUsers)
+	return bookingUsers
+}

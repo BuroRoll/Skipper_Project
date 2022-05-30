@@ -89,3 +89,7 @@ func (b BookingService) ChangeBookingTime(newBookingTime forms.ChangeBookingTime
 	}
 	return nil, userData
 }
+
+func (b BookingService) GetBookingUsersById(bookingId string) repository.BookingUsers {
+	return b.repo.GetBookingUsersById(bookingId)
+}

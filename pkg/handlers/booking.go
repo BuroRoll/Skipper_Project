@@ -61,11 +61,15 @@ func (h *Handler) GetBookingsToMe(c *gin.Context) {
 func (h *Handler) ChangeStatusBookingClass(c *gin.Context) {
 	bookingId := c.Query("booking_id")
 	newStatus := c.Query("new_status")
+	userId, _ := c.Get(userCtx)
 	err := h.services.ChangeStatusBookingClass(newStatus, bookingId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ошибка смены статуса занятия"})
 		return
 	}
+	bookingUsersData := h.services.GetBookingUsersById(bookingId)
+	bookingChangeStatusNotification, receiverId := h.services.CreateBookingStatusChangeNotification(bookingUsersData, userId.(uint), newStatus)
+	SendClassNotification(bookingChangeStatusNotification, strconv.Itoa(int(receiverId)))
 	c.JSON(http.StatusOK, gin.H{"status": "ok"})
 }
 
