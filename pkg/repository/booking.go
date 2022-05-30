@@ -216,3 +216,9 @@ func (b BookingPostgres) ChangeBookingTime(classId uint, time []string) error {
 	b.db.Save(&booking)
 	return nil
 }
+
+func (b BookingPostgres) GetReceiverName(userId uint) models.User {
+	var user models.User
+	b.db.First(&user, userId)
+	return user
+}

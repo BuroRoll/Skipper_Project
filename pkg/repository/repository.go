@@ -71,6 +71,7 @@ type Booking interface {
 	GetClassTimeMask(classId string) (BookingTimeMask, error)
 	GetClassTime(classId string) ([]ClassTime, error)
 	ChangeBookingTime(classId uint, time []string) error
+	GetReceiverName(userId uint) models.User
 }
 
 type Chat interface {
@@ -88,6 +89,7 @@ type Comments interface {
 
 type Notifications interface {
 	GetAllClassNotifications(userId string) []models.ClassNotification
+	CreateClassTimeChangeNotification(classId uint, userFirstName string, userSecondName string, receiver uint) models.ClassNotification
 }
 
 type Repository struct {

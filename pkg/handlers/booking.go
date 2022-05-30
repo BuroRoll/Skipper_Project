@@ -96,15 +96,19 @@ func (h *Handler) GetBookingTimes(c *gin.Context) {
 }
 
 func (h *Handler) ChangeBookingTimes(c *gin.Context) {
+	userId, _ := c.Get(userCtx)
 	var newBookingTimeInput forms.ChangeBookingTimeInput
 	if err := c.BindJSON(&newBookingTimeInput); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Неверная форма изменения времени занятия"})
 		return
 	}
-	err := h.services.ChangeBookingTime(newBookingTimeInput)
+	fmt.Println(newBookingTimeInput)
+	err, userData := h.services.ChangeBookingTime(newBookingTimeInput, userId.(uint))
+	notificationData := h.services.CreateClassTimeChangeNotification(userData, newBookingTimeInput.ClassId, newBookingTimeInput.Receiver)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Не удалось изменить время занятия"})
 		return
 	}
+	SendClassNotification(notificationData, strconv.Itoa(int(newBookingTimeInput.Receiver)))
 	c.JSON(http.StatusOK, gin.H{"status": "ok"})
 }

@@ -81,10 +81,11 @@ func (b BookingService) GetClassTime(classId string) (string, error) {
 	return string(jsonClassTime), nil
 }
 
-func (b BookingService) ChangeBookingTime(newBookingTime forms.ChangeBookingTimeInput) error {
+func (b BookingService) ChangeBookingTime(newBookingTime forms.ChangeBookingTimeInput, userId uint) (error, models.User) {
 	err := b.repo.ChangeBookingTime(newBookingTime.ClassId, newBookingTime.Time)
+	userData := b.repo.GetReceiverName(userId)
 	if err != nil {
-		return err
+		return err, userData
 	}
-	return nil
+	return nil, userData
 }

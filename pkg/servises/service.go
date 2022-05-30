@@ -75,7 +75,7 @@ type Booking interface {
 	CheckBookingCommunications(userCommunications []models.Communication, communicationId uint) error
 	GetClassTimeMask(classId string) (string, error)
 	GetClassTime(classId string) (string, error)
-	ChangeBookingTime(newBookingTime forms.ChangeBookingTimeInput) error
+	ChangeBookingTime(newBookingTime forms.ChangeBookingTimeInput, userId uint) (error, models.User)
 }
 
 type Chat interface {
@@ -92,6 +92,7 @@ type Comments interface {
 
 type Notifications interface {
 	GetAllClassNotifications(userId string) string
+	CreateClassTimeChangeNotification(user models.User, classId uint, receiver uint) string
 }
 
 type Service struct {

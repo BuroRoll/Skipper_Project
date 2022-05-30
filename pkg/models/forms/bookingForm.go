@@ -39,6 +39,7 @@ type BookingClassInput struct {
 }
 
 type ChangeBookingTimeInput struct {
-	ClassId uint     `json:"class_id" binding:"required"`
-	Time    []string `json:"time" binding:"required"`
+	ClassId  uint     `json:"class_id" binding:"required"`
+	Receiver uint     `json:"receiver" binding:"required"`
+	Time     []string `json:"time" binding:"required"`
 }
