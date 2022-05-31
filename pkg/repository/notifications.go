@@ -16,7 +16,8 @@ func NewNotificationsPostgres(db *gorm.DB) *NotificationsPostgres {
 
 func (n NotificationsPostgres) GetAllClassNotifications(userId string) []models.ClassNotification {
 	var classNotifications []models.ClassNotification
-	n.db.Where("receiver = ?", userId).Order("created_at desc").Find(&classNotifications)
+	n.db.Debug().
+		Where("receiver = ?", userId).Order("created_at desc").Find(&classNotifications)
 	return classNotifications
 }
 
