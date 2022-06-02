@@ -16,7 +16,7 @@ func NewCatalogService(repo repository.Catalog) *CatalogService {
 }
 
 func (c CatalogService) CreateCatalog(catalog forms.CatalogInput) (uint, error) {
-	if catalog.ParentId == nil { //if no parentId (main Catalog)
+	if catalog.ParentId == nil { //if no parentId (main catalog)
 		mainCatalogId, err := c.repo.CreateMainCatalog(catalog.Name)
 		if err != nil {
 			return 0, err
