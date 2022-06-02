@@ -7,7 +7,7 @@ COPY go.sum ./
 RUN go mod download
 
 COPY ./ ./
-VOLUME /home/ubuntu/static_files ./media/user/profile_picture
+#VOLUME /home/ubuntu/static_files ./media/user/profile_picture
 
 RUN go build cmd/main.go
 

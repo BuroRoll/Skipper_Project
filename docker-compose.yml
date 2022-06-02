@@ -8,6 +8,8 @@ services:
       - "8000:8000"
     env_file:
       - .env
+    volumes:
+      - /home/ubuntu/static_files:./media/user/profile_picture
     deploy:
       restart_policy:
         condition: on-failure
