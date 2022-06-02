@@ -20,8 +20,26 @@ func (n NotificationsService) GetAllClassNotifications(userId string) string {
 	return string(jsonClassesNotifications)
 }
 
+type TimeChangeData struct {
+	ClassId    uint
+	FirstName  string `json:"first_name"`
+	SecondName string `json:"second_name"`
+}
+
 func (n NotificationsService) CreateClassTimeChangeNotification(user models.User, classId uint, receiver uint) string {
-	notification := n.repo.CreateClassTimeChangeNotification(classId, user.FirstName, user.SecondName, receiver)
+	data := TimeChangeData{
+		ClassId:    classId,
+		FirstName:  user.FirstName,
+		SecondName: user.SecondName,
+	}
+	jsonData, _ := json.Marshal(data)
+	notification := models.ClassNotification{
+		Receiver: receiver,
+		Type:     "time change",
+		IsRead:   false,
+		Data:     string(jsonData),
+	}
+	notification = n.repo.CreateClassNotification(notification)
 	jsonNotification, _ := json.Marshal(notification)
 	return string(jsonNotification)
 }
@@ -32,13 +50,15 @@ type StatusChangeData struct {
 	FirstName  string `json:"first_name"`
 	SecondName string `json:"second_name"`
 	NewStatus  string `json:"new_status"`
+	OldStatus  string `json:"old_status"`
 }
 
-func (n NotificationsService) CreateBookingStatusChangeNotification(bookingUsersData repository.BookingUsers, userId uint, newStatus string) (string, uint) {
+func (n NotificationsService) CreateBookingStatusChangeNotification(bookingUsersData repository.BookingUsers, userId uint, newStatus string, oldStatus string) (string, uint) {
 	data := StatusChangeData{
 		ClassId:   bookingUsersData.Id,
 		ClassName: bookingUsersData.ClassDataName,
 		NewStatus: newStatus,
+		OldStatus: oldStatus,
 	}
 	var receiverId uint
 	if userId == bookingUsersData.MentorDataId {
@@ -57,7 +77,7 @@ func (n NotificationsService) CreateBookingStatusChangeNotification(bookingUsers
 		Data:     string(jsonData),
 		Receiver: receiverId,
 	}
-	n.repo.CreateNotification(notification)
+	notification = n.repo.CreateClassNotification(notification)
 	jsonNotification, _ := json.Marshal(notification)
 	return string(jsonNotification), receiverId
 }

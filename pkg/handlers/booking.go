@@ -62,13 +62,13 @@ func (h *Handler) ChangeStatusBookingClass(c *gin.Context) {
 	bookingId := c.Query("booking_id")
 	newStatus := c.Query("new_status")
 	userId, _ := c.Get(userCtx)
-	err := h.services.ChangeStatusBookingClass(newStatus, bookingId)
+	oldStatus, err := h.services.ChangeStatusBookingClass(newStatus, bookingId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ошибка смены статуса занятия"})
 		return
 	}
 	bookingUsersData := h.services.GetBookingUsersById(bookingId)
-	bookingChangeStatusNotification, receiverId := h.services.CreateBookingStatusChangeNotification(bookingUsersData, userId.(uint), newStatus)
+	bookingChangeStatusNotification, receiverId := h.services.CreateBookingStatusChangeNotification(bookingUsersData, userId.(uint), newStatus, oldStatus)
 	SendClassNotification(bookingChangeStatusNotification, strconv.Itoa(int(receiverId)))
 	c.JSON(http.StatusOK, gin.H{"status": "ok"})
 }
@@ -106,7 +106,6 @@ func (h *Handler) ChangeBookingTimes(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Неверная форма изменения времени занятия"})
 		return
 	}
-	fmt.Println(newBookingTimeInput)
 	err, userData := h.services.ChangeBookingTime(newBookingTimeInput, userId.(uint))
 	notificationData := h.services.CreateClassTimeChangeNotification(userData, newBookingTimeInput.ClassId, newBookingTimeInput.Receiver)
 	if err != nil {

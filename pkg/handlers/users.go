@@ -10,18 +10,11 @@ import (
 
 const pathToProfilePicture = "/public-api/user/profile-picture/"
 
-func (h *Handler) GetStatus(c *gin.Context) {
-	userId, _ := c.Get(userCtx)
-	c.JSON(http.StatusOK, map[string]interface{}{
-		"user_id": userId,
-	})
-	return
-}
-
 func (h *Handler) GetUserData(c *gin.Context) {
 	userId, _ := c.Get(userCtx)
 	if userId, ok := userId.(uint); ok {
 		user, err := h.services.GetUserData(userId)
+		unreadMessagesCount := h.services.GetUnreadMessagesCount(userId)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Не удалось получить данные пользователя"})
 			return
@@ -29,21 +22,22 @@ func (h *Handler) GetUserData(c *gin.Context) {
 		c.JSON(
 			http.StatusOK,
 			gin.H{
-				"id":               user.ID,
-				"first_name":       user.FirstName,
-				"second_name":      user.SecondName,
-				"patronymic":       user.Patronymic,
-				"date_of_birthday": user.DateOfBirthday,
-				"description":      user.Description,
-				"email":            user.Email,
-				"phone":            user.Phone,
-				"is_mentor":        user.IsMentor,
-				"is_verify_email":  user.IsVerifyEmail,
-				"is_verify_phone":  user.IsVerifyPhone,
-				"profile_picture":  pathToProfilePicture + user.ProfilePicture,
-				"time":             user.Time,
-				"specialization":   user.Specialization,
-				"communications":   user.Communications,
+				"id":                    user.ID,
+				"first_name":            user.FirstName,
+				"second_name":           user.SecondName,
+				"patronymic":            user.Patronymic,
+				"date_of_birthday":      user.DateOfBirthday,
+				"description":           user.Description,
+				"email":                 user.Email,
+				"phone":                 user.Phone,
+				"is_mentor":             user.IsMentor,
+				"is_verify_email":       user.IsVerifyEmail,
+				"is_verify_phone":       user.IsVerifyPhone,
+				"profile_picture":       pathToProfilePicture + user.ProfilePicture,
+				"time":                  user.Time,
+				"specialization":        user.Specialization,
+				"communications":        user.Communications,
+				"unread_messages_count": unreadMessagesCount,
 			})
 	}
 }

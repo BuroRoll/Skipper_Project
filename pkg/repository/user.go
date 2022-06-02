@@ -5,6 +5,7 @@ import (
 	"Skipper/pkg/models/forms"
 	"errors"
 	"gorm.io/gorm"
+	"strconv"
 )
 
 type UserDataPostgres struct {
@@ -204,4 +205,20 @@ func (u UserDataPostgres) DeleteUserOtherInfo(otherInfoId string) error {
 		return gorm.ErrRecordNotFound
 	}
 	return nil
+}
+
+type unreadMessagesCounter struct {
+	ReceiverId string `json:"receiver_id"`
+	Count      uint   `json:"count"`
+}
+
+func (u UserDataPostgres) GetUnreadMessagesCount(userId uint) unreadMessagesCounter {
+	var unreadMessagesCount unreadMessagesCounter
+	u.db.
+		Table("messages").
+		Select("receiver_id, count(is_read)").
+		Where("is_read = false AND receiver_id = ?", strconv.Itoa(int(userId))).
+		Group("receiver_id").
+		First(&unreadMessagesCount)
+	return unreadMessagesCount
 }

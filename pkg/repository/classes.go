@@ -66,9 +66,6 @@ func (c ClassesPostgres) GetUserClasses(userId uint) ([]models.Class, error) {
 }
 
 func (c ClassesPostgres) DeleteClass(classId string) error {
-	//var class models.Class
-	//c.db.First(&class, classId)
-
 	c.db.Exec("DELETE FROM catalog3_class WHERE class_id = ?;", classId)
 	c.db.Exec("DELETE FROM practic_classes WHERE class_parent_id = ?;", classId)
 	c.db.Exec("DELETE FROM theoretic_classes WHERE class_parent_id = ?;", classId)
@@ -170,7 +167,9 @@ func (c ClassesPostgres) UpdateKeyClass(classData models.KeyClass, classId uint)
 
 func (c ClassesPostgres) GetClassById(classId string) (models.Class, error) {
 	var class models.Class
-	result := c.db.Preload(clause.Associations).First(&class, classId)
+	result := c.db.
+		Preload(clause.Associations).
+		First(&class, classId)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
 		return models.Class{}, result.Error
 	}

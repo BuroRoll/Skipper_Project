@@ -33,7 +33,8 @@ func (c CatalogService) CreateCatalog(catalog forms.CatalogInput) (uint, error) 
 
 func (c CatalogService) GetCatalog() string {
 	data := c.repo.GetCatalog()
-	return data
+	jsonCatalog, _ := json.Marshal(data)
+	return string(jsonCatalog)
 }
 
 func (c CatalogService) GetMainCatalog() string {

@@ -99,7 +99,6 @@ type UserBooking struct {
 	PriceFullTime uint
 
 	Time []models.BookingTime `gorm:"foreignKey:BookingClassID;references:ID"`
-	//Tags []models.Catalog3
 
 	Communication       uint
 	First_name          string `json:"menti_first_name"`
@@ -121,7 +120,6 @@ func (b BookingPostgres) GetBookingsToMe(mentorId uint, status string) ([]UserBo
 		Where("user_id=? AND status = ? AND new_data.messenger_id = messenger_data.messenger_id", mentorId, status).
 		Joins("LEFT JOIN (select id as user_data_id, first_name, second_name, time as user_time from Users) AS menti_data ON user_classes.menti_id = menti_data.user_data_id").
 		Joins("LEFT JOIN (SELECT messenger_id, communication_id as cmc_id FROM messenger_communication) AS messager_communications ON messager_communications.cmc_id = communication").
-		//Joins("LEFT JOIN (SELECT id AS messenger_id, name AS messenger_name FROM messengers) AS messenger_data ON messenger_id = communication").
 		Joins("LEFT JOIN (SELECT id AS messenger_id, name AS messenger_name FROM messengers) AS messenger_data ON messager_communications.messenger_id = messenger_data.messenger_id").
 		Joins("LEFT JOIN (SELECT parent_id, login AS communication_login, id AS communication_id FROM communications) AS communication_data ON parent_id = menti_data.user_data_id").
 		Joins("LEFT JOIN (SELECT communication_id AS n_id, messenger_id FROM messenger_communication) AS new_data ON new_data.n_id = communication_id").
@@ -146,12 +144,14 @@ func (b BookingPostgres) GetMyBookings(mentiId uint, status string) ([]UserBooki
 	return bookings, nil
 }
 
-func (b BookingPostgres) ChangeStatusBookingClass(newStatus string, bookingClassId string) error {
-	err := b.db.Model(&models.UserClass{}).Where("id = ?", bookingClassId).Update("status", newStatus)
-	if err != nil {
-		return err.Error
+func (b BookingPostgres) ChangeStatusBookingClass(newStatus string, bookingClassId string) (string, error) {
+	type Status struct {
+		Status string `json:"status"`
 	}
-	return nil
+	var oldStatus Status
+	b.db.Model(&models.UserClass{}).Where("id = ?", bookingClassId).Select("status").First(&oldStatus)
+	b.db.Model(&models.UserClass{}).Where("id = ?", bookingClassId).Update("status", newStatus)
+	return oldStatus.Status, nil
 }
 
 type messenger_communication struct {

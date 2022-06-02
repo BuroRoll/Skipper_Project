@@ -40,6 +40,7 @@ type UserData interface {
 	DeleteUserEducation(educationId string) error
 	DeleteUserWorkExperience(workExperienceId string) error
 	DeleteUserOtherInfo(otherInfoId string) error
+	GetUnreadMessagesCount(userId uint) uint
 }
 
 type Catalog interface {
@@ -71,7 +72,7 @@ type Booking interface {
 	BookingClass(bookingClassData forms.BookingClassInput, mentiId uint) error
 	GetBookingsToMe(mentorId uint, status string) (string, error)
 	GetMyBookings(mentorId uint, status string) (string, error)
-	ChangeStatusBookingClass(newStatus string, bookingClassId string) error
+	ChangeStatusBookingClass(newStatus string, bookingClassId string) (string, error)
 	CheckBookingCommunications(userCommunications []models.Communication, communicationId uint) error
 	GetClassTimeMask(classId string) (string, error)
 	GetClassTime(classId string) (string, error)
@@ -94,7 +95,7 @@ type Comments interface {
 type Notifications interface {
 	GetAllClassNotifications(userId string) string
 	CreateClassTimeChangeNotification(user models.User, classId uint, receiver uint) string
-	CreateBookingStatusChangeNotification(bookingUsersData repository.BookingUsers, userId uint, newStatus string) (string, uint)
+	CreateBookingStatusChangeNotification(bookingUsersData repository.BookingUsers, userId uint, newStatus string, oldStatus string) (string, uint)
 }
 
 type Service struct {

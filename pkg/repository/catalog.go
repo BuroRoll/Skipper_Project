@@ -2,7 +2,6 @@ package repository
 
 import (
 	"Skipper/pkg/models"
-	"encoding/json"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -23,7 +22,7 @@ func (c CatalogPostgres) CreateChildCatalog(catalogName string, parentid *uint) 
 	return 0, nil
 }
 
-func (c CatalogPostgres) GetCatalog() string {
+func (c CatalogPostgres) GetCatalog() []models.Catalog0 {
 	type Id struct {
 		Id string
 	}
@@ -35,8 +34,7 @@ func (c CatalogPostgres) GetCatalog() string {
 		c.db.Preload("Child0.Child1.Child2").Preload(clause.Associations).Find(&m, d.Id)
 		catalog = append(catalog, m)
 	}
-	jsonCatalog, _ := json.Marshal(catalog)
-	return string(jsonCatalog)
+	return catalog
 }
 
 type MainCatalog struct {

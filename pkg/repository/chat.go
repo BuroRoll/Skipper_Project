@@ -30,7 +30,6 @@ func (c ChatPostgres) CreateMessage(input forms.MessageInput) (models.Message, e
 	c.db.Save(&chat)
 	chat.LastMessageId = strconv.Itoa(int(chat.LastMessage.ID))
 	c.db.Save(&chat)
-	//c.db.Save(&message)
 	fmt.Println(chat.LastMessage)
 	return message, nil
 }
@@ -47,7 +46,6 @@ type Chats struct {
 
 func (c ChatPostgres) GetOpenChats(userId uint) ([]Chats, error) {
 	var chats []Chats
-	//var chats []models.Chat
 	c.db.
 		Preload("Sender", func(tx *gorm.DB) *gorm.DB {
 			return tx.Select("id, first_name, second_name, profile_picture")
@@ -63,7 +61,6 @@ func (c ChatPostgres) GetOpenChats(userId uint) ([]Chats, error) {
 		Or("receiver_id = ?", userId).
 		Order("last_message_time DESC").
 		Find(&chats)
-	fmt.Println(chats)
 	return chats, nil
 }
 
@@ -95,13 +92,15 @@ func (c ChatPostgres) GetChatData(userId string, receiverID string) (models.Chat
 
 	var messages []models.Message
 	chatId := strconv.FormatUint(uint64(chat.ID), 10)
-	c.db.Debug().Where("chat_id = ?", chatId).Order("created_at").Find(&messages)
+	c.db.
+		Where("chat_id = ?", chatId).
+		Order("created_at").
+		Find(&messages)
 	return chat, messages, nil
 }
 
 func (c ChatPostgres) ReadMessages(chatId string, userId string) error {
 	var message models.Message
-
 	c.db.
 		Model(&message).
 		Where("chat_id in (?) and receiver_id in (?)", chatId, userId).

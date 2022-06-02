@@ -110,3 +110,8 @@ func (u UserDataService) DeleteUserWorkExperience(workExperienceId string) error
 func (u UserDataService) DeleteUserOtherInfo(otherInfoId string) error {
 	return u.repo.DeleteUserOtherInfo(otherInfoId)
 }
+
+func (u UserDataService) GetUnreadMessagesCount(userId uint) uint {
+	unreadMessagesCount := u.repo.GetUnreadMessagesCount(userId)
+	return unreadMessagesCount.Count
+}

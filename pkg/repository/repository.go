@@ -34,12 +34,13 @@ type UserData interface {
 	DeleteUserEducation(educationId string) error
 	DeleteUserWorkExperience(workExperienceId string) error
 	DeleteUserOtherInfo(otherInfoId string) error
+	GetUnreadMessagesCount(userId uint) unreadMessagesCounter
 }
 
 type Catalog interface {
 	CreateMainCatalog(name string) (uint, error)
 	CreateChildCatalog(name string, parentId *uint) (uint, error)
-	GetCatalog() string
+	GetCatalog() []models.Catalog0
 	GetMainCatalog() []MainCatalog
 	GetCatalogChild() []models.Catalog3
 	GetClasses(**models.Pagination) ([]models.User, error)
@@ -66,7 +67,7 @@ type Booking interface {
 	BookingClass(data forms.BookingClassInput, mentiId uint) error
 	GetBookingsToMe(mentorId uint, status string) ([]UserBooking, error)
 	GetMyBookings(mentiId uint, status string) ([]UserBooking, error)
-	ChangeStatusBookingClass(newStatus string, bookingClassId string) error
+	ChangeStatusBookingClass(newStatus string, bookingClassId string) (string, error)
 	GetMessengerByCommunication(id uint) uint
 	GetClassTimeMask(classId string) (BookingTimeMask, error)
 	GetClassTime(classId string) ([]ClassTime, error)
@@ -90,8 +91,7 @@ type Comments interface {
 
 type Notifications interface {
 	GetAllClassNotifications(userId string) []models.ClassNotification
-	CreateClassTimeChangeNotification(classId uint, userFirstName string, userSecondName string, receiver uint) models.ClassNotification
-	CreateNotification(notification models.ClassNotification)
+	CreateClassNotification(notification models.ClassNotification) models.ClassNotification
 }
 
 type Repository struct {
