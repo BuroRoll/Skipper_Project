@@ -67,13 +67,14 @@ type Booking interface {
 	BookingClass(data forms.BookingClassInput, mentiId uint) error
 	GetBookingsToMe(mentorId uint, status string) ([]UserBooking, error)
 	GetMyBookings(mentiId uint, status string) ([]UserBooking, error)
-	ChangeStatusBookingClass(newStatus string, bookingClassId string) (string, error)
+	ChangeStatusBookingClass(newStatus string, bookingClassId string) error
 	GetMessengerByCommunication(id uint) uint
 	GetClassTimeMask(classId string) (BookingTimeMask, error)
 	GetClassTime(classId string) ([]ClassTime, error)
 	ChangeBookingTime(classId uint, time []string) error
 	GetReceiverName(userId uint) models.User
 	GetBookingUsersById(bookingId string) BookingUsers
+	GetBookingStatus(bookingId uint) Status
 }
 
 type Chat interface {

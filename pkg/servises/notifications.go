@@ -53,7 +53,7 @@ type StatusChangeData struct {
 	OldStatus  string `json:"old_status"`
 }
 
-func (n NotificationsService) CreateBookingStatusChangeNotification(bookingUsersData repository.BookingUsers, userId uint, newStatus string, oldStatus string) (string, uint) {
+func (n NotificationsService) CreateBookingStatusChangeNotification(bookingUsersData repository.BookingUsers, userId uint, newStatus string, oldStatus string, notificationType string) (string, uint) {
 	data := StatusChangeData{
 		ClassId:   bookingUsersData.Id,
 		ClassName: bookingUsersData.ClassDataName,
@@ -72,7 +72,7 @@ func (n NotificationsService) CreateBookingStatusChangeNotification(bookingUsers
 	}
 	jsonData, _ := json.Marshal(data)
 	notification := models.ClassNotification{
-		Type:     "status change",
+		Type:     notificationType,
 		IsRead:   false,
 		Data:     string(jsonData),
 		Receiver: receiverId,

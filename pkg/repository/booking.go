@@ -144,23 +144,29 @@ func (b BookingPostgres) GetMyBookings(mentiId uint, status string) ([]UserBooki
 	return bookings, nil
 }
 
-func (b BookingPostgres) ChangeStatusBookingClass(newStatus string, bookingClassId string) (string, error) {
-	type Status struct {
-		Status string `json:"status"`
-	}
-	var oldStatus Status
-	b.db.Model(&models.UserClass{}).Where("id = ?", bookingClassId).Select("status").First(&oldStatus)
+func (b BookingPostgres) ChangeStatusBookingClass(newStatus string, bookingClassId string) error {
 	b.db.Model(&models.UserClass{}).Where("id = ?", bookingClassId).Update("status", newStatus)
-	return oldStatus.Status, nil
+	return nil
 }
 
-type messenger_communication struct {
+type Status struct {
+	Id     uint   `json:"id"`
+	Status string `json:"status"`
+}
+
+func (b BookingPostgres) GetBookingStatus(bookingId uint) Status {
+	var status Status
+	b.db.Model(&models.UserClass{}).Where("id = ?", bookingId).Select("id, status").First(&status)
+	return status
+}
+
+type messengerCommunication struct {
 	MessengerId     uint `json:"messenger_id"`
 	CommunicationId uint `json:"communication_id"`
 }
 
 func (b BookingPostgres) GetMessengerByCommunication(id uint) uint {
-	var data messenger_communication
+	var data messengerCommunication
 	b.db.
 		Table("messenger_communication").
 		Where("communication_id = ?", id).

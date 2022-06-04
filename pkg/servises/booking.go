@@ -40,12 +40,12 @@ func (b BookingService) GetMyBookings(mentiId uint, status string) (string, erro
 	return string(jsonConsiderationList), nil
 }
 
-func (b BookingService) ChangeStatusBookingClass(newStatus string, bookingClassId string) (string, error) {
-	oldStatus, err := b.repo.ChangeStatusBookingClass(newStatus, bookingClassId)
+func (b BookingService) ChangeStatusBookingClass(newStatus string, bookingClassId string) error {
+	err := b.repo.ChangeStatusBookingClass(newStatus, bookingClassId)
 	if err != nil {
-		return "", err
+		return err
 	}
-	return oldStatus, err
+	return nil
 }
 
 func (b BookingService) CheckBookingCommunications(userCommunications []models.Communication, communicationId uint) error {
@@ -92,4 +92,9 @@ func (b BookingService) ChangeBookingTime(newBookingTime forms.ChangeBookingTime
 
 func (b BookingService) GetBookingUsersById(bookingId string) repository.BookingUsers {
 	return b.repo.GetBookingUsersById(bookingId)
+}
+
+func (b BookingService) GetBookingStatus(bookingId uint) string {
+	status := b.repo.GetBookingStatus(bookingId)
+	return status.Status
 }

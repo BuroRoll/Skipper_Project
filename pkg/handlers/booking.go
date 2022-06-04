@@ -62,14 +62,22 @@ func (h *Handler) ChangeStatusBookingClass(c *gin.Context) {
 	bookingId := c.Query("booking_id")
 	newStatus := c.Query("new_status")
 	userId, _ := c.Get(userCtx)
-	oldStatus, err := h.services.ChangeStatusBookingClass(newStatus, bookingId)
+	booking_id, _ := strconv.ParseUint(bookingId, 10, 64)
+	status := h.services.GetBookingStatus(uint(booking_id))
+	bookingUsersData := h.services.GetBookingUsersById(bookingId)
+	if status == "canceled" && userId != bookingUsersData.MentiDataId {
+		bookingChangeStatusNotification, receiverId := h.services.CreateBookingStatusChangeNotification(bookingUsersData, userId.(uint), newStatus, status, "offer to change status")
+		SendClassNotification(bookingChangeStatusNotification, strconv.Itoa(int(receiverId)))
+		c.JSON(http.StatusOK, gin.H{"status": "Уведомление отправлено менти"})
+		return
+	}
+	bookingChangeStatusNotification, receiverId := h.services.CreateBookingStatusChangeNotification(bookingUsersData, userId.(uint), newStatus, status, "status change")
+	err := h.services.ChangeStatusBookingClass(newStatus, bookingId)
+	SendClassNotification(bookingChangeStatusNotification, strconv.Itoa(int(receiverId)))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Ошибка смены статуса занятия"})
 		return
 	}
-	bookingUsersData := h.services.GetBookingUsersById(bookingId)
-	bookingChangeStatusNotification, receiverId := h.services.CreateBookingStatusChangeNotification(bookingUsersData, userId.(uint), newStatus, oldStatus)
-	SendClassNotification(bookingChangeStatusNotification, strconv.Itoa(int(receiverId)))
 	c.JSON(http.StatusOK, gin.H{"status": "ok"})
 }
 
