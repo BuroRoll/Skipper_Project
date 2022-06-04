@@ -74,7 +74,12 @@ func (c CommentsPostgres) CalcRating(userId uint) {
 	c.db.Raw("SELECT recipien_id, avg(rating) AS rating FROM lesson_comments WHERE recipien_id = ? group by recipien_id;", userId).
 		Find(&lessonRating)
 	c.db.Find(&user, userId)
-	rating := math.Round((classRating.Rating*0.8+lessonRating.Rating*0.2)*100) / 100
+	rating := 0.0
+	if lessonRating.Rating != 0 {
+		rating = math.Round((classRating.Rating*0.8+lessonRating.Rating*0.2)*100) / 100
+	} else {
+		rating = math.Round(classRating.Rating*100) / 100
+	}
 	user.Rating = rating
 	c.db.Save(&user)
 }
