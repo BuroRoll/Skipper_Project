@@ -13,7 +13,11 @@ func (h *Handler) CreateComment(c *gin.Context) {
 		return
 	}
 	if len(comment.Text) == 0 {
-
+		err := h.services.CreateLessonComment(comment)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Не удалось сохранить отзыв"})
+			return
+		}
 	} else {
 		err := h.services.CreateComment(comment)
 		if err != nil {

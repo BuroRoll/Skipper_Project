@@ -91,6 +91,7 @@ type Chat interface {
 type Comments interface {
 	CreateComment(comment forms.CommentInput) error
 	GetComments(userId uint) (string, error)
+	CreateLessonComment(lessonComment forms.CommentInput) error
 }
 
 type Notifications interface {

@@ -60,17 +60,29 @@ func (c CommentsPostgres) GetComments(userId uint) ([]CommentData, error) {
 	return comments, nil
 }
 
+type RatingData struct {
+	RecipienId uint    `json:"recipien_id"`
+	Rating     float64 `json:"rating"`
+}
+
 func (c CommentsPostgres) CalcRating(userId uint) {
 	var user models.User
-	var rating Rating
+	var classRating RatingData
+	var lessonRating RatingData
 	c.db.Raw("SELECT recipien_id, avg(rating) AS rating FROM comments WHERE recipien_id = ? group by recipien_id;", userId).
-		Find(&rating)
+		Find(&classRating)
+	c.db.Raw("SELECT recipien_id, avg(rating) AS rating FROM lesson_comments WHERE recipien_id = ? group by recipien_id;", userId).
+		Find(&lessonRating)
 	c.db.Find(&user, userId)
-	user.Rating = math.Round(rating.Rating*100) / 100
+	rating := math.Round((classRating.Rating*0.8+lessonRating.Rating*0.2)*100) / 100
+	user.Rating = rating
 	c.db.Save(&user)
 }
 
-type Rating struct {
-	RecipienId uint    `json:"recipien_id"`
-	Rating     float64 `json:"rating"`
+func (c CommentsPostgres) CreateLessonComment(lessonComment models.LessonComment) error {
+	result := c.db.Create(&lessonComment)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
 }

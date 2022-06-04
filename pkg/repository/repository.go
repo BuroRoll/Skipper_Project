@@ -86,6 +86,7 @@ type Chat interface {
 
 type Comments interface {
 	CreateComment(comment forms.CommentInput) error
+	CreateLessonComment(LessonComment models.LessonComment) error
 	GetComments(userId uint) ([]CommentData, error)
 	CalcRating(userId uint)
 }

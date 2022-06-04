@@ -1,6 +1,7 @@
 package service
 
 import (
+	"Skipper/pkg/models"
 	"Skipper/pkg/models/forms"
 	"Skipper/pkg/repository"
 	"encoding/json"
@@ -20,10 +21,25 @@ func (c CommentsService) CreateComment(comment forms.CommentInput) error {
 		comment.SenderId = nil
 	}
 	err := c.repo.CreateComment(comment)
-	c.CalcRating(comment.RecipienId)
+
 	if err != nil {
 		return err
 	}
+	c.CalcRating(comment.RecipienId)
+	return nil
+}
+
+func (c CommentsService) CreateLessonComment(lessonCommentData forms.CommentInput) error {
+	lessonComment := models.LessonComment{
+		SenderId:   lessonCommentData.SenderId,
+		RecipienId: lessonCommentData.RecipienId,
+		Rating:     lessonCommentData.Rating,
+	}
+	err := c.repo.CreateLessonComment(lessonComment)
+	if err != nil {
+		return err
+	}
+	c.CalcRating(lessonComment.RecipienId)
 	return nil
 }
 

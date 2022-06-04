@@ -35,6 +35,7 @@ func init() {
 		&Chat{},
 		&Message{},
 		&Comment{},
+		&LessonComment{},
 		&ClassNotification{},
 	)
 	err = db.AutoMigrate(&BookingTime{})

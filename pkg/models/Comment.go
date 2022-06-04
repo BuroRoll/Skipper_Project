@@ -11,3 +11,10 @@ type Comment struct {
 	Anonymous    bool
 	LessonsCount *uint
 }
+
+type LessonComment struct {
+	gorm.Model
+	SenderId   *uint
+	RecipienId uint
+	Rating     uint
+}
