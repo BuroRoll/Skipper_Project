@@ -52,6 +52,7 @@ type StatusChangeData struct {
 	SecondName string `json:"second_name"`
 	NewStatus  string `json:"new_status"`
 	OldStatus  string `json:"old_status"`
+	IsMentor   bool   `json:"is_mentor"`
 }
 
 func (n NotificationsService) CreateBookingStatusChangeNotification(bookingUsersData repository.BookingUsers, userId uint, newStatus string, oldStatus string, notificationType string) (string, uint) {
@@ -65,13 +66,18 @@ func (n NotificationsService) CreateBookingStatusChangeNotification(bookingUsers
 	if userId == bookingUsersData.MentorDataId {
 		data.FirstName = bookingUsersData.MentorFirstName
 		data.SecondName = bookingUsersData.MentorSecondName
-		receiverId = bookingUsersData.MentiDataId
 		data.ChatUserId = bookingUsersData.MentorDataId
+		receiverId = bookingUsersData.MentiDataId
 	} else {
 		data.FirstName = bookingUsersData.MentiFirstName
 		data.SecondName = bookingUsersData.MentiSecondName
-		receiverId = bookingUsersData.MentorDataId
 		data.ChatUserId = bookingUsersData.MentiDataId
+		receiverId = bookingUsersData.MentorDataId
+	}
+	if receiverId == bookingUsersData.MentorDataId {
+		data.IsMentor = true
+	} else {
+		data.IsMentor = false
 	}
 	jsonData, _ := json.Marshal(data)
 	notification := models.ClassNotification{
