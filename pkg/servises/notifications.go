@@ -45,6 +45,7 @@ func (n NotificationsService) CreateClassTimeChangeNotification(user models.User
 }
 
 type StatusChangeData struct {
+	ChatUserId uint   `json:"chat_user_id"`
 	ClassId    uint   `json:"class_id"`
 	ClassName  string `json:"class_name"`
 	FirstName  string `json:"first_name"`
@@ -65,10 +66,12 @@ func (n NotificationsService) CreateBookingStatusChangeNotification(bookingUsers
 		data.FirstName = bookingUsersData.MentorFirstName
 		data.SecondName = bookingUsersData.MentorSecondName
 		receiverId = bookingUsersData.MentiDataId
+		data.ChatUserId = bookingUsersData.MentorDataId
 	} else {
 		data.FirstName = bookingUsersData.MentiFirstName
 		data.SecondName = bookingUsersData.MentiSecondName
 		receiverId = bookingUsersData.MentorDataId
+		data.ChatUserId = bookingUsersData.MentiDataId
 	}
 	jsonData, _ := json.Marshal(data)
 	notification := models.ClassNotification{
