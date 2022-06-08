@@ -79,6 +79,7 @@ type Booking interface {
 	ChangeBookingTime(newBookingTime forms.ChangeBookingTimeInput, userId uint) (error, models.User)
 	GetBookingUsersById(bookingId string) repository.BookingUsers
 	GetBookingStatus(bookingId uint) string
+	ChangeBookingCommunication(newBookingCommunicationInput forms.ChangeBookingCommunication) error
 }
 
 type Chat interface {
@@ -98,6 +99,11 @@ type Notifications interface {
 	GetAllClassNotifications(userId string) string
 	CreateClassTimeChangeNotification(user models.User, classId uint, receiver uint) string
 	CreateBookingStatusChangeNotification(bookingUsersData repository.BookingUsers, userId uint, newStatus string, oldStatus string, notificationType string) (string, uint)
+	CreateChangeBookingCommunicationNotification(
+		senderId uint,
+		bookingUsers repository.BookingUsers,
+		classId uint, newCommunicationId uint,
+		mentorCommunications []models.Communication) (string, uint)
 }
 
 type Service struct {

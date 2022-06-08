@@ -43,3 +43,8 @@ type ChangeBookingTimeInput struct {
 	Receiver uint     `json:"receiver" binding:"required"`
 	Time     []string `json:"time" binding:"required"`
 }
+
+type ChangeBookingCommunication struct {
+	ClassId         uint `json:"class_id" binding:"required"`
+	CommunicationId uint `json:"communication_id" binding:"required"`
+}

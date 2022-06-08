@@ -98,3 +98,11 @@ func (b BookingService) GetBookingStatus(bookingId uint) string {
 	status := b.repo.GetBookingStatus(bookingId)
 	return status.Status
 }
+
+func (b BookingService) ChangeBookingCommunication(newBookingCommunicationInput forms.ChangeBookingCommunication) error {
+	err := b.repo.ChangeBookingCommunication(newBookingCommunicationInput.ClassId, newBookingCommunicationInput.CommunicationId)
+	if err != nil {
+		return err
+	}
+	return nil
+}

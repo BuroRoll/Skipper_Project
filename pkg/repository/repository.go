@@ -75,6 +75,8 @@ type Booking interface {
 	GetReceiverName(userId uint) models.User
 	GetBookingUsersById(bookingId string) BookingUsers
 	GetBookingStatus(bookingId uint) Status
+	GetBookingById(bookingId uint) models.UserClass
+	ChangeBookingCommunication(bookingId uint, communicationId uint) error
 }
 
 type Chat interface {

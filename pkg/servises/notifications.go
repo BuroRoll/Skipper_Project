@@ -90,3 +90,44 @@ func (n NotificationsService) CreateBookingStatusChangeNotification(bookingUsers
 	jsonNotification, _ := json.Marshal(notification)
 	return string(jsonNotification), receiverId
 }
+
+type CommunicationData struct {
+	ChatUserId           uint                   `json:"chat_user_id"`
+	ClassId              uint                   `json:"class_id"`
+	ClassName            string                 `json:"class_name"`
+	FirstName            string                 `json:"first_name"`
+	SecondName           string                 `json:"second_name"`
+	NewCommunicationId   uint                   `json:"new_communication_id"`
+	MentorCommunications []models.Communication `json:"mentor_communications"`
+}
+
+func (n NotificationsService) CreateChangeBookingCommunicationNotification(senderId uint, bookingUsers repository.BookingUsers, classId uint, newCommunicationId uint, mentorCommunications []models.Communication) (string, uint) {
+	var receiverId uint
+	data := CommunicationData{
+		ClassId:              classId,
+		ClassName:            bookingUsers.ClassDataName,
+		NewCommunicationId:   newCommunicationId,
+		MentorCommunications: mentorCommunications,
+	}
+	if senderId == bookingUsers.MentorDataId {
+		data.FirstName = bookingUsers.MentorFirstName
+		data.SecondName = bookingUsers.MentorSecondName
+		data.ChatUserId = bookingUsers.MentorDataId
+		receiverId = bookingUsers.MentiDataId
+	} else {
+		data.FirstName = bookingUsers.MentiFirstName
+		data.SecondName = bookingUsers.MentiSecondName
+		data.ChatUserId = bookingUsers.MentiDataId
+		receiverId = bookingUsers.MentorDataId
+	}
+	jsonData, _ := json.Marshal(data)
+	notification := models.ClassNotification{
+		Type:     "communication change",
+		IsRead:   false,
+		Data:     string(jsonData),
+		Receiver: receiverId,
+	}
+	notification = n.repo.CreateClassNotification(notification)
+	jsonNotification, _ := json.Marshal(notification)
+	return string(jsonNotification), receiverId
+}

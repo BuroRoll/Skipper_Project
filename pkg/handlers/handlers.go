@@ -101,6 +101,11 @@ func (h *Handler) InitRoutes() {
 					changeTime.GET("/:booking_class_id", h.GetBookingTimes)
 					changeTime.PUT("/", h.ChangeBookingTimes)
 				}
+				changeCommunication := booking.Group("/change-communication")
+				{
+					changeCommunication.GET("/:booking_class_id", h.GetCommunicationsForClass)
+					changeCommunication.PUT("/", h.ChangeBookingCommunication)
+				}
 			}
 		}
 

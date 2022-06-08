@@ -41,6 +41,7 @@ type UserClass struct {
 	Time []BookingTime `gorm:"foreignKey:BookingClassID;references:ID"`
 
 	Communication uint
+	//Communication Communication
 }
 
 type BookingTime struct {

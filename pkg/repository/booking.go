@@ -252,3 +252,17 @@ func (b BookingPostgres) GetBookingUsersById(bookingId string) BookingUsers {
 		Find(&bookingUsers)
 	return bookingUsers
 }
+
+func (b BookingPostgres) GetBookingById(bookingId uint) models.UserClass {
+	var booking models.UserClass
+	b.db.First(&booking, bookingId)
+	return booking
+}
+
+func (b BookingPostgres) ChangeBookingCommunication(bookingId uint, communicationId uint) error {
+	result := b.db.Model(&models.UserClass{}).Where("id = ?", bookingId).Update("communication", communicationId)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}

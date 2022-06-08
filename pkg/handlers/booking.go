@@ -123,3 +123,28 @@ func (h *Handler) ChangeBookingTimes(c *gin.Context) {
 	SendClassNotification(notificationData, strconv.Itoa(int(newBookingTimeInput.Receiver)))
 	c.JSON(http.StatusOK, gin.H{"status": "ok"})
 }
+
+func (h *Handler) GetCommunicationsForClass(c *gin.Context) {
+	bookingId := c.Param("booking_class_id")
+	bookingUsers := h.services.GetBookingUsersById(bookingId)
+	userCommunications, _ := h.services.GetUserCommunications(bookingUsers.MentorDataId)
+	c.JSON(http.StatusOK, gin.H{"class_mentor_communications": userCommunications})
+}
+
+func (h *Handler) ChangeBookingCommunication(c *gin.Context) {
+	userId, _ := c.Get(userCtx)
+	var newBookingCommunicationInput forms.ChangeBookingCommunication
+	if err := c.BindJSON(&newBookingCommunicationInput); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Неверная форма изменения способа связи занятия"})
+		return
+	}
+	err := h.services.ChangeBookingCommunication(newBookingCommunicationInput)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Не удалось сохранить новый способ связи"})
+	}
+	bookingUsers := h.services.GetBookingUsersById(strconv.Itoa(int(newBookingCommunicationInput.ClassId)))
+	mentorCommunications, _ := h.services.GetUserCommunications(bookingUsers.MentorDataId)
+	notification, receiver := h.services.CreateChangeBookingCommunicationNotification(userId.(uint), bookingUsers, newBookingCommunicationInput.ClassId, newBookingCommunicationInput.CommunicationId, mentorCommunications)
+	SendClassNotification(notification, strconv.Itoa(int(receiver)))
+	c.JSON(http.StatusOK, gin.H{"status": "ok"})
+}
