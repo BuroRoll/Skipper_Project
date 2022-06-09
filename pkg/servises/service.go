@@ -104,6 +104,8 @@ type Notifications interface {
 		bookingUsers repository.BookingUsers,
 		classId uint, newCommunicationId uint,
 		mentorCommunications []models.Communication) (string, uint)
+	ReadNotification(notificationId uint) error
+	DeleteNotification(notificationId uint) error
 }
 
 type Service struct {

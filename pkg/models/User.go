@@ -22,11 +22,12 @@ type User struct {
 	Rating         float64         `gorm:"default:0"`
 
 	//Mentor information
-	Specialization   string
-	Educations       []Education        `gorm:"ForeignKey:ParentId"`
-	WorkExperiences  []WorkExperience   `gorm:"ForeignKey:ParentId"`
-	Classes          []Class            `gorm:"ForeignKey:ParentId"`
-	OtherInformation []OtherInformation `gorm:"ForeignKey:ParentId"`
+	Specialization    string
+	Educations        []Education        `gorm:"ForeignKey:ParentId"`
+	WorkExperiences   []WorkExperience   `gorm:"ForeignKey:ParentId"`
+	Classes           []Class            `gorm:"ForeignKey:ParentId"`
+	OtherInformation  []OtherInformation `gorm:"ForeignKey:ParentId"`
+	AverageClassPrice uint               `gorm:"default:0"`
 }
 
 type Communication struct {

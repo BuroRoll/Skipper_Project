@@ -1,21 +1,16 @@
 package forms
 
 type ClassesInput struct {
-	ClassName string `json:"class_name" binding:"required"`
-
+	ClassName   string `json:"class_name" binding:"required"`
 	Description string `json:"description" binding:"required"`
-
-	Tags []uint `json:"tags" binding:"required"`
+	Tags        []uint `json:"tags" binding:"required"`
 }
 
 type UpdateClassesInput struct {
-	ClassId uint `json:"class_id" binding:"required"`
-
-	ClassName string `json:"class_name" binding:"required"`
-
+	ClassId     uint   `json:"class_id" binding:"required"`
+	ClassName   string `json:"class_name" binding:"required"`
 	Description string `json:"description" binding:"required"`
-
-	Tags []uint `json:"tags" binding:"required"`
+	Tags        []uint `json:"tags" binding:"required"`
 }
 
 type UpdateSubclassInput struct {

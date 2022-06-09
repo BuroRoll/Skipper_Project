@@ -131,3 +131,13 @@ func (n NotificationsService) CreateChangeBookingCommunicationNotification(sende
 	jsonNotification, _ := json.Marshal(notification)
 	return string(jsonNotification), receiverId
 }
+
+func (n NotificationsService) ReadNotification(notificationId uint) error {
+	err := n.repo.ReadNotification(notificationId)
+	return err
+}
+
+func (n NotificationsService) DeleteNotification(notificationId uint) error {
+	err := n.repo.DeleteNotification(notificationId)
+	return err
+}

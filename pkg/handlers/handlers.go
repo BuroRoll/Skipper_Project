@@ -146,14 +146,22 @@ func (h *Handler) InitRoutes() {
 
 	notifications := router.Group("/notifications", h.userSSEIdentity)
 	{
-		notifications.GET("/message/:userId", func(c *gin.Context) {
-			sseRouter.ServeHTTP(c.Writer, c.Request)
-		})
-		notifications.GET("/class/:userId", func(c *gin.Context) {
-			sseRouter.ServeHTTP(c.Writer, c.Request)
-		})
-		notifications.POST("/class", h.SendClassNotification)
-		notifications.GET("/class", h.GetAllClassNotifications)
+		message := notifications.Group("/message")
+		{
+			message.GET("/:userId", func(c *gin.Context) {
+				sseRouter.ServeHTTP(c.Writer, c.Request)
+			})
+		}
+		class := notifications.Group("/class")
+		{
+			class.GET("/:userId", func(c *gin.Context) {
+				sseRouter.ServeHTTP(c.Writer, c.Request)
+			})
+			class.POST("/", h.SendClassNotification)
+			class.GET("/", h.GetAllClassNotifications)
+		}
+		notifications.PUT("/", h.ReadNotification)
+		notifications.DELETE("/", h.DeleteNotification)
 	}
 	router.Run(":8000")
 }

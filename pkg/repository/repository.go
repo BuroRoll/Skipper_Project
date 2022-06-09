@@ -96,6 +96,8 @@ type Comments interface {
 type Notifications interface {
 	GetAllClassNotifications(userId string) []models.ClassNotification
 	CreateClassNotification(notification models.ClassNotification) models.ClassNotification
+	ReadNotification(notificationId uint) error
+	DeleteNotification(notificationId uint) error
 }
 
 type Repository struct {

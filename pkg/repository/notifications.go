@@ -26,3 +26,13 @@ func (n NotificationsPostgres) CreateClassNotification(notification models.Class
 	n.db.Save(&notification)
 	return notification
 }
+
+func (n NotificationsPostgres) ReadNotification(notificationId uint) error {
+	result := n.db.Model(&models.ClassNotification{}).Where("id = ?", notificationId).Update("is_read", true)
+	return result.Error
+}
+
+func (n NotificationsPostgres) DeleteNotification(notificationId uint) error {
+	result := n.db.Where("id = ?", notificationId).Delete(&models.ClassNotification{})
+	return result.Error
+}

@@ -25,3 +25,25 @@ func (h *Handler) GetAllClassNotifications(c *gin.Context) {
 	classNotifications := h.services.GetAllClassNotifications(strconv.Itoa(int(userId.(uint))))
 	c.JSON(http.StatusOK, classNotifications)
 }
+
+func (h *Handler) ReadNotification(c *gin.Context) {
+	notificationIdQuery := c.Query("notification_id")
+	notificationId, _ := strconv.ParseUint(notificationIdQuery, 10, 64)
+	err := h.services.ReadNotification(uint(notificationId))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Не удалось пометить уведомление как прочитанное"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"status": "ok"})
+}
+
+func (h *Handler) DeleteNotification(c *gin.Context) {
+	notificationIdQuery := c.Query("notification_id")
+	notificationId, _ := strconv.ParseUint(notificationIdQuery, 10, 64)
+	err := h.services.DeleteNotification(uint(notificationId))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Не удалось удалить уведомление"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"status": "ok"})
+}
