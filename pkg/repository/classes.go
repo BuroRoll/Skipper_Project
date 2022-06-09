@@ -23,30 +23,6 @@ func (c ClassesPostgres) CreateUserClasses(class models.Class) (uint, error) {
 	return class.ID, nil
 }
 
-func (c ClassesPostgres) CreateTheoreticClass(theoreticClass models.TheoreticClass) (uint, error) {
-	result := c.db.Create(&theoreticClass)
-	if errors.Is(result.Error, gorm.ErrRegistered) {
-		return 0, result.Error
-	}
-	return theoreticClass.ID, nil
-}
-
-func (c ClassesPostgres) CreatePracticClass(practicClass models.PracticClass) (uint, error) {
-	result := c.db.Create(&practicClass)
-	if errors.Is(result.Error, gorm.ErrRegistered) {
-		return 0, result.Error
-	}
-	return practicClass.ID, nil
-}
-
-func (c ClassesPostgres) CreateKeyClass(keyClass models.KeyClass) (uint, error) {
-	result := c.db.Create(&keyClass)
-	if errors.Is(result.Error, gorm.ErrRegistered) {
-		return 0, result.Error
-	}
-	return keyClass.ID, nil
-}
-
 func (c ClassesPostgres) GetCatalogTags(catalogId uint) (models.Catalog3, error) {
 	var tag models.Catalog3
 	result := c.db.First(&tag, catalogId)
@@ -72,6 +48,30 @@ func (c ClassesPostgres) DeleteClass(classId string) error {
 	c.db.Exec("DELETE FROM key_classes WHERE class_parent_id = ?;", classId)
 	c.db.Exec("DELETE FROM classes WHERE id = ?", classId)
 	return nil
+}
+
+func (c ClassesPostgres) CreateTheoreticClass(theoreticClass models.TheoreticClass) (uint, models.TheoreticClass, error) {
+	result := c.db.Create(&theoreticClass)
+	if errors.Is(result.Error, gorm.ErrRegistered) {
+		return 0, theoreticClass, result.Error
+	}
+	return theoreticClass.ID, theoreticClass, nil
+}
+
+func (c ClassesPostgres) CreatePracticClass(practicClass models.PracticClass) (uint, models.PracticClass, error) {
+	result := c.db.Create(&practicClass)
+	if errors.Is(result.Error, gorm.ErrRegistered) {
+		return 0, practicClass, result.Error
+	}
+	return practicClass.ID, practicClass, nil
+}
+
+func (c ClassesPostgres) CreateKeyClass(keyClass models.KeyClass) (uint, models.KeyClass, error) {
+	result := c.db.Create(&keyClass)
+	if errors.Is(result.Error, gorm.ErrRegistered) {
+		return 0, keyClass, result.Error
+	}
+	return keyClass.ID, keyClass, nil
 }
 
 func (c ClassesPostgres) DeleteTheoreticClass(classId string) error {
@@ -112,7 +112,7 @@ func (c ClassesPostgres) UpdateClass(classData models.Class, classId uint) error
 	return nil
 }
 
-func (c ClassesPostgres) UpdateTheoreticClass(classData models.TheoreticClass, classId uint) error {
+func (c ClassesPostgres) UpdateTheoreticClass(classData models.TheoreticClass, classId uint) (models.TheoreticClass, error) {
 	var theoreticClass models.TheoreticClass
 	c.db.First(&theoreticClass, classId)
 	theoreticClass.Duration15 = classData.Duration15
@@ -126,12 +126,12 @@ func (c ClassesPostgres) UpdateTheoreticClass(classData models.TheoreticClass, c
 	theoreticClass.Time = classData.Time
 	result := c.db.Save(&theoreticClass)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		return result.Error
+		return theoreticClass, result.Error
 	}
-	return nil
+	return theoreticClass, nil
 }
 
-func (c ClassesPostgres) UpdatePracticClass(classData models.PracticClass, classId uint) error {
+func (c ClassesPostgres) UpdatePracticClass(classData models.PracticClass, classId uint) (models.PracticClass, error) {
 	var practicClass models.PracticClass
 	c.db.First(&practicClass, classId)
 	practicClass.Duration15 = classData.Duration15
@@ -145,12 +145,12 @@ func (c ClassesPostgres) UpdatePracticClass(classData models.PracticClass, class
 	practicClass.Time = classData.Time
 	result := c.db.Save(&practicClass)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		return result.Error
+		return practicClass, result.Error
 	}
-	return nil
+	return practicClass, nil
 }
 
-func (c ClassesPostgres) UpdateKeyClass(classData models.KeyClass, classId uint) error {
+func (c ClassesPostgres) UpdateKeyClass(classData models.KeyClass, classId uint) (models.KeyClass, error) {
 	var keyClass models.KeyClass
 	c.db.First(&keyClass, classId)
 	keyClass.Duration15 = classData.Duration15
@@ -160,9 +160,9 @@ func (c ClassesPostgres) UpdateKeyClass(classData models.KeyClass, classId uint)
 	keyClass.Time = classData.Time
 	result := c.db.Save(&keyClass)
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-		return result.Error
+		return keyClass, result.Error
 	}
-	return nil
+	return keyClass, nil
 }
 
 func (c ClassesPostgres) GetClassById(classId string) (models.Class, error) {
@@ -174,4 +174,57 @@ func (c ClassesPostgres) GetClassById(classId string) (models.Class, error) {
 		return models.Class{}, result.Error
 	}
 	return class, nil
+}
+
+func (c ClassesPostgres) CalcAverageClassPrice(classId uint) {
+	var class models.Class
+	c.db.First(&class, classId)
+	userId := class.ParentId
+	theoreticClassData := getClassPriceData(userId, "theoretic_classes", c)
+	practicClassData := getClassPriceData(userId, "practic_classes", c)
+	keyClassData := getKeyClassPriceData(userId, "key_classes", c)
+	var data []DataForAvgPrice
+	data = append(data, theoreticClassData)
+	data = append(data, practicClassData)
+	data = append(data, keyClassData)
+	priceSum := 0.0
+	priceCount := 0.0
+	for _, i := range data {
+		priceSum = priceSum + i.Sum
+		priceCount = priceCount + i.Count
+	}
+	averagePrice := priceSum / priceCount
+	c.db.Model(&models.User{}).Where("id = ?", userId).Update("average_class_price", averagePrice)
+}
+
+type DataForAvgPrice struct {
+	ParentId uint    `json:"parent_id"`
+	Sum      float64 `json:"sum"`
+	Count    float64 `json:"count"`
+}
+
+func getClassPriceData(userId uint, classType string, c ClassesPostgres) DataForAvgPrice {
+	var data DataForAvgPrice
+	joinString := "LEFT JOIN classes c on c.id = " + classType + ".class_parent_id"
+	c.db.
+		Select("parent_id, (AVG(price15) * COUNT(price15) + AVG(price30) * COUNT(price30) + AVG(price60) * COUNT(price60) + AVG(price90) * COUNT(price90)) AS sum, (COUNT(NULLIF(price15, 0)) + COUNT(NULLIF(price30, 0)) + COUNT(NULLIF(price60, 0)) + COUNT(NULLIF(price90, 0))) AS count").
+		Table(classType).
+		Joins(joinString).
+		Where("parent_id = ?", userId).
+		Group("parent_id").
+		Find(&data)
+	return data
+}
+
+func getKeyClassPriceData(userId uint, classType string, c ClassesPostgres) DataForAvgPrice {
+	var data DataForAvgPrice
+	joinString := "LEFT JOIN classes c on c.id = " + classType + ".class_parent_id"
+	c.db.
+		Select("parent_id, (AVG(price15) * COUNT(price15) + AVG(price_full_time) * COUNT(price_full_time)) AS sum, (COUNT(NULLIF(price15, 0)) + COUNT(NULLIF(price_full_time, 0))) AS count").
+		Table(classType).
+		Joins(joinString).
+		Where("parent_id = ?", userId).
+		Group("parent_id").
+		Find(&data)
+	return data
 }

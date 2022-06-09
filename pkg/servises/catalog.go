@@ -53,14 +53,15 @@ func (c CatalogService) GetCatalogChild() (string, error) {
 }
 
 type ClassesData struct {
-	Id             uint    `json:"ID"`
-	FirstName      string  `json:"FirstName"`
-	SecondName     string  `json:"SecondName"`
-	ProfilePicture string  `json:"ProfilePicture"`
-	Description    string  `json:"Description"`
-	Specialization string  `json:"Specialization"`
-	Rating         float32 `json:"rating"`
-	Classes        []C     `json:"classes"`
+	Id                uint    `json:"ID"`
+	FirstName         string  `json:"FirstName"`
+	SecondName        string  `json:"SecondName"`
+	ProfilePicture    string  `json:"ProfilePicture"`
+	Description       string  `json:"Description"`
+	Specialization    string  `json:"Specialization"`
+	Rating            float32 `json:"rating"`
+	AverageClassPrice uint    `json:"AverageClassPrice"`
+	Classes           []C     `json:"classes"`
 }
 
 type C struct {

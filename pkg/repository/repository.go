@@ -48,9 +48,9 @@ type Catalog interface {
 
 type Classes interface {
 	CreateUserClasses(input models.Class) (uint, error)
-	CreateTheoreticClass(input models.TheoreticClass) (uint, error)
-	CreatePracticClass(input models.PracticClass) (uint, error)
-	CreateKeyClass(input models.KeyClass) (uint, error)
+	CreateTheoreticClass(input models.TheoreticClass) (uint, models.TheoreticClass, error)
+	CreatePracticClass(input models.PracticClass) (uint, models.PracticClass, error)
+	CreateKeyClass(input models.KeyClass) (uint, models.KeyClass, error)
 	GetCatalogTags(catalogId uint) (models.Catalog3, error)
 	GetUserClasses(userId uint) ([]models.Class, error)
 	DeleteClass(classId string) error
@@ -58,10 +58,11 @@ type Classes interface {
 	DeletePracticClass(classId string) error
 	DeleteKeyClass(classId string) error
 	UpdateClass(classData models.Class, classId uint) error
-	UpdateTheoreticClass(classData models.TheoreticClass, classId uint) error
-	UpdatePracticClass(classData models.PracticClass, classId uint) error
-	UpdateKeyClass(classData models.KeyClass, classId uint) error
+	UpdateTheoreticClass(classData models.TheoreticClass, classId uint) (models.TheoreticClass, error)
+	UpdatePracticClass(classData models.PracticClass, classId uint) (models.PracticClass, error)
+	UpdateKeyClass(classData models.KeyClass, classId uint) (models.KeyClass, error)
 	GetClassById(classId string) (models.Class, error)
+	CalcAverageClassPrice(classId uint)
 }
 type Booking interface {
 	BookingClass(data forms.BookingClassInput, mentiId uint) error

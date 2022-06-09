@@ -48,7 +48,9 @@ func (c ClassesService) CreateTheoreticClass(class forms.TheoreticClassInput, us
 
 		Time: class.Time,
 	}
-	return c.repo.CreateTheoreticClass(classBd)
+	classId, _, err := c.repo.CreateTheoreticClass(classBd)
+	c.repo.CalcAverageClassPrice(class.ParentId)
+	return classId, err
 }
 
 func (c ClassesService) CreatePracticClass(class forms.PracticClassInput, userId uint) (uint, error) {
@@ -67,7 +69,9 @@ func (c ClassesService) CreatePracticClass(class forms.PracticClassInput, userId
 
 		Time: class.Time,
 	}
-	return c.repo.CreatePracticClass(classBd)
+	classId, _, err := c.repo.CreatePracticClass(classBd)
+	c.repo.CalcAverageClassPrice(class.ParentId)
+	return classId, err
 }
 
 func (c ClassesService) CreateKeyClass(class forms.KeyClass, userId uint) (uint, error) {
@@ -82,7 +86,9 @@ func (c ClassesService) CreateKeyClass(class forms.KeyClass, userId uint) (uint,
 
 		Time: class.Time,
 	}
-	return c.repo.CreateKeyClass(classBd)
+	classId, _, err := c.repo.CreateKeyClass(classBd)
+	c.repo.CalcAverageClassPrice(class.ParentId)
+	return classId, err
 }
 
 func (c ClassesService) GetUserClasses(userId uint) (string, error) {
@@ -142,7 +148,9 @@ func (c ClassesService) UpdateTheoreticClass(theoreticClassData forms.UpdateSubc
 
 		Time: theoreticClassData.Time,
 	}
-	return c.repo.UpdateTheoreticClass(theoreticClassDB, theoreticClassData.ClassId)
+	theoreticClass, err := c.repo.UpdateTheoreticClass(theoreticClassDB, theoreticClassData.ClassId)
+	c.repo.CalcAverageClassPrice(theoreticClass.ClassParentId)
+	return err
 }
 
 func (c ClassesService) UpdatePracticClass(practicClassData forms.UpdateSubclassInput) error {
@@ -158,11 +166,12 @@ func (c ClassesService) UpdatePracticClass(practicClassData forms.UpdateSubclass
 
 		Time: practicClassData.Time,
 	}
-	return c.repo.UpdatePracticClass(practicClassDB, practicClassData.ClassId)
+	practicClass, err := c.repo.UpdatePracticClass(practicClassDB, practicClassData.ClassId)
+	c.repo.CalcAverageClassPrice(practicClass.ClassParentId)
+	return err
 }
 
 func (c ClassesService) UpdateKeyClass(keyClassData forms.UpdateKeyClassInput) error {
-
 	keyClassDB := models.KeyClass{
 		Duration15:    keyClassData.Duration15,
 		Price15:       keyClassData.Price15,
@@ -170,7 +179,9 @@ func (c ClassesService) UpdateKeyClass(keyClassData forms.UpdateKeyClassInput) e
 		PriceFullTime: keyClassData.PriceFullTime,
 		Time:          keyClassData.Time,
 	}
-	return c.repo.UpdateKeyClass(keyClassDB, keyClassData.ClassId)
+	keyClass, err := c.repo.UpdateKeyClass(keyClassDB, keyClassData.ClassId)
+	c.repo.CalcAverageClassPrice(keyClass.ClassParentId)
+	return err
 }
 
 type TPClass struct {
