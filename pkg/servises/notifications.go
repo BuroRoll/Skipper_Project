@@ -24,6 +24,7 @@ type TimeChangeData struct {
 	ClassId    uint
 	FirstName  string `json:"first_name"`
 	SecondName string `json:"second_name"`
+	ChatUserId uint   `json:"chat_user_id"`
 }
 
 func (n NotificationsService) CreateClassTimeChangeNotification(user models.User, classId uint, receiver uint) string {
@@ -31,6 +32,7 @@ func (n NotificationsService) CreateClassTimeChangeNotification(user models.User
 		ClassId:    classId,
 		FirstName:  user.FirstName,
 		SecondName: user.SecondName,
+		ChatUserId: user.ID,
 	}
 	jsonData, _ := json.Marshal(data)
 	notification := models.ClassNotification{
