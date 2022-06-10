@@ -55,6 +55,7 @@ type StatusChangeData struct {
 	NewStatus  string `json:"new_status"`
 	OldStatus  string `json:"old_status"`
 	IsMentor   bool   `json:"is_mentor"`
+	MentorId   uint   `json:"mentor_id"`
 }
 
 func (n NotificationsService) CreateBookingStatusChangeNotification(bookingUsersData repository.BookingUsers, userId uint, newStatus string, oldStatus string, notificationType string) (string, uint) {
@@ -76,6 +77,7 @@ func (n NotificationsService) CreateBookingStatusChangeNotification(bookingUsers
 		data.ChatUserId = bookingUsersData.MentiDataId
 		receiverId = bookingUsersData.MentorDataId
 	}
+	data.MentorId = bookingUsersData.MentorDataId
 	if receiverId == bookingUsersData.MentorDataId {
 		data.IsMentor = true
 	} else {
