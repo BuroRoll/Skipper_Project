@@ -67,8 +67,12 @@ type OtherInformation struct {
 }
 
 type Pagination struct {
-	Limit  int      `json:"limit"`
-	Page   int      `json:"page"`
-	Sort   string   `json:"sort"`
-	Search []string `json:"search"`
+	Limit      int      `json:"limit"`
+	Page       int      `json:"page"`
+	Sort       string   `json:"sort"`
+	Search     []string `json:"search"`
+	DownPrice  int      `json:"downPrice"`
+	HighPrice  int      `json:"highPrice"`
+	DownRating int      `json:"downRating"`
+	HighRating int      `json:"highRating"`
 }

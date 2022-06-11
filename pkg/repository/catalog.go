@@ -2,6 +2,7 @@ package repository
 
 import (
 	"Skipper/pkg/models"
+	"fmt"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -58,6 +59,11 @@ func (c CatalogPostgres) GetClasses(pagination **models.Pagination) ([]models.Us
 	var users []models.User
 	offset := ((*pagination).Page - 1) * (*pagination).Limit
 	queryBuider := c.db.Limit((*pagination).Limit).Offset(offset)
+	filters := fmt.Sprintf("rating >= %d AND rating <= %d AND average_class_price >= %d AND average_class_price <= %d",
+		(*pagination).DownRating,
+		(*pagination).HighRating,
+		(*pagination).DownPrice,
+		(*pagination).HighPrice)
 	var result *gorm.DB
 	if (len((*pagination).Search)) > 0 {
 		//queryBuider = queryBuider.Preload("Classes.Tags", "id IN (?)", (*pagination).Search)
@@ -66,7 +72,7 @@ func (c CatalogPostgres) GetClasses(pagination **models.Pagination) ([]models.Us
 			Preload("Classes.Tags").
 			Preload("Classes.Tags", "id IN (?)", (*pagination).Search).
 			Joins("LEFT JOIN (SELECT parent_id as classes_user_id from classes) as classes_data ON classes_data.classes_user_id = id").
-			Where("is_mentor = true AND classes_user_id IS NOT NULL").
+			Where("is_mentor = true AND classes_user_id IS NOT NULL AND " + filters).
 			Group("\"users\".id").
 			Find(&users)
 	} else {
@@ -74,7 +80,7 @@ func (c CatalogPostgres) GetClasses(pagination **models.Pagination) ([]models.Us
 			Preload("Classes").
 			Preload("Classes.Tags").
 			Joins("LEFT JOIN (SELECT parent_id as classes_user_id from classes) as classes_data ON classes_data.classes_user_id = id").
-			Where("is_mentor = true AND classes_user_id IS NOT NULL").
+			Where("is_mentor = true AND classes_user_id IS NOT NULL AND " + filters).
 			Group("\"users\".id").
 			Find(&users)
 	}
