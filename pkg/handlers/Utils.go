@@ -4,6 +4,7 @@ import (
 	"Skipper/pkg/models"
 	"github.com/gin-gonic/gin"
 	"strconv"
+	"strings"
 )
 
 func GeneratePaginationFromRequest(c *gin.Context) models.Pagination {
@@ -28,6 +29,9 @@ func GeneratePaginationFromRequest(c *gin.Context) models.Pagination {
 		case "sort":
 			sort = queryValue
 			break
+		case "search":
+			search = strings.Split(queryValue, ",")
+			break
 		case "down_price":
 			downPrice, _ = strconv.Atoi(queryValue)
 			break
@@ -40,9 +44,6 @@ func GeneratePaginationFromRequest(c *gin.Context) models.Pagination {
 		case "high_rating":
 			highRating, _ = strconv.Atoi(queryValue)
 			break
-			//case "filter":
-			//	filter = queryValue
-			//	break
 		}
 	}
 	return models.Pagination{

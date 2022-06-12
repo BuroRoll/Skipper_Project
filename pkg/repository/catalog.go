@@ -68,6 +68,10 @@ func (c CatalogPostgres) GetClasses(pagination **models.Pagination) ([]models.Us
 	if (len((*pagination).Search)) > 0 {
 		//queryBuider = queryBuider.Preload("Classes.Tags", "id IN (?)", (*pagination).Search)
 		result = queryBuider.
+			//Preload("Classes", func(db *gorm.DB) *gorm.DB {
+			//	return db.Preload("Tags in (?)", (*pagination).Search)
+			//}).
+			//Preload("Classes.Tags").
 			Preload("Classes").
 			Preload("Classes.Tags").
 			Preload("Classes.Tags", "id IN (?)", (*pagination).Search).
