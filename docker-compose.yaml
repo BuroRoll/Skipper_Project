@@ -1,0 +1,23 @@
+version: "3"
+
+services:
+  skipper_backend:
+    build: .
+    restart: always
+    ports:
+      - '8000:8000'
+    environment:
+      - DB_HOST=my_postgres
+      - DB_USER=skipper_user
+      - DB_NAME=skipper
+      - DB_PASSWORD=123456
+      - DB_PORT=5432
+  my_postgres:
+    ports:
+      - '5432:5432'
+    restart: always
+    image: postgres
+    environment:
+      POSTGRES_DB: skipper
+      POSTGRES_USER: skipper_user
+      POSTGRES_PASSWORD: 123456
