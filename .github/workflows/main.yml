@@ -3,9 +3,9 @@ name: Update Server
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -25,19 +25,17 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/skipper:latest
-
-      - name: Image digest
-        run: echo ${{ steps.docker_build.outputs.digest }}
-      - name: Reset Permissions before deployment
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/skipper_backend:latest
+      - name: Update project on server
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
-          username: ubuntu
+          username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            cd skipper_backend/Skipper_Project/
-            docker build -t skipper_backend --network my_network .
-            docker run -d -p 8000:8000 --env-file .env --net my_network --name skipper_backend skipper_backend:latest
-          
+            cd /home/buroroll/skipper_backend/backend
+            docker stop skipper_backend
+            docker rm skipper_backend
+            docker rmi --force buroroll/skipper_backend
+            docker run -d -p 8000:8000 --env-file .env --name skipper_backend --restart unless-stopped buroroll/skipper_backend:latest
