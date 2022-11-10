@@ -126,6 +126,7 @@ func (h *Handler) InitRoutes() {
 		{
 			publicUser.GET("/mentor/:id", h.GetMentorData)
 			publicUser.GET("/menti/:id", h.GetMentiData)
+			publicUser.GET("/statistic/:id", h.GetUserStatistic)
 		}
 		catalog := publicApi.Group("/catalog")
 		{

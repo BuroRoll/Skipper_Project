@@ -41,10 +41,10 @@ type UserData interface {
 	DeleteUserWorkExperience(workExperienceId string) error
 	DeleteUserOtherInfo(otherInfoId string) error
 	GetUnreadMessagesCount(userId uint) uint
+	GetUserStatistic(userId uint) (models.Statistic, error)
 }
 
 type Catalog interface {
-	CreateCatalog(catalog forms.CatalogInput) (uint, error)
 	GetCatalog() string
 	GetMainCatalog() string
 	GetCatalogChild() (string, error)

@@ -1,4 +1,4 @@
-FROM golang:1.17-alpine
+FROM golang:1.18-alpine
 
 WORKDIR /app
 
@@ -6,10 +6,11 @@ COPY go.mod ./
 COPY go.sum ./
 RUN go mod download
 
-COPY ./ ./
+COPY ./pkg ./pkg
+COPY ./media ./media
 #VOLUME /home/ubuntu/static_files ./media/user/profile_picture
 
-RUN go build cmd/main.go
+RUN go build pkg/cmd/main.go
 
 EXPOSE 8000
 

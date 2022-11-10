@@ -222,3 +222,46 @@ func (u UserDataPostgres) GetUnreadMessagesCount(userId uint) unreadMessagesCoun
 		First(&unreadMessagesCount)
 	return unreadMessagesCount
 }
+
+type completedStudents struct {
+	UserId                 uint   `json:"user_id"`
+	Status                 string `json:"status"`
+	CountCompletedStudents uint   `json:"count_completed_students"`
+}
+
+func (u UserDataPostgres) GetCountCompletedStudents(userId uint) uint {
+	var stat completedStudents
+	u.db.Select("user_id, status, COUNT(DISTINCT menti_id) AS count_completed_students").
+		Table("user_classes").
+		Where("user_id = ? and status = ?", userId, "completed").
+		Group("user_id, status").
+		Find(&stat)
+	return stat.CountCompletedStudents
+}
+
+type completedLessons struct {
+	UserId       uint    `json:"user_id"`
+	Ids          string  `json:"ids"`
+	Bcid         uint    `json:"bcid"`
+	CountLessons float64 `json:"count_lessons"`
+}
+
+func (u UserDataPostgres) GetCountLessons(userId uint, time string, isComplete bool) float64 {
+	var stat completedLessons
+	queryBuider := u.db.Select("count(bt.is_end) as count_lessons, count(is_success) as isok, count(bt.booking_class_id) as bcid, count(uc.id) as ids, uc.user_id, count(bt.time) as ctime").
+		Table("booking_times bt").
+		Joins("inner join user_classes uc on uc.id = bt.booking_class_id").
+		Group("uc.user_id")
+	switch time {
+	case "full":
+		queryBuider.Where("user_id = ? and is_end = true", userId)
+	case "last_month":
+		queryBuider.Where("user_id = ? and is_end = true and is_success = ? and TO_DATE(left(bt.time, -2),'YYYY/MM/DD') > CURRENT_DATE - INTERVAL '30 days'", userId, isComplete)
+	case "last_three_month":
+		queryBuider.Where("user_id = ? and is_end = true and is_success = ? and TO_DATE(left(bt.time, -2),'YYYY/MM/DD') > CURRENT_DATE - INTERVAL '90 days'", userId, isComplete)
+	default:
+		queryBuider.Where("user_id = ? and is_end = true and is_success = ?", userId, isComplete)
+	}
+	queryBuider.Find(&stat)
+	return stat.CountLessons
+}

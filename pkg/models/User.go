@@ -76,3 +76,16 @@ type Pagination struct {
 	DownRating int      `json:"downRating"`
 	HighRating int      `json:"highRating"`
 }
+
+type Statistic struct {
+	LessonsCount                      float64 `json:"lessons_count"`
+	StudentsCount                     uint    `json:"students_count"`
+	LastMonthLessonsCount             float64 `json:"last_month_lessons_count"`
+	LastThreeMonthsLessonsCount       float64 `json:"last_three_months_lessons_count"`
+	UncomplitedLessons                float64 `json:"uncomplited_lessons"`
+	LastMonthUnclompletedLessons      float64 `json:"last_month_unclompleted_lessons"`
+	LastThreeMonthUnclompletedLessons float64 `json:"last_three_month_unclompleted_lessons"`
+	FullAttendance                    float64 `json:"full_attendance"`
+	LastMonthAttendance               float64 `json:"last_month_attendance"`
+	LastThreeMonthAttendance          float64 `json:"last_three_month_attendance"`
+}

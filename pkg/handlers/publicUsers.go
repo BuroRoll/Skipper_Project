@@ -76,3 +76,12 @@ func parseId(stringId string) uint {
 	userId := uint(id)
 	return userId
 }
+
+func (h *Handler) GetUserStatistic(c *gin.Context) {
+	userId := parseId(c.Param("id"))
+	statistic, err := h.services.GetUserStatistic(userId)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err)
+	}
+	c.JSON(http.StatusOK, statistic)
+}
