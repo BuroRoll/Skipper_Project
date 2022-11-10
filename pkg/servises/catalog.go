@@ -2,7 +2,6 @@ package service
 
 import (
 	"Skipper/pkg/models"
-	"Skipper/pkg/models/forms"
 	"Skipper/pkg/repository"
 	"encoding/json"
 )
@@ -13,22 +12,6 @@ type CatalogService struct {
 
 func NewCatalogService(repo repository.Catalog) *CatalogService {
 	return &CatalogService{repo: repo}
-}
-
-func (c CatalogService) CreateCatalog(catalog forms.CatalogInput) (uint, error) {
-	if catalog.ParentId == nil { //if no parentId (main catalog)
-		mainCatalogId, err := c.repo.CreateMainCatalog(catalog.Name)
-		if err != nil {
-			return 0, err
-		}
-		return mainCatalogId, nil
-	} else {
-		childId, err := c.repo.CreateChildCatalog(catalog.Name, catalog.ParentId)
-		if err != nil {
-			return 0, err
-		}
-		return childId, nil
-	}
 }
 
 func (c CatalogService) GetCatalog() string {

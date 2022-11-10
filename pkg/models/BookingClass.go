@@ -41,7 +41,6 @@ type UserClass struct {
 	Time []BookingTime `gorm:"foreignKey:BookingClassID;references:ID"`
 
 	Communication uint
-	//Communication Communication
 }
 
 type BookingTime struct {
@@ -49,4 +48,5 @@ type BookingTime struct {
 	BookingClassID uint
 	Time           string
 	IsEnd          bool `gorm:"default:false"`
+	IsSuccess      bool `gorm:"default:false"`
 }

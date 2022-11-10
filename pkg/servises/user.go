@@ -5,6 +5,7 @@ import (
 	"Skipper/pkg/models/forms"
 	"Skipper/pkg/repository"
 	"encoding/json"
+	"math"
 )
 
 type UserDataService struct {
@@ -114,4 +115,35 @@ func (u UserDataService) DeleteUserOtherInfo(otherInfoId string) error {
 func (u UserDataService) GetUnreadMessagesCount(userId uint) uint {
 	unreadMessagesCount := u.repo.GetUnreadMessagesCount(userId)
 	return unreadMessagesCount.Count
+}
+
+func (u UserDataService) GetUserStatistic(userId uint) (models.Statistic, error) {
+	countCompletedStudents := u.repo.GetCountCompletedStudents(userId)
+	countLessons := u.repo.GetCountLessons(userId, "full", true)
+
+	countCompletedLessons := u.repo.GetCountLessons(userId, "", true)
+	countLastMonthCompletedLessons := u.repo.GetCountLessons(userId, "last_month", true)
+	countLastThreeMonthCompletedLessons := u.repo.GetCountLessons(userId, "last_three_month", true)
+
+	countLastMonthUnclompletedLessons := u.repo.GetCountLessons(userId, "last_month", false)
+	countLastThreeMonthUnclompletedLessons := u.repo.GetCountLessons(userId, "last_three_month", false)
+	countUncomplitedLessons := u.repo.GetCountLessons(userId, "", false)
+
+	fullAttendance := math.Round(countCompletedLessons / countLessons * 100)
+	lastMonthAttendance := math.Round(countLastMonthCompletedLessons / (countLastMonthCompletedLessons + countLastMonthUnclompletedLessons) * 100)
+	lastThreeMonthAttendance := math.Round(countLastThreeMonthCompletedLessons / (countLastThreeMonthCompletedLessons + countLastThreeMonthUnclompletedLessons) * 100)
+
+	stat := models.Statistic{
+		LessonsCount:                      countCompletedLessons,
+		StudentsCount:                     countCompletedStudents,
+		LastMonthLessonsCount:             countLastMonthCompletedLessons,
+		LastThreeMonthsLessonsCount:       countLastThreeMonthCompletedLessons,
+		LastMonthUnclompletedLessons:      countLastMonthUnclompletedLessons,
+		LastThreeMonthUnclompletedLessons: countLastThreeMonthUnclompletedLessons,
+		UncomplitedLessons:                countUncomplitedLessons,
+		FullAttendance:                    fullAttendance,
+		LastMonthAttendance:               lastMonthAttendance,
+		LastThreeMonthAttendance:          lastThreeMonthAttendance,
+	}
+	return stat, nil
 }
