@@ -38,7 +38,7 @@ type MainCatalog struct {
 func (c CatalogPostgres) GetMainCatalog() []MainCatalog {
 	var mainCatalogs []MainCatalog
 	//var mainCatalogs []models.Catalog1
-	c.db.Raw("SELECT id, name1 FROM catalog1").Find(&mainCatalogs)
+	c.db.Raw("SELECT id, name FROM catalog1").Find(&mainCatalogs)
 	//c.db.Debug().Find(&mainCatalogs)
 	return mainCatalogs
 }
