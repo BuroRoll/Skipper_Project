@@ -3,9 +3,9 @@ name: Update Server
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
-    branches: [ main ]
+    branches: [ master ]
   pull_request:
-    branches: [ main ]
+    branches: [ master ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -38,4 +38,4 @@ jobs:
             docker stop skipper_backend
             docker rm skipper_backend
             docker rmi --force buroroll/skipper_backend
-            docker run -d -p 8000:8000 --env-file .env --name skipper_backend --mount source=./static_files,target=/app/media --restart unless-stopped buroroll/skipper_backend:latest
+            docker run -d -p 8000:8000 --env-file .env --name skipper_backend --mount source=static_files,target=/app/media --restart unless-stopped buroroll/skipper_backend:latest
