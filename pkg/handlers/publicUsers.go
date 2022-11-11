@@ -77,9 +77,18 @@ func parseId(stringId string) uint {
 	return userId
 }
 
-func (h *Handler) GetUserStatistic(c *gin.Context) {
+func (h *Handler) GetMentorStatistic(c *gin.Context) {
 	userId := parseId(c.Param("id"))
-	statistic, err := h.services.GetUserStatistic(userId)
+	statistic, err := h.services.GetUserStatistic(userId, "mentor")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err)
+	}
+	c.JSON(http.StatusOK, statistic)
+}
+
+func (h *Handler) GetMentiStatistic(c *gin.Context) {
+	userId := parseId(c.Param("id"))
+	statistic, err := h.services.GetUserStatistic(userId, "menti")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err)
 	}

@@ -41,7 +41,7 @@ type UserData interface {
 	DeleteUserWorkExperience(workExperienceId string) error
 	DeleteUserOtherInfo(otherInfoId string) error
 	GetUnreadMessagesCount(userId uint) uint
-	GetUserStatistic(userId uint) (models.Statistic, error)
+	GetUserStatistic(userId uint, userStatus string) (models.Statistic, error)
 }
 
 type Catalog interface {
