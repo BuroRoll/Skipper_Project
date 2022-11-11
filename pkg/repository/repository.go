@@ -35,8 +35,9 @@ type UserData interface {
 	DeleteUserWorkExperience(workExperienceId string) error
 	DeleteUserOtherInfo(otherInfoId string) error
 	GetUnreadMessagesCount(userId uint) unreadMessagesCounter
-	GetCountCompletedStudents(userId uint) uint
-	GetCountLessons(userId uint, time string, isComplete bool) float64
+	GetMentorCountStudents(userId uint) uint
+	GetMentorCountLessons(userId uint, time string, isComplete bool) float64
+	GetMentiCountLessons(userId uint, time string, isComplete bool) float64
 }
 
 type Catalog interface {

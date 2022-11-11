@@ -117,22 +117,78 @@ func (u UserDataService) GetUnreadMessagesCount(userId uint) uint {
 	return unreadMessagesCount.Count
 }
 
-func (u UserDataService) GetUserStatistic(userId uint) (models.Statistic, error) {
-	countCompletedStudents := u.repo.GetCountCompletedStudents(userId)
-	countLessons := u.repo.GetCountLessons(userId, "full", true)
+func (u UserDataService) GetUserStatistic(userId uint, userStatus string) (models.Statistic, error) {
+	var stat models.Statistic
+	if userStatus == "mentor" {
+		stat = u.GetMentorStatistic(userId)
+	} else if userStatus == "menti" {
+		stat = u.GetMentiStatistic(userId)
+	}
+	return stat, nil
+}
 
-	countCompletedLessons := u.repo.GetCountLessons(userId, "", true)
-	countLastMonthCompletedLessons := u.repo.GetCountLessons(userId, "last_month", true)
-	countLastThreeMonthCompletedLessons := u.repo.GetCountLessons(userId, "last_three_month", true)
+func (u UserDataService) GetMentiStatistic(userId uint) models.Statistic {
+	countLessons := u.repo.GetMentiCountLessons(userId, "full", true)
 
-	countLastMonthUnclompletedLessons := u.repo.GetCountLessons(userId, "last_month", false)
-	countLastThreeMonthUnclompletedLessons := u.repo.GetCountLessons(userId, "last_three_month", false)
-	countUncomplitedLessons := u.repo.GetCountLessons(userId, "", false)
+	countCompletedLessons := u.repo.GetMentiCountLessons(userId, "", true)
+	countLastMonthCompletedLessons := u.repo.GetMentiCountLessons(userId, "last_month", true)
+	countLastThreeMonthCompletedLessons := u.repo.GetMentiCountLessons(userId, "last_three_month", true)
 
-	fullAttendance := math.Round(countCompletedLessons / countLessons * 100)
-	lastMonthAttendance := math.Round(countLastMonthCompletedLessons / (countLastMonthCompletedLessons + countLastMonthUnclompletedLessons) * 100)
-	lastThreeMonthAttendance := math.Round(countLastThreeMonthCompletedLessons / (countLastThreeMonthCompletedLessons + countLastThreeMonthUnclompletedLessons) * 100)
+	countLastMonthUnclompletedLessons := u.repo.GetMentiCountLessons(userId, "last_month", false)
+	countLastThreeMonthUnclompletedLessons := u.repo.GetMentiCountLessons(userId, "last_three_month", false)
+	countUncomplitedLessons := u.repo.GetMentiCountLessons(userId, "", false)
 
+	var fullAttendance = 0.0
+	var lastMonthAttendance = 0.0
+	var lastThreeMonthAttendance = 0.0
+	if countLessons != 0 {
+		fullAttendance = math.Round(countCompletedLessons / countLessons * 100)
+	}
+	if sum := countLastMonthCompletedLessons + countLastMonthUnclompletedLessons; sum != 0 {
+		lastMonthAttendance = math.Round(countLastMonthCompletedLessons / (sum) * 100)
+	}
+	if sum := countLastThreeMonthCompletedLessons + countLastThreeMonthUnclompletedLessons; sum != 0 {
+		lastThreeMonthAttendance = math.Round(countLastThreeMonthCompletedLessons / (sum) * 100)
+	}
+	stat := models.Statistic{
+		LessonsCount:                      countCompletedLessons,
+		StudentsCount:                     0,
+		LastMonthLessonsCount:             countLastMonthCompletedLessons,
+		LastThreeMonthsLessonsCount:       countLastThreeMonthCompletedLessons,
+		LastMonthUnclompletedLessons:      countLastMonthUnclompletedLessons,
+		LastThreeMonthUnclompletedLessons: countLastThreeMonthUnclompletedLessons,
+		UncomplitedLessons:                countUncomplitedLessons,
+		FullAttendance:                    fullAttendance,
+		LastMonthAttendance:               lastMonthAttendance,
+		LastThreeMonthAttendance:          lastThreeMonthAttendance,
+	}
+	return stat
+}
+
+func (u UserDataService) GetMentorStatistic(userId uint) models.Statistic {
+	countCompletedStudents := u.repo.GetMentorCountStudents(userId)
+	countLessons := u.repo.GetMentorCountLessons(userId, "full", true)
+
+	countCompletedLessons := u.repo.GetMentorCountLessons(userId, "", true)
+	countLastMonthCompletedLessons := u.repo.GetMentorCountLessons(userId, "last_month", true)
+	countLastThreeMonthCompletedLessons := u.repo.GetMentorCountLessons(userId, "last_three_month", true)
+
+	countLastMonthUnclompletedLessons := u.repo.GetMentorCountLessons(userId, "last_month", false)
+	countLastThreeMonthUnclompletedLessons := u.repo.GetMentorCountLessons(userId, "last_three_month", false)
+	countUncomplitedLessons := u.repo.GetMentorCountLessons(userId, "", false)
+
+	var fullAttendance = 0.0
+	var lastMonthAttendance = 0.0
+	var lastThreeMonthAttendance = 0.0
+	if countLessons != 0 {
+		fullAttendance = math.Round(countCompletedLessons / countLessons * 100)
+	}
+	if sum := countLastMonthCompletedLessons + countLastMonthUnclompletedLessons; sum != 0 {
+		lastMonthAttendance = math.Round(countLastMonthCompletedLessons / (sum) * 100)
+	}
+	if sum := countLastThreeMonthCompletedLessons + countLastThreeMonthUnclompletedLessons; sum != 0 {
+		lastThreeMonthAttendance = math.Round(countLastThreeMonthCompletedLessons / (sum) * 100)
+	}
 	stat := models.Statistic{
 		LessonsCount:                      countCompletedLessons,
 		StudentsCount:                     countCompletedStudents,
@@ -145,5 +201,5 @@ func (u UserDataService) GetUserStatistic(userId uint) (models.Statistic, error)
 		LastMonthAttendance:               lastMonthAttendance,
 		LastThreeMonthAttendance:          lastThreeMonthAttendance,
 	}
-	return stat, nil
+	return stat
 }
