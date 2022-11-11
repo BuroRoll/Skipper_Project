@@ -38,4 +38,4 @@ jobs:
             docker stop skipper_backend
             docker rm skipper_backend
             docker rmi --force buroroll/skipper_backend
-            docker run -d -p 8000:8000 --env-file .env --name skipper_backend --mount source=./static_files,target=/app/media --restart unless-stopped buroroll/skipper_backend:latest
+            docker run -d -p 8000:8000 --env-file .env --name skipper_backend -v /home/buroroll/skipper_backend/backend/static_files:/app/media/user/profile_picture/ --restart unless-stopped buroroll/skipper_backend:latest
