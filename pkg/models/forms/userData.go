@@ -38,3 +38,8 @@ type UserEmailInput struct {
 type MentorSpecializationInput struct {
 	Specialization string `json:"specialization" binding:"required"`
 }
+
+type PasswordChangeInput struct {
+	OldPassword string `json:"old_password" binding:"required"`
+	NewPassword string `json:"new_password" binding:"required"`
+}

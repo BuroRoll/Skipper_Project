@@ -1,9 +1,12 @@
 package handlers
 
 import (
+	"Skipper/pkg/docs"
 	service "Skipper/pkg/servises"
 	"github.com/alexandrevicenzi/go-sse"
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 type Handler struct {
@@ -27,6 +30,8 @@ func (h *Handler) InitRoutes() {
 		auth.POST("/mentor-sign-up", h.mentorSignUp)
 		auth.POST("/sign-in", h.signIn)
 		auth.POST("/refresh-token", h.refreshToken)
+		auth.POST("/reset-password", h.ResetPassword)
+		auth.POST("/new-password", h.setNewPassword)
 	}
 
 	api := router.Group("/api", h.userIdentity)
@@ -34,6 +39,8 @@ func (h *Handler) InitRoutes() {
 		user := api.Group("/user")
 		{
 			user.GET("/user-data", h.GetUserData)
+
+			user.POST("/change-password", h.ChangePassword)
 
 			user.POST("/user-mentor-sign-up", h.userToMentorSignUp)
 			user.POST("/user-verify-email", h.UserVerifyEmail)
@@ -165,5 +172,8 @@ func (h *Handler) InitRoutes() {
 		notifications.PUT("/", h.ReadNotification)
 		notifications.DELETE("/", h.DeleteNotification)
 	}
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	docs.SwaggerInfo.BasePath = "/"
+
 	router.Run(":8000")
 }

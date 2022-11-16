@@ -1,0 +1,134 @@
+definitions:
+  forms.ErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  forms.ForgotPasswordInput:
+    properties:
+      login:
+        type: string
+    required:
+    - login
+    type: object
+  forms.PasswordChangeInput:
+    properties:
+      new_password:
+        type: string
+      old_password:
+        type: string
+    required:
+    - new_password
+    - old_password
+    type: object
+  forms.SetNewPassword:
+    properties:
+      new_password:
+        type: string
+      token:
+        type: string
+    type: object
+  forms.SuccessResponse:
+    properties:
+      status:
+        type: string
+    type: object
+  forms.UserEmailInput:
+    properties:
+      email:
+        type: string
+    required:
+    - email
+    type: object
+info:
+  contact: {}
+paths:
+  /api/user/change-password:
+    post:
+      consumes:
+      - application/json
+      description: Смена пароля
+      parameters:
+      - description: query params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/forms.PasswordChangeInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/forms.SuccessResponse'
+  /api/user/user-verify-email:
+    post:
+      consumes:
+      - application/json
+      description: Добавление почты
+      parameters:
+      - description: query params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/forms.UserEmailInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/forms.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/forms.ErrorResponse'
+  /auth/new-password:
+    post:
+      consumes:
+      - application/json
+      description: Установка нового пароля
+      parameters:
+      - description: query params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/forms.SetNewPassword'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/forms.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/forms.ErrorResponse'
+  /auth/reset-password:
+    post:
+      consumes:
+      - application/json
+      description: Забыл пароль
+      parameters:
+      - description: query params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/forms.ForgotPasswordInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/forms.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/forms.ErrorResponse'
+swagger: "2.0"

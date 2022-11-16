@@ -283,3 +283,8 @@ func (u UserDataPostgres) GetMentiCountLessons(userId uint, time string, isCompl
 	queryBuider.Find(&stat)
 	return stat.CountLessons
 }
+
+func (u UserDataPostgres) ChangePassword(user models.User, newPassword string) error {
+	err := u.db.Model(&user).Update("password", newPassword)
+	return err.Error
+}

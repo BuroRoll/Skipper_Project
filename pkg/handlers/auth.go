@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"net/http"
+	"os"
 )
 
 func (h *Handler) signUp(c *gin.Context) {
@@ -135,9 +136,50 @@ func (h *Handler) verifyEmail(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Не удалось подтвердить почту"})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"status":  "Почта успешно подтверждена",
-		"user_id": userId,
-	})
-	//c.Redirect(http.StatusMovedPermanently, "https://www.google.com/")
+	c.Redirect(http.StatusMovedPermanently, os.Getenv("FRONTEND"))
+}
+
+// ResetPassword
+// @Description  Забыл пароль
+// @Accept       json
+// @Produce      json
+// @Param 		 request 	body 		forms.ForgotPasswordInput	true 	"query params"
+// @Success      200  		{object} 	forms.SuccessResponse
+// @Failure 	 400 		{object}	forms.ErrorResponse
+// @Router       /auth/reset-password [post]
+func (h *Handler) ResetPassword(c *gin.Context) {
+	var input forms.ForgotPasswordInput
+	if err := c.BindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, forms.ErrorResponse{Error: "Неправильная форма сброса пароля"})
+		return
+	}
+	err := h.services.ResetPassword(input.Login)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, forms.ErrorResponse{Error: err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, forms.SuccessResponse{Status: "Форма сброса пароля успешно отправлена"})
+}
+
+// setNewPassword
+// @Description  Установка нового пароля
+// @Accept       json
+// @Produce      json
+// @Param 		 request 	body 		forms.SetNewPassword	true 	"query params"
+// @Success      200  		{object} 	forms.SuccessResponse
+// @Failure 	 400 		{object}	forms.ErrorResponse
+// @Router       /auth/new-password [post]
+func (h *Handler) setNewPassword(c *gin.Context) {
+	var input forms.SetNewPassword
+	if err := c.BindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, forms.ErrorResponse{Error: "Неправильная форма установк нового пароля"})
+		return
+	}
+	userId, _, err := h.services.ParseToken(input.Token)
+	err = h.services.SetNewPassword(userId, input.NewPassword)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, forms.ErrorResponse{Error: err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, forms.SuccessResponse{Status: "Пароль успешно обновлён"})
 }

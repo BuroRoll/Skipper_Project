@@ -16,15 +16,17 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"strconv"
 	"time"
 )
 
 const (
-	salt              = "14hjqrhj1231qw124617ajfha1123ssfqa3ssjs190"
-	signingKey        = "qrkjk#4#%35FSFJlja#4353KSFjH"
-	signingRefreshKey = "qrkjk#sdfioh12bkj@nkk3k1axv["
-	tokenTTL          = time.Hour * 12
-	refreshTokenTTL   = time.Hour * 12 * 365
+	salt                  = "14hjqrhj1231qw124617ajfha1123ssfqa3ssjs190"
+	signingKey            = "qrkjk#4#%35FSFJlja#4353KSFjH"
+	signingRefreshKey     = "qrkjk#sdfioh12bkj@nkk3k1axv["
+	tokenTTL              = time.Hour * 12
+	refreshTokenTTL       = time.Hour * 12 * 365
+	resetPasswordTokenTTL = time.Hour
 )
 
 type AuthService struct {
@@ -170,25 +172,24 @@ func (s *AuthService) SendVerifyEmail(userId uint) error {
 	if err != nil {
 		fmt.Println("error!!!!!!!!!!")
 	}
-	err = SendEmailToVerify(user.Email, token)
+	err = SendEmail(user.Email, token, "https://skipper.ga/verify-email?", "verify_email.html", "Подтверждение почты Skipper")
 	return err
 }
 
-func SendEmailToVerify(email string, token string) error {
+func SendEmail(email string, token string, link string, templateFile string, theme string) error {
 	type data struct {
 		Token string
 		Link  string
 	}
 	userData := data{
 		Token: token,
-		Link:  "https://152.70.189.77:8000/verify-email?",
+		Link:  link,
 	}
 	_, b, _, _ := runtime.Caller(0)
 	Root := filepath.Join(filepath.Dir(b), "../..")
-	t := template.New("template.html")
-
+	t := template.New(templateFile)
 	var err error
-	t, err = t.ParseFiles(Root + "/template.html")
+	t, err = t.ParseFiles(Root + "/" + templateFile)
 	if err != nil {
 		log.Println(err)
 	}
@@ -199,11 +200,12 @@ func SendEmailToVerify(email string, token string) error {
 	}
 	result := tpl.String()
 	m := gomail.NewMessage()
-	m.SetHeader("From", "testskipperproject@gmail.com")
+	m.SetHeader("From", os.Getenv("EMAIL"))
 	m.SetHeader("To", email)
-	m.SetHeader("Subject", "Подтверждение регистрации Skipper")
+	m.SetHeader("Subject", theme)
 	m.SetBody("text/html", result)
-	d := gomail.NewDialer("smtp.gmail.com", 587, "testskipperproject@gmail.com", "Danil300301")
+	emailPort, _ := strconv.Atoi(os.Getenv("EMAIL_PORT"))
+	d := gomail.NewDialer(os.Getenv("EMAIL_HOST"), emailPort, os.Getenv("EMAIL"), os.Getenv("EMAIL_PASSWORD"))
 
 	if err := d.DialAndSend(m); err != nil {
 		return err
@@ -215,6 +217,57 @@ func (s *AuthService) VerifyEmail(userId uint) error {
 	err := s.repo.VerifyEmail(userId)
 	if err != nil {
 		return err
+	}
+	return nil
+}
+
+func (s *AuthService) ResetPassword(login string) error {
+	user, err := s.repo.GetUserByEmailOrPhone(login)
+	if err != nil {
+		return errors.New("Пользователь не найден ")
+	}
+	err = s.SendResetPasswordEmail(user.ID, user.Email)
+	return err
+}
+
+func (s *AuthService) SendResetPasswordEmail(userId uint, email string) error {
+	token, err := GenerateTokenForResetPassword(userId)
+	err = SendEmail(email, token, os.Getenv("FRONTEND")+"/reset-password", "resetPassword.html", "Смена пароля Skipper")
+	if err != nil {
+		return errors.New("Не удалось отправить сообщение ")
+	}
+	return nil
+}
+
+type resetPasswordTokenClaims struct {
+	jwt.StandardClaims
+	UserId uint `json:"user_id"`
+}
+
+func GenerateTokenForResetPassword(userId uint) (string, error) {
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &resetPasswordTokenClaims{
+		jwt.StandardClaims{
+			ExpiresAt: time.Now().Add(resetPasswordTokenTTL).Unix(),
+			IssuedAt:  time.Now().Unix(),
+		},
+		userId,
+	})
+	resetPasswordToken, err := token.SignedString([]byte(signingKey))
+	if err != nil {
+		return "", errors.New("Ошибка генерации токена сброса пароля ")
+	}
+	return resetPasswordToken, nil
+}
+
+func (s *AuthService) SetNewPassword(userId uint, newPassword string) error {
+	user, err := s.repo.GetUserById(userId)
+	password := generatePasswordHash(newPassword)
+	if err != nil {
+		return errors.New("Ошибка получения данных о пользователе ")
+	}
+	err = s.repo.ChangeUserPassword(user, password)
+	if err != nil {
+		return errors.New("Ошибка обновления пароля ")
 	}
 	return nil
 }

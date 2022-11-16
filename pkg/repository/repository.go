@@ -12,7 +12,9 @@ type Authorization interface {
 	UpgradeUserToMentor(userId uint, form forms.SignUpUserToMentorForm) error
 	GetUser(email, password string) (uint, bool, error)
 	GetUserById(userId uint) (models.User, error)
+	GetUserByEmailOrPhone(login string) (models.User, error)
 	VerifyEmail(userId uint) error
+	ChangeUserPassword(user models.User, newPassword string) error
 }
 
 type UserData interface {
@@ -38,6 +40,7 @@ type UserData interface {
 	GetMentorCountStudents(userId uint) uint
 	GetMentorCountLessons(userId uint, time string, isComplete bool) float64
 	GetMentiCountLessons(userId uint, time string, isComplete bool) float64
+	ChangePassword(user models.User, newPassword string) error
 }
 
 type Catalog interface {

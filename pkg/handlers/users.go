@@ -215,6 +215,14 @@ func (h *Handler) UpdateSpecialization(c *gin.Context) {
 	}
 }
 
+// UserVerifyEmail
+// @Description  Добавление почты
+// @Accept       json
+// @Produce      json
+// @Param 		 request 	body 		forms.UserEmailInput	true 	"query params"
+// @Success      200  		{object} 	forms.SuccessResponse
+// @Failure 	 400 		{object}	forms.ErrorResponse
+// @Router       /api/user/user-verify-email [post]
 func (h *Handler) UserVerifyEmail(c *gin.Context) {
 	userId, _ := c.Get(userCtx)
 	var input forms.UserEmailInput
@@ -316,4 +324,26 @@ func (h *Handler) DeleteUserOtherInfo(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"delete": "ok",
 	})
+}
+
+// ChangePassword
+// @Description  Смена пароля
+// @Accept       json
+// @Produce      json
+// @Param 		 request 	body 		forms.PasswordChangeInput	true 	"query params"
+// @Success      200  		{object} 	forms.SuccessResponse
+// @Router       /api/user/change-password [post]
+func (h *Handler) ChangePassword(c *gin.Context) {
+	userId := c.GetUint(userCtx)
+	var input forms.PasswordChangeInput
+	if err := c.BindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Неверная форма данных"})
+		return
+	}
+	err := h.services.ChangePassword(userId, input.OldPassword, input.NewPassword)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"status": "Пароль успешно обновлён"})
 }

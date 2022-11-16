@@ -31,3 +31,12 @@ type SignUpUserToMentorForm struct {
 	Description    string `form:"description" binding:"required"`
 	Time           string `form:"time" binding:"required"`
 }
+
+type ForgotPasswordInput struct {
+	Login string `json:"login" binding:"required"`
+}
+
+type SetNewPassword struct {
+	Token       string `json:"token"`
+	NewPassword string `json:"new_password"`
+}

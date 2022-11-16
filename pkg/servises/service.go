@@ -19,6 +19,8 @@ type Authorization interface {
 	ParseRefreshToken(token string) (uint, error)
 	SendVerifyEmail(userId uint) error
 	VerifyEmail(userId uint) error
+	ResetPassword(login string) error
+	SetNewPassword(userId uint, newPassword string) error
 }
 
 type UserData interface {
@@ -42,6 +44,7 @@ type UserData interface {
 	DeleteUserOtherInfo(otherInfoId string) error
 	GetUnreadMessagesCount(userId uint) uint
 	GetUserStatistic(userId uint, userStatus string) (models.Statistic, error)
+	ChangePassword(userId uint, oldPassword string, newPassword string) error
 }
 
 type Catalog interface {

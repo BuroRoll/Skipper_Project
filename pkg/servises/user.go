@@ -5,6 +5,7 @@ import (
 	"Skipper/pkg/models/forms"
 	"Skipper/pkg/repository"
 	"encoding/json"
+	"errors"
 	"math"
 )
 
@@ -202,4 +203,15 @@ func (u UserDataService) GetMentorStatistic(userId uint) models.Statistic {
 		LastThreeMonthAttendance:          lastThreeMonthAttendance,
 	}
 	return stat
+}
+
+func (u UserDataService) ChangePassword(userId uint, oldPassword string, newPassword string) error {
+	hashPassword := generatePasswordHash(oldPassword)
+	user, _ := u.repo.GetUserById(userId)
+	if user.Password != hashPassword {
+		return errors.New("Неверный старый пароль ")
+	}
+	newHashPassword := generatePasswordHash(newPassword)
+	err := u.repo.ChangePassword(user, newHashPassword)
+	return err
 }

@@ -33,13 +33,13 @@ func (r *AuthPostgres) GetUserById(userId uint) (models.User, error) {
 	return user, nil
 }
 
-func (r *AuthPostgres) CreateUser(user_register forms.SignUpUserForm) (uint, error) {
+func (r *AuthPostgres) CreateUser(userRegister forms.SignUpUserForm) (uint, error) {
 	var user models.User
 	user = models.User{
-		Phone:      user_register.Phone,
-		FirstName:  user_register.FirstName,
-		SecondName: user_register.SecondName,
-		Password:   user_register.Password,
+		Phone:      userRegister.Phone,
+		FirstName:  userRegister.FirstName,
+		SecondName: userRegister.SecondName,
+		Password:   userRegister.Password,
 	}
 	result := r.db.Create(&user)
 	if result.Error != nil {
@@ -48,16 +48,16 @@ func (r *AuthPostgres) CreateUser(user_register forms.SignUpUserForm) (uint, err
 	return user.ID, nil
 }
 
-func (r *AuthPostgres) CreateMentor(mentor_register forms.SignUpMentorForm, profilePicturePath string) (uint, error) {
+func (r *AuthPostgres) CreateMentor(mentorRegister forms.SignUpMentorForm, profilePicturePath string) (uint, error) {
 	var user models.User
 	user = models.User{
-		Phone:          mentor_register.Phone,
-		Password:       mentor_register.Password,
-		FirstName:      mentor_register.FirstName,
-		SecondName:     mentor_register.SecondName,
-		Description:    mentor_register.Description,
-		Specialization: mentor_register.Specialization,
-		Time:           mentor_register.Time,
+		Phone:          mentorRegister.Phone,
+		Password:       mentorRegister.Password,
+		FirstName:      mentorRegister.FirstName,
+		SecondName:     mentorRegister.SecondName,
+		Description:    mentorRegister.Description,
+		Specialization: mentorRegister.Specialization,
+		Time:           mentorRegister.Time,
 		IsMentor:       true,
 		ProfilePicture: profilePicturePath,
 	}
@@ -91,4 +91,18 @@ func (r *AuthPostgres) VerifyEmail(userId uint) error {
 	user.IsVerifyEmail = true
 	r.db.Save(user)
 	return nil
+}
+
+func (r *AuthPostgres) GetUserByEmailOrPhone(login string) (models.User, error) {
+	var user models.User
+	result := r.db.Where("email=? or phone = ?", login, login).First(&user)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return user, gorm.ErrRecordNotFound
+	}
+	return user, nil
+}
+
+func (r *AuthPostgres) ChangeUserPassword(user models.User, newPassword string) error {
+	err := r.db.Model(&user).Update("password", newPassword)
+	return err.Error
 }
