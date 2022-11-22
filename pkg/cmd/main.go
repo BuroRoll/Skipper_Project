@@ -7,6 +7,11 @@ import (
 	service "Skipper/pkg/servises"
 )
 
+// @title Skipper Backend
+// @version 1.0
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
 func main() {
 	db := models.GetDB()
 	repos := repository.NewRepository(db)

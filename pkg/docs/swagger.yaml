@@ -42,7 +42,29 @@ definitions:
     type: object
 info:
   contact: {}
+  title: Skipper Backend
+  version: "1.0"
 paths:
+  /api/class/booking/status/unsuccess/{booking_class_id}:
+    put:
+      consumes:
+      - application/json
+      description: Сменить статус занятия на "несовершенное"
+      parameters:
+      - description: Booking ID
+        in: path
+        name: booking_class_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/forms.SuccessResponse'
+      security:
+      - BearerAuth: []
   /api/user/change-password:
     post:
       consumes:
@@ -131,4 +153,9 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/forms.ErrorResponse'
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

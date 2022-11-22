@@ -106,3 +106,11 @@ func (b BookingService) ChangeBookingCommunication(newBookingCommunicationInput 
 	}
 	return nil
 }
+
+func (b BookingService) SetBookingUnsuccess(bookingId uint) error {
+	err := b.repo.SetBookingUnsuccess(bookingId)
+	if err != nil {
+		return errors.New("Не удалось обновить статус занятия ")
+	}
+	return nil
+}

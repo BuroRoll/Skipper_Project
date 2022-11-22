@@ -266,3 +266,8 @@ func (b BookingPostgres) ChangeBookingCommunication(bookingId uint, communicatio
 	}
 	return nil
 }
+
+func (b BookingPostgres) SetBookingUnsuccess(bookingId uint) error {
+	result := b.db.Model(&models.BookingTime{}).Where("id = ?", bookingId).Update("is_success", false)
+	return result.Error
+}

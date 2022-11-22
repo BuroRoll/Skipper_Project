@@ -148,3 +148,21 @@ func (h *Handler) ChangeBookingCommunication(c *gin.Context) {
 	SendClassNotification(notification, strconv.Itoa(int(receiver)))
 	c.JSON(http.StatusOK, gin.H{"status": "ok"})
 }
+
+// BookingUnsuccess
+// @Description  Сменить статус занятия на "несовершенное"
+// @Security  	 BearerAuth
+// @Accept       json
+// @Produce      json
+// @Param        booking_class_id   path      int  true  "Booking ID"
+// @Success      200  		{object} 	forms.SuccessResponse
+// @Router       /api/class/booking/status/unsuccess/{booking_class_id} [put]
+func (h *Handler) BookingUnsuccess(c *gin.Context) {
+	bookingId, _ := strconv.Atoi(c.Param("booking_class_id"))
+	err := h.services.SetBookingUnsuccess(uint(bookingId))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, forms.ErrorResponse{Error: err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, forms.SuccessResponse{Status: "ok"})
+}

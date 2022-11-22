@@ -82,6 +82,7 @@ type Booking interface {
 	GetBookingStatus(bookingId uint) Status
 	GetBookingById(bookingId uint) models.UserClass
 	ChangeBookingCommunication(bookingId uint, communicationId uint) error
+	SetBookingUnsuccess(bookingId uint) error
 }
 
 type Chat interface {

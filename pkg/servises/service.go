@@ -83,6 +83,7 @@ type Booking interface {
 	GetBookingUsersById(bookingId string) repository.BookingUsers
 	GetBookingStatus(bookingId uint) string
 	ChangeBookingCommunication(newBookingCommunicationInput forms.ChangeBookingCommunication) error
+	SetBookingUnsuccess(bookingId uint) error
 }
 
 type Chat interface {

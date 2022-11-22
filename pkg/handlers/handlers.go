@@ -113,6 +113,10 @@ func (h *Handler) InitRoutes() {
 					changeCommunication.GET("/:booking_class_id", h.GetCommunicationsForClass)
 					changeCommunication.PUT("/", h.ChangeBookingCommunication)
 				}
+				status := booking.Group("/status")
+				{
+					status.PUT("/unsuccess/:booking_class_id", h.BookingUnsuccess)
+				}
 			}
 		}
 
