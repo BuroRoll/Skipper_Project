@@ -41,6 +41,10 @@ type UserData interface {
 	GetMentorCountLessons(userId uint, time string, isComplete bool) float64
 	GetMentiCountLessons(userId uint, time string, isComplete bool) float64
 	ChangePassword(user models.User, newPassword string) error
+	AddFavouriteMentor(user models.User, favUser models.User) error
+	AddFavouriteMenti(user models.User, favUser models.User) error
+	GetFavouriteMentors(userId uint) ([]models.User, error)
+	GetFavouriteMentis(userId uint) ([]models.User, error)
 }
 
 type Catalog interface {

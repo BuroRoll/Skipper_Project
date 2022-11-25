@@ -172,24 +172,28 @@ func (s *AuthService) SendVerifyEmail(userId uint) error {
 	if err != nil {
 		fmt.Println("error!!!!!!!!!!")
 	}
-	err = SendEmail(user.Email, token, "https://skipper.ga/verify-email?", "verify_email.html", "Подтверждение почты Skipper")
+	err = SendEmail(user.Email, token, "https://skipper.ga/verify-email?", "Подтверждение почты Skipper", "Подтвердить")
 	return err
 }
 
-func SendEmail(email string, token string, link string, templateFile string, theme string) error {
+func SendEmail(email string, token string, link string, theme string, buttonText string) error {
 	type data struct {
-		Token string
-		Link  string
+		Title      string
+		Token      string
+		Link       string
+		ButtonText string
 	}
 	userData := data{
-		Token: token,
-		Link:  link,
+		Title:      theme,
+		Token:      token,
+		Link:       link,
+		ButtonText: buttonText,
 	}
 	_, b, _, _ := runtime.Caller(0)
 	Root := filepath.Join(filepath.Dir(b), "../..")
-	t := template.New(templateFile)
+	t := template.New("email_letter.html")
 	var err error
-	t, err = t.ParseFiles(Root + "/" + templateFile)
+	t, err = t.ParseFiles(Root + "/" + "email_letter.html")
 	if err != nil {
 		log.Println(err)
 	}
@@ -232,8 +236,9 @@ func (s *AuthService) ResetPassword(login string) error {
 
 func (s *AuthService) SendResetPasswordEmail(userId uint, email string) error {
 	token, err := GenerateTokenForResetPassword(userId)
-	err = SendEmail(email, token, os.Getenv("FRONTEND")+"/reset-password", "resetPassword.html", "Смена пароля Skipper")
+	err = SendEmail(email, token, os.Getenv("FRONTEND")+"/reset-password", "Смена пароля Skipper", "Сбросить пароль")
 	if err != nil {
+		fmt.Println(err)
 		return errors.New("Не удалось отправить сообщение ")
 	}
 	return nil

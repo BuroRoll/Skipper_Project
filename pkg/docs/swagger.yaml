@@ -1,4 +1,11 @@
 definitions:
+  forms.AddUserToFavourite:
+    properties:
+      status:
+        type: string
+      user_id:
+        type: integer
+    type: object
   forms.ErrorResponse:
     properties:
       error:
@@ -39,6 +46,21 @@ definitions:
         type: string
     required:
     - email
+    type: object
+  service.FavouriteUsers:
+    properties:
+      description:
+        type: string
+      first_name:
+        type: string
+      id:
+        type: integer
+      profile_picture:
+        type: string
+      second_name:
+        type: string
+      specialization:
+        type: string
     type: object
 info:
   contact: {}
@@ -84,6 +106,49 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/forms.SuccessResponse'
+  /api/user/favourite/:
+    post:
+      consumes:
+      - application/json
+      description: Добавление пользователя в список любимых
+      parameters:
+      - description: query params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/forms.AddUserToFavourite'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/forms.SuccessResponse'
+      tags:
+      - favourites
+  /api/user/favourite/:status:
+    get:
+      consumes:
+      - application/json
+      description: Список любимых пользователей
+      parameters:
+      - description: status
+        in: path
+        name: status
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/service.FavouriteUsers'
+            type: array
+      tags:
+      - favourites
   /api/user/user-verify-email:
     post:
       consumes:

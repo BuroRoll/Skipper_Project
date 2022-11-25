@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Почта</title>
+</head>
+<body>
+<div style="font-size: 25px;
+    background: #ffdd2d;
+    border-radius: 32px;
+    padding: 10px 80px;
+    margin-bottom: 35px;
+    font-family: 'Montserrat', sans-serif;">
+    {{.Title}}
+</div>
+<div style="font-family: 'Montserrat', sans-serif;">
+    <a href="{{.Link}}?token={{.Token}}" class="button">{{.ButtonText}}</a>
+    <br>
+</div>
+</body>
+</html>

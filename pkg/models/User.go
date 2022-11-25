@@ -5,21 +5,23 @@ import "gorm.io/gorm"
 type User struct {
 	gorm.Model
 	//Base information
-	Email          string
-	Phone          string `gorm:"index:unique"`
-	Password       string `json:"-"`
-	FirstName      string
-	SecondName     string
-	Patronymic     string
-	DateOfBirthday string
-	Description    string
-	Time           string
-	ProfilePicture string          `gorm:"default:'default_profile_picture.jpeg'"`
-	IsMentor       bool            `gorm:"default:false"`
-	IsVerifyEmail  bool            `gorm:"default:false"`
-	IsVerifyPhone  bool            `gorm:"default:false"`
-	Communications []Communication `gorm:"ForeignKey:ParentId"`
-	Rating         float64         `gorm:"default:0"`
+	Email            string
+	Phone            string `gorm:"index:unique"`
+	Password         string `json:"-"`
+	FirstName        string
+	SecondName       string
+	Patronymic       string
+	DateOfBirthday   string
+	Description      string
+	Time             string
+	ProfilePicture   string          `gorm:"default:'default_profile_picture.jpeg'"`
+	IsMentor         bool            `gorm:"default:false"`
+	IsVerifyEmail    bool            `gorm:"default:false"`
+	IsVerifyPhone    bool            `gorm:"default:false"`
+	Communications   []Communication `gorm:"ForeignKey:ParentId"`
+	Rating           float64         `gorm:"default:0"`
+	FavouriteMentors []User          `gorm:"ForeignKey:id;AssociationForeignKey:user_id;many2many:user_favourite_mentors;"`
+	FavouriteMentis  []User          `gorm:"ForeignKey:id;AssociationForeignKey:user_id;many2many:user_favourite_mentis;"`
 
 	//Mentor information
 	Specialization    string
@@ -29,7 +31,6 @@ type User struct {
 	OtherInformation  []OtherInformation `gorm:"ForeignKey:ParentId"`
 	AverageClassPrice uint               `gorm:"default:0"`
 }
-
 type Communication struct {
 	gorm.Model
 	ParentId  uint

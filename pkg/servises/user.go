@@ -215,3 +215,45 @@ func (u UserDataService) ChangePassword(userId uint, oldPassword string, newPass
 	err := u.repo.ChangePassword(user, newHashPassword)
 	return err
 }
+
+func (u UserDataService) AddUserToFavourite(userId uint, UserToFavourite uint, status string) error {
+	user, _ := u.repo.GetUserById(userId)
+	favUser, _ := u.repo.GetUserById(UserToFavourite)
+	if status == "mentor" {
+		err := u.repo.AddFavouriteMentor(user, favUser)
+		return err
+	} else if status == "menti" {
+		err := u.repo.AddFavouriteMenti(user, favUser)
+		return err
+	} else {
+		return errors.New("Такого типа пользователей не существует ")
+	}
+}
+
+type FavouriteUsers struct {
+	Id             uint   `json:"id"`
+	FirstName      string `json:"FirstName"`
+	SecondName     string `json:"SecondName"`
+	Description    string `json:"description"`
+	Specialization string `json:"specialization"`
+	ProfilePicture string `json:"profilePicture"`
+}
+
+func (u UserDataService) GetFavourites(userId uint, status string) ([]FavouriteUsers, error) {
+	var err error
+	var users []models.User
+	if status == "mentor" {
+		users, err = u.repo.GetFavouriteMentors(userId)
+	} else if status == "menti" {
+		users, err = u.repo.GetFavouriteMentis(userId)
+	} else {
+		return nil, errors.New("Такого типа пользователей не существует ")
+	}
+	if err != nil {
+		return nil, err
+	}
+	jsonUsers, _ := json.Marshal(users)
+	var fUsers []FavouriteUsers
+	err = json.Unmarshal(jsonUsers, &fUsers)
+	return fUsers, nil
+}

@@ -326,6 +326,48 @@ func (h *Handler) DeleteUserOtherInfo(c *gin.Context) {
 	})
 }
 
+// AddUserToFavourite
+// @Description  Добавление пользователя в список любимых
+// @Tags 		 favourites
+// @Accept       json
+// @Produce      json
+// @Param 		 request 	body 		forms.AddUserToFavourite	true 	"query params"
+// @Success      200  		{object} 	forms.SuccessResponse
+// @Router       /api/user/favourite/ [post]
+func (h *Handler) AddUserToFavourite(c *gin.Context) {
+	userId := c.GetUint(userCtx)
+	var input forms.AddUserToFavourite
+	if err := c.BindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Неверная форма данных"})
+		return
+	}
+	err := h.services.AddUserToFavourite(userId, input.UserId, input.Status)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, forms.SuccessResponse{Status: "Пользоватль добавлен в список любимых"})
+}
+
+// GetFavouriteUsers
+// @Description  Список любимых пользователей
+// @Tags 		 favourites
+// @Accept       json
+// @Produce      json
+// @Param        status   path      string  true  "status"
+// @Success      200  		{object} 	[]service.FavouriteUsers
+// @Router       /api/user/favourite/:status [get]
+func (h *Handler) GetFavouriteUsers(c *gin.Context) {
+	userId := c.GetUint(userCtx)
+	status := c.Param("status")
+	users, err := h.services.GetFavourites(userId, status)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, users)
+}
+
 // ChangePassword
 // @Description  Смена пароля
 // @Accept       json

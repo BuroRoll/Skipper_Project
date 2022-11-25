@@ -45,6 +45,8 @@ type UserData interface {
 	GetUnreadMessagesCount(userId uint) uint
 	GetUserStatistic(userId uint, userStatus string) (models.Statistic, error)
 	ChangePassword(userId uint, oldPassword string, newPassword string) error
+	AddUserToFavourite(userId uint, UserToFavourite uint, status string) error
+	GetFavourites(userId uint, status string) ([]FavouriteUsers, error)
 }
 
 type Catalog interface {

@@ -79,6 +79,73 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/user/favourite/": {
+            "post": {
+                "description": "Добавление пользователя в список любимых",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "favourites"
+                ],
+                "parameters": [
+                    {
+                        "description": "query params",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/forms.AddUserToFavourite"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/forms.SuccessResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/user/favourite/:status": {
+            "get": {
+                "description": "Список любимых пользователей",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "favourites"
+                ],
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "status",
+                        "name": "status",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/service.FavouriteUsers"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/user/user-verify-email": {
             "post": {
                 "description": "Добавление почты",
@@ -189,6 +256,17 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "forms.AddUserToFavourite": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "forms.ErrorResponse": {
             "type": "object",
             "properties": {
@@ -249,6 +327,29 @@ const docTemplate = `{
             ],
             "properties": {
                 "email": {
+                    "type": "string"
+                }
+            }
+        },
+        "service.FavouriteUsers": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "first_name": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "profile_picture": {
+                    "type": "string"
+                },
+                "second_name": {
+                    "type": "string"
+                },
+                "specialization": {
                     "type": "string"
                 }
             }

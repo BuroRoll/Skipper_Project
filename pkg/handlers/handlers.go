@@ -48,6 +48,13 @@ func (h *Handler) InitRoutes() {
 			user.POST("/update-profile-picture", h.UpdateProfilePicture)
 			user.POST("/update-specialization", h.UpdateSpecialization)
 
+			favourites := user.Group("/favourite")
+			{
+				favourites.POST("/", h.AddUserToFavourite)
+				favourites.GET("/:status", h.GetFavouriteUsers)
+				favourites.DELETE("/")
+			}
+
 		}
 		communication := api.Group("/communication")
 		{

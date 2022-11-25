@@ -288,3 +288,31 @@ func (u UserDataPostgres) ChangePassword(user models.User, newPassword string) e
 	err := u.db.Model(&user).Update("password", newPassword)
 	return err.Error
 }
+
+func (u UserDataPostgres) GetFavouriteMentors(userId uint) ([]models.User, error) {
+	var user models.User
+	result := u.db.Preload("FavouriteMentors").First(&user, userId)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return user.FavouriteMentors, nil
+}
+
+func (u UserDataPostgres) GetFavouriteMentis(userId uint) ([]models.User, error) {
+	var user models.User
+	result := u.db.Preload("FavouriteMentis").First(&user, userId)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return user.FavouriteMentis, nil
+}
+
+func (u UserDataPostgres) AddFavouriteMentor(user models.User, favUser models.User) error {
+	u.db.Model(&user).Association("FavouriteMentors").Append(&favUser)
+	return nil
+}
+
+func (u UserDataPostgres) AddFavouriteMenti(user models.User, favUser models.User) error {
+	u.db.Model(&user).Association("FavouriteMentis").Append(&favUser)
+	return nil
+}
