@@ -316,3 +316,13 @@ func (u UserDataPostgres) AddFavouriteMenti(user models.User, favUser models.Use
 	u.db.Model(&user).Association("FavouriteMentis").Append(&favUser)
 	return nil
 }
+
+func (u UserDataPostgres) DeleteFavouriteMentor(user models.User, favUser models.User) error {
+	u.db.Model(&user).Association("FavouriteMentors").Delete(&favUser)
+	return nil
+}
+
+func (u UserDataPostgres) DeleteFavouriteMenti(user models.User, favUser models.User) error {
+	u.db.Model(&user).Association("FavouriteMentis").Delete(&favUser)
+	return nil
+}

@@ -48,3 +48,8 @@ type AddUserToFavourite struct {
 	UserId uint   `json:"user_id"`
 	Status string `json:"status"`
 }
+
+type DeleteFromFavourite struct {
+	UserId uint   `json:"user_id"`
+	Status string `json:"status"`
+}

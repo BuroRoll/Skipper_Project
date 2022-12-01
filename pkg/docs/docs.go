@@ -110,6 +110,37 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "delete": {
+                "description": "Удаление пользователя из списка любимых",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "favourites"
+                ],
+                "parameters": [
+                    {
+                        "description": "query params",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/forms.DeleteFromFavourite"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/forms.SuccessResponse"
+                        }
+                    }
+                }
             }
         },
         "/api/user/favourite/:status": {
@@ -267,6 +298,17 @@ const docTemplate = `{
                 }
             }
         },
+        "forms.DeleteFromFavourite": {
+            "type": "object",
+            "properties": {
+                "status": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "forms.ErrorResponse": {
             "type": "object",
             "properties": {
@@ -334,19 +376,19 @@ const docTemplate = `{
         "service.FavouriteUsers": {
             "type": "object",
             "properties": {
-                "description": {
+                "FirstName": {
                     "type": "string"
                 },
-                "first_name": {
+                "SecondName": {
+                    "type": "string"
+                },
+                "description": {
                     "type": "string"
                 },
                 "id": {
                     "type": "integer"
                 },
-                "profile_picture": {
-                    "type": "string"
-                },
-                "second_name": {
+                "profilePicture": {
                     "type": "string"
                 },
                 "specialization": {

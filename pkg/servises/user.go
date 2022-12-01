@@ -257,3 +257,20 @@ func (u UserDataService) GetFavourites(userId uint, status string) ([]FavouriteU
 	err = json.Unmarshal(jsonUsers, &fUsers)
 	return fUsers, nil
 }
+
+func (u UserDataService) DeleteFavourite(userId uint, favUserId uint, status string) error {
+	user, _ := u.repo.GetUserById(userId)
+	favUser, _ := u.repo.GetUserById(favUserId)
+	var err error
+	if status == "mentor" {
+		err = u.repo.DeleteFavouriteMentor(user, favUser)
+	} else if status == "menti" {
+		err = u.repo.DeleteFavouriteMenti(user, favUser)
+	} else {
+		return errors.New("Такого типа пользователей не существует ")
+	}
+	if err != nil {
+		return err
+	}
+	return nil
+}

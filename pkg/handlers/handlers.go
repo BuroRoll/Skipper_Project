@@ -52,7 +52,7 @@ func (h *Handler) InitRoutes() {
 			{
 				favourites.POST("/", h.AddUserToFavourite)
 				favourites.GET("/:status", h.GetFavouriteUsers)
-				favourites.DELETE("/")
+				favourites.DELETE("/", h.DeleteFavouriteUser)
 			}
 
 		}

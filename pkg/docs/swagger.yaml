@@ -6,6 +6,13 @@ definitions:
       user_id:
         type: integer
     type: object
+  forms.DeleteFromFavourite:
+    properties:
+      status:
+        type: string
+      user_id:
+        type: integer
+    type: object
   forms.ErrorResponse:
     properties:
       error:
@@ -49,15 +56,15 @@ definitions:
     type: object
   service.FavouriteUsers:
     properties:
-      description:
+      FirstName:
         type: string
-      first_name:
+      SecondName:
+        type: string
+      description:
         type: string
       id:
         type: integer
-      profile_picture:
-        type: string
-      second_name:
+      profilePicture:
         type: string
       specialization:
         type: string
@@ -107,6 +114,26 @@ paths:
           schema:
             $ref: '#/definitions/forms.SuccessResponse'
   /api/user/favourite/:
+    delete:
+      consumes:
+      - application/json
+      description: Удаление пользователя из списка любимых
+      parameters:
+      - description: query params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/forms.DeleteFromFavourite'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/forms.SuccessResponse'
+      tags:
+      - favourites
     post:
       consumes:
       - application/json

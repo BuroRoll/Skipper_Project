@@ -45,6 +45,8 @@ type UserData interface {
 	AddFavouriteMenti(user models.User, favUser models.User) error
 	GetFavouriteMentors(userId uint) ([]models.User, error)
 	GetFavouriteMentis(userId uint) ([]models.User, error)
+	DeleteFavouriteMentor(user models.User, favUser models.User) error
+	DeleteFavouriteMenti(user models.User, favUser models.User) error
 }
 
 type Catalog interface {

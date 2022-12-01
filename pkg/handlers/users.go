@@ -368,6 +368,29 @@ func (h *Handler) GetFavouriteUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, users)
 }
 
+// DeleteFavouriteUser
+// @Description  Удаление пользователя из списка любимых
+// @Tags 		 favourites
+// @Accept       json
+// @Produce      json
+// @Param 		 request 	body 		forms.DeleteFromFavourite	true 	"query params"
+// @Success      200  		{object} 	forms.SuccessResponse
+// @Router       /api/user/favourite/ [delete]
+func (h *Handler) DeleteFavouriteUser(c *gin.Context) {
+	userId := c.GetUint(userCtx)
+	var input forms.DeleteFromFavourite
+	if err := c.BindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Неверная форма данных"})
+		return
+	}
+	err := h.services.DeleteFavourite(userId, input.UserId, input.Status)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, forms.SuccessResponse{Status: "ok"})
+}
+
 // ChangePassword
 // @Description  Смена пароля
 // @Accept       json
