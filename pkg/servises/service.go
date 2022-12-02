@@ -48,6 +48,7 @@ type UserData interface {
 	AddUserToFavourite(userId uint, UserToFavourite uint, status string) error
 	GetFavourites(userId uint, status string) ([]FavouriteUsers, error)
 	DeleteFavourite(userId uint, favUserId uint, status string) error
+	IsFavouriteUser(userId uint, favUser uint) bool
 }
 
 type Catalog interface {

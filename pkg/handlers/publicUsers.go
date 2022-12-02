@@ -4,9 +4,23 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
+func (h *Handler) getAuthStatus(c *gin.Context) uint {
+	header := c.GetHeader(authorizationHeader)
+	if header == "" {
+		return 0
+	}
+	headerParts := strings.Split(header, " ")
+	if len(headerParts) != 2 || headerParts[0] != "Bearer" || len(headerParts[1]) == 0 {
+		return 0
+	}
+	userId, _, _ := h.services.Authorization.ParseToken(headerParts[1])
+	return userId
+}
 func (h *Handler) GetMentorData(c *gin.Context) {
+	userId := h.getAuthStatus(c)
 	mentorId := parseId(c.Param("id"))
 	user, err := h.services.GetUserData(mentorId)
 	if err != nil {
@@ -23,6 +37,10 @@ func (h *Handler) GetMentorData(c *gin.Context) {
 	communications, err := h.services.GetUserCommunications(mentorId)
 	otherInfo, err := h.services.GetUserOtherInfo(mentorId)
 	comments, err := h.services.GetComments(mentorId)
+	isFavouriteUser := false
+	if userId != 0 {
+		isFavouriteUser = h.services.IsFavouriteUser(userId, mentorId)
+	}
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Не удалось получить данные пользователя"})
 		return
@@ -45,14 +63,20 @@ func (h *Handler) GetMentorData(c *gin.Context) {
 			"other_info":      otherInfo,
 			"comments":        comments,
 			"rating":          user.Rating,
+			"is_favourite":    isFavouriteUser,
 		},
 	)
 }
 
 func (h *Handler) GetMentiData(c *gin.Context) {
+	userId := h.getAuthStatus(c)
 	mentiId := parseId(c.Param("id"))
 	user, err := h.services.GetUserData(mentiId)
 	comments, err := h.services.GetComments(mentiId)
+	isFavouriteUser := false
+	if userId != 0 {
+		isFavouriteUser = h.services.IsFavouriteUser(userId, mentiId)
+	}
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Не удалось получить данные пользователя"})
 		return
@@ -67,6 +91,7 @@ func (h *Handler) GetMentiData(c *gin.Context) {
 			"register_date":   user.CreatedAt,
 			"comments":        comments,
 			"rating":          user.Rating,
+			"is_favourite":    isFavouriteUser,
 		},
 	)
 }

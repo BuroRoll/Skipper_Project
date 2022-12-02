@@ -326,3 +326,11 @@ func (u UserDataPostgres) DeleteFavouriteMenti(user models.User, favUser models.
 	u.db.Model(&user).Association("FavouriteMentis").Delete(&favUser)
 	return nil
 }
+func (u UserDataPostgres) CheckFavouriteUser(user models.User, favUser models.User) bool {
+	var user1 models.User
+	var user2 models.User
+	ids := []uint{favUser.ID}
+	u.db.Model(&user).Where("id IN ?", ids).Association("FavouriteMentors").Find(&user1)
+	u.db.Model(&user).Where("id IN ?", ids).Association("FavouriteMentis").Find(&user2)
+	return user1.ID != 0 || user2.ID != 0
+}

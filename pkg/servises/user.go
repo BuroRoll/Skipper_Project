@@ -274,3 +274,9 @@ func (u UserDataService) DeleteFavourite(userId uint, favUserId uint, status str
 	}
 	return nil
 }
+
+func (u UserDataService) IsFavouriteUser(userId uint, favUser uint) bool {
+	user, _ := u.repo.GetUserById(userId)
+	favouriteUser, _ := u.repo.GetUserById(favUser)
+	return u.repo.CheckFavouriteUser(user, favouriteUser)
+}
