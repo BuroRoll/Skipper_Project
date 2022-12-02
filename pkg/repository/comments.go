@@ -75,9 +75,11 @@ func (c CommentsPostgres) CalcRating(userId uint) {
 		Find(&lessonRating)
 	c.db.Find(&user, userId)
 	rating := 0.0
-	if lessonRating.Rating != 0 {
-		rating = math.Round((classRating.Rating*0.8+lessonRating.Rating*0.2)*100) / 100
-	} else {
+	if lessonRating.Rating != 0 && classRating.Rating != 0 {
+		rating = math.Round((classRating.Rating*0.75+lessonRating.Rating*0.25)*100) / 100
+	} else if classRating.Rating == 0 {
+		rating = math.Round(lessonRating.Rating*100) / 100
+	} else if lessonRating.Rating == 0 {
 		rating = math.Round(classRating.Rating*100) / 100
 	}
 	user.Rating = rating
