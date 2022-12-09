@@ -116,6 +116,10 @@ type Notifications interface {
 	DeleteNotification(notificationId uint) error
 }
 
+type Reports interface {
+	MakeReport(userId uint, reportForm forms.ReportUser) error
+}
+
 type Service struct {
 	Authorization
 	UserData
@@ -125,6 +129,7 @@ type Service struct {
 	Chat
 	Comments
 	Notifications
+	Reports
 }
 
 func NewService(repos *repository.Repository) *Service {
@@ -137,5 +142,6 @@ func NewService(repos *repository.Repository) *Service {
 		Chat:          NewChatService(repos.Chat),
 		Comments:      NewCommentsService(repos.Comments),
 		Notifications: NewNotificationsService(repos.Notifications),
+		Reports:       NewReportsService(repos.Reports),
 	}
 }

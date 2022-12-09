@@ -22,6 +22,10 @@ type User struct {
 	Rating           float64         `gorm:"default:0"`
 	FavouriteMentors []User          `gorm:"ForeignKey:id;AssociationForeignKey:user_id;many2many:user_favourite_mentors;"`
 	FavouriteMentis  []User          `gorm:"ForeignKey:id;AssociationForeignKey:user_id;many2many:user_favourite_mentis;"`
+	// Жалобы пользователя
+	UserReports []Report `gorm:"ForeignKey:FromUserId"`
+	// Жалобы на пользователя
+	Reports []Report `gorm:"ForeignKey:ToUserId"`
 
 	//Mentor information
 	Specialization    string

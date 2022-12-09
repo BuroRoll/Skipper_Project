@@ -43,6 +43,7 @@ func init() {
 		&Comment{},
 		&LessonComment{},
 		&ClassNotification{},
+		&Report{},
 	)
 	err = db.AutoMigrate(&BookingTime{})
 	err = db.AutoMigrate(&UserClass{})

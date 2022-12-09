@@ -137,6 +137,11 @@ func (h *Handler) InitRoutes() {
 		{
 			comments.POST("/", h.CreateComment)
 		}
+
+		report := api.Group("/reports")
+		{
+			report.POST("/", h.ReportUser)
+		}
 	}
 	publicApi := router.Group("/public-api")
 	{

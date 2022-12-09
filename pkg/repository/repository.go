@@ -113,6 +113,12 @@ type Notifications interface {
 	DeleteNotification(notificationId uint) error
 }
 
+type Reports interface {
+	MakeReport(userId uint, fromUserId uint, reportTheme string, reportText string) error
+	GetFromUserReports(userId uint) []models.Report
+	GetToUserReports(userId uint) []models.Report
+}
+
 type Repository struct {
 	Authorization
 	UserData
@@ -122,6 +128,7 @@ type Repository struct {
 	Chat
 	Comments
 	Notifications
+	Reports
 }
 
 func NewRepository(db *gorm.DB) *Repository {
@@ -134,5 +141,6 @@ func NewRepository(db *gorm.DB) *Repository {
 		Chat:          NewChatPostgres(db),
 		Comments:      NewCommentsPostgres(db),
 		Notifications: NewNotificationsPostgres(db),
+		Reports:       NewReportsPostgres(db),
 	}
 }
