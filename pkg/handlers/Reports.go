@@ -6,6 +6,14 @@ import (
 	"net/http"
 )
 
+// ReportUser
+// @Description  Жалоба на пользователя
+// @Tags 		 reports
+// @Accept       json
+// @Produce      json
+// @Param 		 request 	body 		forms.ReportUser	true 	"query params"
+// @Success      200  		{object} 	forms.SuccessResponse
+// @Router       /api/reports/ [post]
 func (h *Handler) ReportUser(c *gin.Context) {
 	userId := c.GetUint(userCtx)
 	var report forms.ReportUser

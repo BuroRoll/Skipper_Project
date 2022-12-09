@@ -4,21 +4,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
-	"strings"
 )
 
-func (h *Handler) getAuthStatus(c *gin.Context) uint {
-	header := c.GetHeader(authorizationHeader)
-	if header == "" {
-		return 0
-	}
-	headerParts := strings.Split(header, " ")
-	if len(headerParts) != 2 || headerParts[0] != "Bearer" || len(headerParts[1]) == 0 {
-		return 0
-	}
-	userId, _, _ := h.services.Authorization.ParseToken(headerParts[1])
-	return userId
-}
 func (h *Handler) GetMentorData(c *gin.Context) {
 	userId := h.getAuthStatus(c)
 	mentorId := parseId(c.Param("id"))

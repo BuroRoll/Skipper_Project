@@ -35,6 +35,15 @@ definitions:
     - new_password
     - old_password
     type: object
+  forms.ReportUser:
+    properties:
+      report_text:
+        type: string
+      report_theme:
+        type: string
+      user_id:
+        type: integer
+    type: object
   forms.SetNewPassword:
     properties:
       new_password:
@@ -94,6 +103,27 @@ paths:
             $ref: '#/definitions/forms.SuccessResponse'
       security:
       - BearerAuth: []
+  /api/reports/:
+    post:
+      consumes:
+      - application/json
+      description: Жалоба на пользователя
+      parameters:
+      - description: query params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/forms.ReportUser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/forms.SuccessResponse'
+      tags:
+      - reports
   /api/user/change-password:
     post:
       consumes:

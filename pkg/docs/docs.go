@@ -49,6 +49,39 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/reports/": {
+            "post": {
+                "description": "Жалоба на пользователя",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "reports"
+                ],
+                "parameters": [
+                    {
+                        "description": "query params",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/forms.ReportUser"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/forms.SuccessResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/user/change-password": {
             "post": {
                 "description": "Смена пароля",
@@ -340,6 +373,20 @@ const docTemplate = `{
                 },
                 "old_password": {
                     "type": "string"
+                }
+            }
+        },
+        "forms.ReportUser": {
+            "type": "object",
+            "properties": {
+                "report_text": {
+                    "type": "string"
+                },
+                "report_theme": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
                 }
             }
         },
