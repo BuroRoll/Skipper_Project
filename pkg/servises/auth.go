@@ -170,30 +170,60 @@ func (s *AuthService) SendVerifyEmail(userId uint) error {
 	user, err := s.repo.GetUserById(userId)
 	token, _, err := s.GenerateTokenByID(userId, user.IsMentor)
 	if err != nil {
-		fmt.Println("error!!!!!!!!!!")
+		fmt.Println(err)
 	}
-	err = SendEmail(user.Email, token, "https://skipper.ga/verify-email?", "Подтверждение почты Skipper", "Подтвердить")
+	userName := user.SecondName + " " + user.FirstName
+	err = SendEmail(user.Email,
+		token,
+		"https://skipper.ga/verify-email?",
+		"Подтверждение почты Skipper",
+		"Подтвердить",
+		"Если вы не регистрировали эту учетную запись, проигнорируйте это сообщение",
+		userName)
 	return err
 }
 
-func SendEmail(email string, token string, link string, theme string, buttonText string) error {
+func (s *AuthService) SendResetPasswordEmail(userId uint, email string, userFirstName string, userSecondName string) error {
+	token, err := GenerateTokenForResetPassword(userId)
+	userName := userSecondName + " " + userFirstName
+	err = SendEmail(email,
+		token,
+		os.Getenv("FRONTEND")+"/reset-password",
+		"Смена пароля Skipper",
+		"Сбросить пароль",
+		"Если вы не запрашивали смену пароля, проигнорируйте это сообщение",
+		userName)
+	if err != nil {
+		fmt.Println(err)
+		return errors.New("Не удалось отправить сообщение ")
+	}
+	return nil
+}
+
+func SendEmail(email string, token string, link string, theme string, buttonText string, description string, userName string) error {
 	type data struct {
-		Title      string
-		Token      string
-		Link       string
-		ButtonText string
+		Title       string
+		Token       string
+		Link        string
+		ButtonText  string
+		Theme       string
+		Description string
+		UserName    string
 	}
 	userData := data{
-		Title:      theme,
-		Token:      token,
-		Link:       link,
-		ButtonText: buttonText,
+		Title:       theme,
+		Token:       token,
+		Link:        link,
+		ButtonText:  buttonText,
+		Theme:       theme,
+		Description: description,
+		UserName:    userName,
 	}
 	_, b, _, _ := runtime.Caller(0)
 	Root := filepath.Join(filepath.Dir(b), "../..")
-	t := template.New("email_letter.html")
+	t := template.New("index.html")
 	var err error
-	t, err = t.ParseFiles(Root + "/" + "email_letter.html")
+	t, err = t.ParseFiles(Root + "/" + "index.html")
 	if err != nil {
 		log.Println(err)
 	}
@@ -230,18 +260,8 @@ func (s *AuthService) ResetPassword(login string) error {
 	if err != nil {
 		return errors.New("Пользователь не найден ")
 	}
-	err = s.SendResetPasswordEmail(user.ID, user.Email)
+	err = s.SendResetPasswordEmail(user.ID, user.Email, user.FirstName, user.SecondName)
 	return err
-}
-
-func (s *AuthService) SendResetPasswordEmail(userId uint, email string) error {
-	token, err := GenerateTokenForResetPassword(userId)
-	err = SendEmail(email, token, os.Getenv("FRONTEND")+"/reset-password", "Смена пароля Skipper", "Сбросить пароль")
-	if err != nil {
-		fmt.Println(err)
-		return errors.New("Не удалось отправить сообщение ")
-	}
-	return nil
 }
 
 type resetPasswordTokenClaims struct {
