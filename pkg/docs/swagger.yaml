@@ -83,6 +83,26 @@ info:
   title: Skipper Backend
   version: "1.0"
 paths:
+  /api/chat/:chatID:
+    delete:
+      consumes:
+      - application/json
+      description: Удаление чата
+      parameters:
+      - description: chatID
+        in: path
+        name: chatID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/forms.SuccessResponse'
+      tags:
+      - chats
   /api/class/booking/status/unsuccess/{booking_class_id}:
     put:
       consumes:

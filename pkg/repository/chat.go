@@ -48,17 +48,17 @@ func (c ChatPostgres) GetOpenChats(userId uint) ([]Chats, error) {
 	var chats []Chats
 	c.db.
 		Preload("Sender", func(tx *gorm.DB) *gorm.DB {
-			return tx.Select("id, first_name, second_name, profile_picture")
+			return tx.Select("id, first_name, second_name, profile_picture, deleted_at")
 		}).
 		Preload("Receiver", func(tx *gorm.DB) *gorm.DB {
-			return tx.Select("id, first_name, second_name, profile_picture")
+			return tx.Select("id, first_name, second_name, profile_picture, deleted_at")
 		}).
 		Preload("LastMessage").
 		Select("*").
-		Joins("INNER JOIN (SELECT created_at AS last_message_time, id AS message_id FROM messages) AS message_data ON message_data.message_id::varchar(255) = chats.last_message_id").
+		Joins("INNER JOIN (SELECT created_at AS last_message_time, id AS message_id FROM messages) AS message_data ON message_data.message_id = chats.last_message_id").
 		Joins("LEFT JOIN (SELECT chat_id, COUNT(*) as count_unread_messages FROM messages WHERE (receiver_id in (?) AND is_read IS false) GROUP BY chat_id) AS d ON chat_id = chats.id", strconv.Itoa(int(userId))).
-		Where("sender_id = ?", userId).
-		Or("receiver_id = ?", userId).
+		Where("sender_id = ? and deleted_at IS NULL", userId).
+		Or("receiver_id = ? and deleted_at IS NULL", userId).
 		Order("last_message_time DESC").
 		Find(&chats)
 	return chats, nil
@@ -106,4 +106,9 @@ func (c ChatPostgres) ReadMessages(chatId string, userId string) error {
 		Where("chat_id in (?) and receiver_id in (?)", chatId, userId).
 		UpdateColumn("is_read", true)
 	return nil
+}
+
+func (c ChatPostgres) DeleteChat(chatId uint) error {
+	result := c.db.Delete(&models.Chat{}, chatId)
+	return result.Error
 }

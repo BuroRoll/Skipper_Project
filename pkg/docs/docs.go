@@ -16,6 +16,37 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/chat/:chatID": {
+            "delete": {
+                "description": "Удаление чата",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "chats"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "chatID",
+                        "name": "chatID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/forms.SuccessResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/api/class/booking/status/unsuccess/{booking_class_id}": {
             "put": {
                 "security": [

@@ -131,6 +131,7 @@ func (h *Handler) InitRoutes() {
 		{
 			chat.GET("/", h.GetChatsList)
 			chat.GET("/:userID", h.GetChatMessages)
+			chat.DELETE("/:chatID", h.DeleteChat)
 		}
 
 		comments := api.Group("/comments")

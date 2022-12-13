@@ -96,6 +96,7 @@ type Chat interface {
 	GetOpenChats(userId uint) (string, error)
 	GetChatData(userId uint, receiverID string) (string, string, error)
 	ReadMessages(chatId string, userId uint) error
+	DeleteChat(chatId uint) error
 }
 
 type Comments interface {

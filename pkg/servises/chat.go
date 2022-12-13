@@ -50,3 +50,7 @@ func (c ChatService) ReadMessages(chatId string, userId uint) error {
 	user_id := strconv.FormatUint(uint64(userId), 10)
 	return c.repo.ReadMessages(chatId, user_id)
 }
+
+func (c ChatService) DeleteChat(chatId uint) error {
+	return c.repo.DeleteChat(chatId)
+}

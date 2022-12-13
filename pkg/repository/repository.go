@@ -98,6 +98,7 @@ type Chat interface {
 	GetOpenChats(userId uint) ([]Chats, error)
 	GetChatData(userId string, receiverID string) (models.Chat, []models.Message, error)
 	ReadMessages(chatId string, userId string) error
+	DeleteChat(id uint) error
 }
 
 type Comments interface {
