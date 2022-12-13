@@ -34,14 +34,12 @@ func (h *Handler) GetCatalogChild(c *gin.Context) {
 }
 
 func (h *Handler) GetClasses(c *gin.Context) {
-	//userId := h.getAuthStatus(c)
+	userId := h.getAuthStatus(c)
 	pagination := GeneratePaginationFromRequest(c)
-
-	//if userId != 0 {
-	//	isFavouriteUser = h.services.IsFavouriteUser(userId, mentorId)
-	//} else {
 	userLists, err := h.services.GetClasses(&pagination)
-	//}
+	if userId != 0 {
+		userLists, err = h.services.GetClassesWithFavourite(userId, &pagination)
+	}
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err,

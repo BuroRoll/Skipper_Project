@@ -95,3 +95,11 @@ func (c CatalogPostgres) GetClasses(pagination **models.Pagination) ([]models.Us
 	return users, nil
 
 }
+func (c CatalogPostgres) GetFavouriteMentors(userId uint) ([]models.User, error) {
+	var user models.User
+	result := c.db.Preload("FavouriteMentors").First(&user, userId)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return user.FavouriteMentors, nil
+}

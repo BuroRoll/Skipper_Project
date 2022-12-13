@@ -56,6 +56,7 @@ type Catalog interface {
 	GetMainCatalog() string
 	GetCatalogChild() (string, error)
 	GetClasses(*models.Pagination) (string, error)
+	GetClassesWithFavourite(userId uint, pagination *models.Pagination) (string, error)
 }
 
 type Class interface {

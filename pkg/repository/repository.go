@@ -55,6 +55,7 @@ type Catalog interface {
 	GetMainCatalog() []MainCatalog
 	GetCatalogChild() []models.Catalog3
 	GetClasses(**models.Pagination) ([]models.User, error)
+	GetFavouriteMentors(userId uint) ([]models.User, error)
 }
 
 type Classes interface {

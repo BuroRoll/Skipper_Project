@@ -45,6 +45,12 @@ type ClassesData struct {
 	Rating            float32 `json:"rating"`
 	AverageClassPrice uint    `json:"AverageClassPrice"`
 	Classes           []C     `json:"classes"`
+	IsFavouriteUser   bool    `json:"is_favourite_user"`
+}
+
+func (d *ClassesData) setIsFavourite(user *ClassesData) bool {
+	user.IsFavouriteUser = true
+	return d.IsFavouriteUser
 }
 
 type C struct {
@@ -73,4 +79,37 @@ func (c CatalogService) GetClasses(pagination *models.Pagination) (string, error
 	p, _ := json.Marshal(d)
 
 	return string(p), nil
+}
+
+func (c CatalogService) GetClassesWithFavourite(userId uint, pagination *models.Pagination) (string, error) {
+	data, err := c.repo.GetClasses(&pagination)
+	users, err := c.repo.GetFavouriteMentors(userId)
+	var usersIds []uint
+	var d []ClassesData
+	for _, user := range users {
+		usersIds = append(usersIds, user.ID)
+	}
+	if err != nil {
+		return "", nil
+	}
+	j, _ := json.Marshal(data)
+
+	err = json.Unmarshal(j, &d)
+
+	for i := range d {
+		if elementInSlice(d[i].Id, usersIds) {
+			d[i].setIsFavourite(&d[i])
+		}
+	}
+	p, _ := json.Marshal(d)
+	return string(p), nil
+}
+
+func elementInSlice(a uint, list []uint) bool {
+	for _, b := range list {
+		if b == a {
+			return true
+		}
+	}
+	return false
 }
