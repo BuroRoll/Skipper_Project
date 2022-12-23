@@ -8,6 +8,7 @@ RUN go mod download
 
 COPY ./pkg ./pkg
 COPY ./media ./media
+COPY ./index.html ./index.html
 #VOLUME /home/ubuntu/static_files ./media/user/profile_picture
 
 RUN go build pkg/cmd/main.go
