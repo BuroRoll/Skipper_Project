@@ -109,6 +109,6 @@ func (c ChatPostgres) ReadMessages(chatId string, userId string) error {
 }
 
 func (c ChatPostgres) DeleteChat(chatId uint) error {
-	result := c.db.Delete(&models.Chat{}, chatId)
+	result := c.db.Unscoped().Delete(&models.Chat{}, chatId)
 	return result.Error
 }
