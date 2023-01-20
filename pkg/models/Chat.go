@@ -5,7 +5,7 @@ import "gorm.io/gorm"
 type Message struct {
 	gorm.Model
 	Body       string
-	ChatID     string `gorm:"OnDelete:SET NULL;"`
+	ChatID     string `gorm:"OnDelete:CASCADE;"`
 	SenderID   string
 	ReceiverID string
 	IsRead     bool
