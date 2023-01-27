@@ -101,7 +101,7 @@ func (c CatalogService) GetClassesWithFavourite(userId uint, pagination *models.
 			d[i].setIsFavourite(&d[i])
 		}
 		if d[i].Id == userId {
-			d = remove(d, i)
+			remove(d, i)
 		}
 	}
 	p, _ := json.Marshal(d)
