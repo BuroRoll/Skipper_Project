@@ -101,17 +101,17 @@ func (c CatalogService) GetClassesWithFavourite(userId uint, pagination *models.
 			d[i].setIsFavourite(&d[i])
 		}
 		if d[i].Id == userId {
-			d = RemoveIndex(d, i)
+			remove(d, i)
 		}
 	}
 	p, _ := json.Marshal(d)
 	return string(p), nil
 }
 
-func RemoveIndex(s []ClassesData, index int) []ClassesData {
-	ret := make([]ClassesData, 0)
-	ret = append(ret, s[:index]...)
-	return append(ret, s[index+1:]...)
+func remove(slice []ClassesData, s int) []ClassesData {
+	data := append(slice[:s], slice[s+1:]...)
+	data = data[:len(data)-1]
+	return data
 }
 
 func elementInSlice(a uint, list []uint) bool {
