@@ -100,9 +100,16 @@ func (c CatalogService) GetClassesWithFavourite(userId uint, pagination *models.
 		if elementInSlice(d[i].Id, usersIds) {
 			d[i].setIsFavourite(&d[i])
 		}
+		if d[i].Id == userId {
+			d = remove(d, i)
+		}
 	}
 	p, _ := json.Marshal(d)
 	return string(p), nil
+}
+
+func remove(slice []ClassesData, s int) []ClassesData {
+	return append(slice[:s], slice[s+1:]...)
 }
 
 func elementInSlice(a uint, list []uint) bool {
